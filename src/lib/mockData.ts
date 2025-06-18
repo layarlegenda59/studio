@@ -12,7 +12,7 @@ export const mockPromotions: Promotion[] = [
   },
   {
     id: 'promo2',
-    imageUrl: 'https://images.unsplash.com/photo-1569012648158-af3b4d1a0cce?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxmYXNoaW9uJTIwc2FsZSUyMGJhbm5lcnxlbnwwfHx8fDE3NTAyMTc4MDN8MA&ixlib=rb-4.1.0&q=80&w=1080',
+    imageUrl: 'https://images.unsplash.com/photo-1445205170230-053b83016050?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxmYXNoaW9uJTIwc2FsZSUyMGJhbm5lcnxlbnwwfHx8fDE3NTAyMjY0NzJ8MA&ixlib=rb-4.1.0&q=80&w=1080',
     title: 'Koleksi Terbaru Telah Tiba',
     description: 'Jelajahi gaya terbaru musim ini.',
     ctaText: 'Lihat Koleksi',
@@ -20,7 +20,7 @@ export const mockPromotions: Promotion[] = [
   },
   {
     id: 'promo3',
-    imageUrl: 'https://images.unsplash.com/photo-1680701572805-c204da57c901?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxmYXNoaW9uJTIwc2FsZSUyMGJhbm5lcnxlbnwwfHx8fDE3NTAyMTc4MDN8MA&ixlib=rb-4.1.0&q=80&w=1080',
+    imageUrl: 'https://images.unsplash.com/photo-1559563458-527999e24240?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxmYXNoaW9uJTIwc2FsZSUyMGJhbm5lcnxlbnwwfHx8fDE3NTAyMjY0NzJ8MA&ixlib=rb-4.1.0&q=80&w=1080',
     title: 'Gratis Ongkir Seluruh Indonesia',
     description: 'Nikmati gratis ongkir dengan minimal pembelian Rp200.000.',
     ctaText: 'S&K Berlaku',
