@@ -68,7 +68,7 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Column 4: Newsletter & App Download */}
+          {/* Column 4: Newsletter */}
           <div>
             <h5 className="text-lg font-headline font-semibold mb-4">ANDA BARU DI GOODSTOCK-X</h5>
             <p className="text-sm text-gray-400 mb-3">
@@ -88,16 +88,6 @@ export default function Footer() {
             <p className="text-xs text-gray-500 mb-6">
               Dengan mendaftar, Anda menyetujui persyaratan dalam Kebijakan Privasi kami.
             </p>
-
-            <h6 className="text-md font-headline font-semibold mt-6 mb-3">DOWNLOAD APP KAMI SEKARANG</h6>
-            <div className="flex space-x-2">
-              <Link href="#" aria-label="Download on Google Play">
-                <Image src="https://placehold.co/135x40.png" alt="Get it on Google Play" width={135} height={40} data-ai-hint="google play" className="rounded" />
-              </Link>
-              <Link href="#" aria-label="Download on App Store">
-                <Image src="https://placehold.co/135x40.png" alt="Download on the App Store" width={135} height={40} data-ai-hint="app store" className="rounded" />
-              </Link>
-            </div>
           </div>
         </div>
 
