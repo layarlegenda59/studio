@@ -70,7 +70,7 @@ export const mockProducts: Product[] = [
     id: 'prod4',
     name: 'Sepatu Lari Ringan Wanita',
     category: 'Sepatu',
-    imageUrl: 'https://placehold.co/400x400.png',
+    imageUrl: 'https://images.unsplash.com/photo-1610894980089-9d87aff3b9d2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxM3x8d29tZW4lMjBydW5uaW5nJTIwc2hvZXN8ZW58MHx8fHwxNzUwMjE4MDc4fDA&ixlib=rb-4.1.0&q=80&w=1080',
     originalPrice: 600000,
     promoPrice: 450000,
     sizes: ['36', '37', '38', '39'],
