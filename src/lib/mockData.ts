@@ -4,7 +4,7 @@ import type { Product, Promotion, ShippingCost, ShippingVendor } from './types';
 export const mockPromotions: Promotion[] = [
   {
     id: 'promo1',
-    imageUrl: 'https://images.unsplash.com/photo-1569012648158-af3b4d1a0cce?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxmYXNoaW9uJTIwc2FsZSUyMGJhbm5lcnxlbnwwfHx8fDE3NTAyMTc4MDN8MA&ixlib=rb-4.1.0&q=80&w=1080',
+    imageUrl: 'https://images.unsplash.com/photo-1680701572805-c204da57c901?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxmYXNoaW9uJTIwc2FsZSUyMGJhbm5lcnxlbnwwfHx8fDE3NTAyMTc4MDN8MA&ixlib=rb-4.1.0&q=80&w=1080',
     title: 'Diskon Akhir Pekan!',
     description: 'Dapatkan diskon hingga 50% untuk item tertentu.',
     ctaText: 'Belanja Sekarang',
@@ -12,7 +12,7 @@ export const mockPromotions: Promotion[] = [
   },
   {
     id: 'promo2',
-    imageUrl: 'https://images.unsplash.com/photo-1645447662764-b621f2c04129?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8ZmFzaGlvbiUyMHNhbGUlMjBiYW5uZXJ8ZW58MHx8fHwxNzUwMjE3ODAzfDA&ixlib=rb-4.1.0&q=80&w=1080',
+    imageUrl: 'https://images.unsplash.com/photo-1569012648158-af3b4d1a0cce?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxmYXNoaW9uJTIwc2FsZSUyMGJhbm5lcnxlbnwwfHx8fDE3NTAyMTc4MDN8MA&ixlib=rb-4.1.0&q=80&w=1080',
     title: 'Koleksi Terbaru Telah Tiba',
     description: 'Jelajahi gaya terbaru musim ini.',
     ctaText: 'Lihat Koleksi',
@@ -20,7 +20,7 @@ export const mockPromotions: Promotion[] = [
   },
   {
     id: 'promo3',
-    imageUrl: 'https://images.unsplash.com/photo-1703413222048-d24789838246?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxmYXNoaW9uJTIwc2FsZSUyMGJhbm5lcnxlbnwwfHx8fDE3NTAyMTc4MDN8MA&ixlib=rb-4.1.0&q=80&w=1080',
+    imageUrl: 'https://images.unsplash.com/photo-1680701572805-c204da57c901?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxmYXNoaW9uJTIwc2FsZSUyMGJhbm5lcnxlbnwwfHx8fDE3NTAyMTc4MDN8MA&ixlib=rb-4.1.0&q=80&w=1080',
     title: 'Gratis Ongkir Seluruh Indonesia',
     description: 'Nikmati gratis ongkir dengan minimal pembelian Rp200.000.',
     ctaText: 'S&K Berlaku',
@@ -116,3 +116,4 @@ export const mockShippingCosts: ShippingCost[] = [
     { vendor: 'SiCepat', service: 'BEST', cost: 25000, estimatedDelivery: '1-2 hari' },
     { vendor: 'Lion Parcel', service: 'REGPACK', cost: 17000, estimatedDelivery: '3-5 hari' },
 ];
+
