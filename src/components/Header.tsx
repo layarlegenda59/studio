@@ -2,6 +2,7 @@
 "use client";
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { Search, User, Menu, ShoppingBag } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from '@/components/ui/sheet';
@@ -16,13 +17,20 @@ const navLinks = [
 
 export default function Header() {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const textLogoUrl = "https://ggbivmpazczpgtmnfwfs.supabase.co/storage/v1/object/sign/material/Tulisan%20goodstock-x.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jYjkzYjM4Zi1kOGJhLTRmYTEtYmM0ZC00MWUzOGU4YTZhNzgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYXRlcmlhbC9UdWxpc2FuIGdvb2RzdG9jay14LnBuZyIsImlhdCI6MTc1MDIyMDkwMSwiZXhwIjoxNzgxNzU2OTAxfQ.8YG6sCtxclkFeZuwzQqCFaWzjhQtOYbnJRWt-leGlCE";
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 shadow-sm">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <Link href="/" className="flex items-center gap-2">
           <ShoppingBag className="h-7 w-7 text-primary" />
-          <span className="text-2xl font-bold font-headline text-primary">ModeMatch</span>
+          <Image
+            src={textLogoUrl}
+            alt="ModeMatch"
+            width={120} 
+            height={28} 
+            priority
+          />
         </Link>
 
         <nav className="hidden md:flex items-center space-x-6">
@@ -61,7 +69,12 @@ export default function Header() {
                 <SheetTitle>
                   <Link href="/" className="flex items-center gap-2" onClick={() => setIsSheetOpen(false)}>
                     <ShoppingBag className="h-6 w-6 text-primary" />
-                    <span className="text-xl font-bold font-headline text-primary">ModeMatch</span>
+                    <Image
+                      src={textLogoUrl}
+                      alt="ModeMatch"
+                      width={100}
+                      height={24}
+                    />
                   </Link>
                 </SheetTitle>
               </SheetHeader>
