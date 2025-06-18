@@ -12,16 +12,16 @@ export default function Footer() {
     <footer className="bg-foreground text-primary-foreground py-12 px-4 md:px-8">
       <div className="container mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
-          {/* Column 1: About ModeMatch & Contact */}
+          {/* Column 1: About Goodstock-X & Contact */}
           <div>
-            <h5 className="text-xl font-headline font-semibold mb-4">MODE MATCH</h5>
+            <h5 className="text-xl font-headline font-semibold mb-4">GOODSTOCK-X</h5>
             <p className="text-sm text-gray-400 mb-3">
               Sebagai Pusat Fashion Online di Indonesia, kami menciptakan kemungkinan-kemungkinan gaya tanpa batas dengan cara memperluas jangkauan produk, mulai dari produk internasional hingga produk lokal dambaan. Kami menjadikan Anda sebagai pusatnya.
             </p>
-            <p className="text-sm text-gray-400 mb-3">Bersama ModeMatch, <span className="font-semibold text-white">You Own Now.</span></p>
+            <p className="text-sm text-gray-400 mb-3">Bersama Goodstock-X, <span className="font-semibold text-white">You Own Now.</span></p>
             
             <p className="text-sm text-gray-300 mt-4 mb-1">Layanan Pengaduan Konsumen</p>
-            <p className="text-sm text-gray-400">E-mail: <a href="mailto:customer@modematch.com" className="hover:text-white hover:underline">customer@modematch.com</a></p>
+            <p className="text-sm text-gray-400">E-mail: <a href="mailto:customer@goodstockx.com" className="hover:text-white hover:underline">customer@goodstockx.com</a></p>
             <p className="text-sm text-gray-400">WhatsApp: <a href="https://wa.me/6281234567890" target="_blank" rel="noopener noreferrer" className="hover:text-white hover:underline">+62 812 3456 7890</a></p>
             
             <h6 className="text-md font-headline font-semibold mt-6 mb-3">TEMUKAN KAMI</h6>
@@ -48,7 +48,7 @@ export default function Footer() {
               <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">Cara Berjualan</Link></li>
               <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">Pengembalian Ongkir</Link></li>
               <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">Status Order</Link></li>
-              <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">Brand di ModeMatch</Link></li>
+              <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">Brand di Goodstock-X</Link></li>
             </ul>
           </div>
 
@@ -64,13 +64,13 @@ export default function Footer() {
               <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">Kebijakan Privasi</Link></li>
               <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">Responsible Disclosure</Link></li>
               <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">Influencer Program</Link></li>
-              <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">ModeMatch THREAD</Link></li>
+              <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">Goodstock-X THREAD</Link></li>
             </ul>
           </div>
 
           {/* Column 4: Newsletter & App Download */}
           <div>
-            <h5 className="text-lg font-headline font-semibold mb-4">ANDA BARU DI MODEMATCH</h5>
+            <h5 className="text-lg font-headline font-semibold mb-4">ANDA BARU DI GOODSTOCK-X</h5>
             <p className="text-sm text-gray-400 mb-3">
               Dapatkan berita mode terbaru dan peluncuran produk hanya dengan subscribe newsletter kami.
             </p>
@@ -106,11 +106,11 @@ export default function Footer() {
             <p className="mb-4 md:mb-0">Anda punya pertanyaan? Kami siap membantu. <Link href="#" className="hover:text-white hover:underline">Kontak</Link> | <Link href="#" className="hover:text-white hover:underline">Bantuan</Link></p>
             <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-4">
               <div className="flex space-x-4">
-                <Link href="#" className="hover:text-white hover:underline">Tentang ModeMatch</Link>
+                <Link href="#" className="hover:text-white hover:underline">Tentang Goodstock-X</Link>
                 <Link href="#" className="hover:text-white hover:underline">Kebijakan Privasi</Link>
                 <Link href="#" className="hover:text-white hover:underline">Persyaratan dan Ketentuan</Link>
               </div>
-              <p>&copy; {new Date().getFullYear()} ModeMatch. All rights reserved.</p>
+              <p>&copy; {new Date().getFullYear()} Goodstock-X. All rights reserved.</p>
             </div>
           </div>
         </div>
