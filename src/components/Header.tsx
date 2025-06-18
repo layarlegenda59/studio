@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { Search, User, Menu, ShoppingBag } from 'lucide-react';
+import { Search, User, Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { useState } from 'react';
@@ -18,15 +18,23 @@ const navLinks = [
 export default function Header() {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const textLogoUrl = "https://ggbivmpazczpgtmnfwfs.supabase.co/storage/v1/object/sign/material/Tulisan%20goodstock-x.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jYjkzYjM4Zi1kOGJhLTRmYTEtYmM0ZC00MWUzOGU4YTZhNzgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYXRlcmlhbC9UdWxpc2FuIGdvb2RzdG9jay14LnBuZyIsImlhdCI6MTc1MDIyMDkwMSwiZXhwIjoxNzgxNzU2OTAxfQ.8YG6sCtxclkFeZuwzQqCFaWzjhQtOYbnJRWt-leGlCE";
+  const iconLogoUrl = "https://ggbivmpazczpgtmnfwfs.supabase.co/storage/v1/object/sign/material/Logo.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jYjkzYjM4Zi1kOGJhLTRmYTEtYmM0ZC00MWUzOGU4YTZhNzgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYXRlcmlhbC9Mb2dvLmpwZyIsImlhdCI6MTc1MDIyNjU1MiwiZXhwIjoxNzgxNzYyNTUyfQ.ZYeRMgaRp_lrdX1yfxoLrAMM1jUGf9tTzJZsaNrhYm4";
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 shadow-sm">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <Link href="/" className="flex items-center gap-2">
-          <ShoppingBag className="h-7 w-7 text-primary" />
+          <Image
+            src={iconLogoUrl}
+            alt="Goodstock-X Logo"
+            width={28}
+            height={28}
+            priority
+            className="h-7 w-7"
+          />
           <Image
             src={textLogoUrl}
-            alt="ModeMatch"
+            alt="Goodstock-X"
             width={120} 
             height={28} 
             priority
@@ -68,10 +76,16 @@ export default function Header() {
               <SheetHeader className="mb-6">
                 <SheetTitle>
                   <Link href="/" className="flex items-center gap-2" onClick={() => setIsSheetOpen(false)}>
-                    <ShoppingBag className="h-6 w-6 text-primary" />
+                     <Image
+                        src={iconLogoUrl}
+                        alt="Goodstock-X Logo"
+                        width={24}
+                        height={24}
+                        className="h-6 w-6"
+                      />
                     <Image
                       src={textLogoUrl}
-                      alt="ModeMatch"
+                      alt="Goodstock-X"
                       width={100}
                       height={24}
                     />
