@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -8,6 +9,7 @@ import ProductFilters, { type FilterState } from '@/components/ProductFilters';
 import WhatsAppButton from '@/components/WhatsAppButton';
 import ShippingCalculator from '@/components/ShippingCalculator';
 import WhatsAppOrderForm from '@/components/WhatsAppOrderForm';
+import Footer from '@/components/Footer'; // Import the new Footer
 import { mockProducts, mockPromotions } from '@/lib/mockData';
 import type { Product } from '@/lib/types';
 import { Button } from '@/components/ui/button';
@@ -112,9 +114,7 @@ export default function Home() {
         </div>
       </main>
       <WhatsAppButton phoneNumber="+6281234567890" /> {/* Replace with actual number */}
-      <footer className="py-8 bg-foreground text-primary-foreground text-center text-sm">
-        <p>&copy; {new Date().getFullYear()} ModeMatch. All rights reserved.</p>
-      </footer>
+      <Footer /> {/* Use the new Footer component */}
       <style jsx global>{`
         .custom-scrollbar::-webkit-scrollbar {
           width: 8px;
