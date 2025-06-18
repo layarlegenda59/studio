@@ -4,9 +4,9 @@ import type { Product, Promotion, ShippingCost, ShippingVendor } from './types';
 export const mockPromotions: Promotion[] = [
   {
     id: 'promo1',
-    imageUrl: 'https://images.unsplash.com/photo-1680701572805-c204da57c901?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxmYXNoaW9uJTIwc2FsZSUyMGJhbm5lcnxlbnwwfHx8fDE3NTAyMTc4MDN8MA&ixlib=rb-4.1.0&q=80&w=1080',
-    title: 'Diskon Akhir Pekan!',
-    description: 'Dapatkan diskon hingga 50% untuk item tertentu.',
+    imageUrl: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxmYXNoaW9uJTIwc2FsZXxlbnwwfHx8fDE3NTAyMTc4MDN8MA&ixlib=rb-4.1.0&q=80&w=1080', // Placeholder: Replace with your uploaded image URL
+    title: 'BELI 2 DAPAT 1 GRATIS!',
+    description: 'Plus Diskon 50% untuk item tertentu. Jangan lewatkan!',
     ctaText: 'Belanja Sekarang',
     ctaLink: '#products',
   },
