@@ -58,7 +58,7 @@ export const mockProducts: Product[] = [
     id: 'prod3',
     name: 'Kemeja Flanel Kotak-kotak',
     category: 'Pakaian',
-    imageUrl: 'https://placehold.co/400x400.png',
+    imageUrl: 'https://images.unsplash.com/photo-1613447895642-b36fc3186cb2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxrZW1lamElMjB8ZW58MHx8fHwxNzUwMjE4MDU1fDA&ixlib=rb-4.1.0&q=80&w=1080',
     originalPrice: 350000,
     sizes: ['S', 'M', 'L', 'XL'],
     salesCount: 200,
