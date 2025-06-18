@@ -1,3 +1,4 @@
+
 "use client";
 
 import Image from 'next/image';
@@ -15,6 +16,7 @@ import {
 import { Button } from "@/components/ui/button";
 import type { Promotion } from '@/lib/types';
 import React, { useEffect, useState } from 'react';
+import { cn } from "@/lib/utils";
 
 interface PromoCarouselProps {
   promotions: Promotion[];
