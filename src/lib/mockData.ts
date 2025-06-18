@@ -83,7 +83,7 @@ export const mockProducts: Product[] = [
     id: 'prod5',
     name: 'Ransel Laptop Adventure',
     category: 'Tas',
-    imageUrl: 'https://placehold.co/400x400.png',
+    imageUrl: 'https://images.unsplash.com/photo-1673505705697-763b670e9afd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxsYXB0b3AlMjBiYWNrcGFja3xlbnwwfHx8fDE3NTAyMTgxMzN8MA&ixlib=rb-4.1.0&q=80&w=1080',
     originalPrice: 800000,
     sizes: ['One Size'],
     salesCount: 60,
