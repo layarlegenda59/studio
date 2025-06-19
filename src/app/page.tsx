@@ -5,17 +5,14 @@ import React, { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import PromoCarousel from '@/components/PromoCarousel';
 import ProductGrid from '@/components/ProductGrid';
-// ProductFilters and FilterState removed
 import WhatsAppButton from '@/components/WhatsAppButton';
 import ShippingCalculator from '@/components/ShippingCalculator';
 import WhatsAppOrderForm from '@/components/WhatsAppOrderForm';
 import Footer from '@/components/Footer';
 import { mockProducts, mockPromotions } from '@/lib/mockData';
 import type { Product } from '@/lib/types';
-// Imports for Sheet, SlidersHorizontal, and Button (if only for filter) are removed or managed by other components.
+import { useToast } from "@/hooks/use-toast";
 
-// This interface would be defined in ProductFilters.tsx if it were still used here.
-// For the purpose of keeping the existing filter logic for initial display, we redefine a minimal version.
 interface FilterState {
   categories: string[];
   sizes: string[];
@@ -33,8 +30,8 @@ export default function Home() {
     promoOnly: false,
   });
   const [filteredProducts, setFilteredProducts] = useState<Product[]>(mockProducts);
-
-  // handleFilterChange is removed as ProductFilters is no longer on this page.
+  const [wishlistItems, setWishlistItems] = useState<Product[]>([]);
+  const { toast } = useToast();
 
   useEffect(() => {
     let productsToFilter = [...mockProducts];
@@ -67,19 +64,54 @@ export default function Home() {
     setFilteredProducts(productsToFilter);
   }, [filters]);
 
+  const handleToggleWishlist = (product: Product) => {
+    setWishlistItems(prevItems => {
+      const isWishlisted = prevItems.find(item => item.id === product.id);
+      if (isWishlisted) {
+        toast({
+          title: "Wishlist Diperbarui",
+          description: `${product.name} telah dihapus dari wishlist.`,
+        });
+        return prevItems.filter(item => item.id !== product.id);
+      } else {
+        toast({
+          title: "Wishlist Diperbarui",
+          description: `${product.name} telah ditambahkan ke wishlist.`,
+        });
+        return [...prevItems, product];
+      }
+    });
+  };
+
+  const handleRemoveFromWishlistById = (productId: string) => {
+    const itemToRemove = wishlistItems.find(item => item.id === productId);
+    setWishlistItems(prevItems => prevItems.filter(item => item.id !== productId));
+    if (itemToRemove) {
+      toast({
+        title: "Wishlist Diperbarui",
+        description: `${itemToRemove.name} telah dihapus dari wishlist.`,
+      });
+    }
+  };
+
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
-      <Header />
+      <Header 
+        wishlistItems={wishlistItems}
+        onRemoveFromWishlist={handleRemoveFromWishlistById}
+      />
       <main className="flex-grow">
         <PromoCarousel promotions={mockPromotions} />
         
         <div className="container mx-auto px-4 py-8">
-          {/* Mobile Filter Sheet and Desktop Filter Aside have been removed */}
-          
           <section id="products" className="w-full mb-12">
             <h2 className="text-3xl font-headline mb-6 text-center">Kamu Mungkin Suka Produk Ini 🥰</h2>
-            <ProductGrid products={filteredProducts} />
+            <ProductGrid 
+              products={filteredProducts} 
+              onToggleWishlist={handleToggleWishlist}
+              wishlistItems={wishlistItems}
+            />
           </section>
 
           <section id="shipping-calculator" className="my-16 p-6 bg-secondary/20 rounded-xl shadow-lg">
@@ -95,7 +127,6 @@ export default function Home() {
       </main>
       <WhatsAppButton phoneNumber="+6281234567890" /> {/* Replace with actual number */}
       <Footer />
-      {/* Removed custom-scrollbar style as it's no longer needed */}
       <style jsx global>{`
         .shadow-text {
           text-shadow: 0px 1px 3px rgba(0,0,0,0.5);
@@ -104,4 +135,3 @@ export default function Home() {
     </div>
   );
 }
-

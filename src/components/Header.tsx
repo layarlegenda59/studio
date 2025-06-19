@@ -14,8 +14,7 @@ import {
 import { Input } from '@/components/ui/input';
 import React, { useState, type FormEvent, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import type { Product } from '@/lib/types'; // Import Product type
-import { mockProducts } from '@/lib/mockData'; // Import mockProducts for wishlist example
+import type { Product } from '@/lib/types';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
 
@@ -173,31 +172,22 @@ const navItems: NavItem[] = [
 
 const mobileNavLinks = navItems.map(item => ({ label: item.label, href: item.href }));
 
+interface HeaderProps {
+  wishlistItems: Product[];
+  onRemoveFromWishlist: (productId: string) => void;
+}
 
-export default function Header() {
+export default function Header({ wishlistItems, onRemoveFromWishlist }: HeaderProps) {
   const router = useRouter();
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [popoverOpenStates, setPopoverOpenStates] = useState<Record<string, boolean>>({});
   const [mainSearchQuery, setMainSearchQuery] = useState('');
   let hoverTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
 
-  const [wishlistItems, setWishlistItems] = useState<Product[]>([]);
   const [isWishlistPopoverOpen, setIsWishlistPopoverOpen] = useState(false);
 
   const textLogoUrl = "https://ggbivmpazczpgtmnfwfs.supabase.co/storage/v1/object/sign/material/Tulisan%20goodstock-x.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jYjkzYjM4Zi1kOGJhLTRmYTEtYmM0ZC00MWUzOGU4YTZhNzgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYXRlcmlhbC9UdWxpc2FuIGdvb2RzdG9jay14LnBuZyIsImlhdCI6MTc1MDIyMDkwMSwiZXhwIjoxNzgxNzU2OTAxfQ.8YG6sCtxclkFeZuwzQqCFaWzjhQtOYbnJRWt-leGlCE";
   const iconLogoUrl = "https://ggbivmpazczpgtmnfwfs.supabase.co/storage/v1/object/sign/material/Logo%20goodstock-x%20(transparan)%20(1).png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jYjkzYjM4Zi1kOGJhLTRmYTEtYmM0ZC00MWUzOGU4YTZhNzgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYXRlcmlhbC9Mb2dvIGdvb2RzdG9jay14ICh0cmFuc3BhcmFuKSAoMSkucG5nIiwiaWF0IjoxNzUwMzIwODEwLCJleHAiOjE3ODE4NTY4MTB9.14Cw5nlZ5gYYOmWPUIWZU_bJwyvi1ipFzvuZF72y24A";
-
-  useEffect(() => {
-    // Mock: Populate wishlist with first 2 products from mockData
-    // In a real app, this would come from user data / global state
-    setWishlistItems(mockProducts.slice(0, 2));
-  }, []);
-
-  const handleRemoveFromWishlist = (productId: string) => {
-    // Placeholder function - in a real app, this would update state/backend
-    setWishlistItems(prev => prev.filter(item => item.id !== productId));
-    console.log(`Removed product ${productId} from wishlist`);
-  };
 
 
   const handleMouseEnter = (label: string) => {
@@ -228,7 +218,6 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 shadow-sm">
-      {/* Main navigation bar */}
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <Link href="/" className="flex items-center gap-2">
           <Image
@@ -328,7 +317,6 @@ export default function Header() {
         </nav>
 
         <div className="hidden md:flex items-center space-x-2">
-          {/* Main Search Input */}
           <form onSubmit={handleMainSearchSubmit} className="relative flex-grow max-w-xs">
             <Input
               type="search"
@@ -340,7 +328,6 @@ export default function Header() {
             <Search className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           </form>
 
-          {/* User Actions - Ordered as: Tas, Wishlist, Masuk/Daftar */}
           <Button asChild variant="ghost" size="icon" aria-label="Shopping Cart" className="h-9 w-9 text-foreground/80 outline-none focus-visible:ring-0 focus-visible:ring-offset-0">
             <Link href="/#whatsapp-order">
               <ShoppingCart className="h-4 w-4" />
@@ -380,7 +367,7 @@ export default function Header() {
                             variant="ghost"
                             size="icon"
                             className="h-7 w-7 text-muted-foreground hover:text-destructive shrink-0"
-                            onClick={() => handleRemoveFromWishlist(item.id)}
+                            onClick={() => onRemoveFromWishlist(item.id)}
                             aria-label={`Hapus ${item.name} dari wishlist`}
                           >
                             <X className="h-4 w-4" />
@@ -446,7 +433,7 @@ export default function Header() {
                 <Button variant="outline" className="w-full">
                   <Search className="mr-2 h-4 w-4" /> Search
                 </Button>
-                <Button variant="ghost" className="w-full justify-start pl-2 space-x-2">
+                <Button variant="ghost" className="w-full justify-start pl-2 space-x-2" onClick={() => { setIsWishlistPopoverOpen(true); setIsSheetOpen(false); /* Logic to open popover might be needed here */}}>
                   <Heart className="h-4 w-4" />
                   <span>Wishlist</span>
                 </Button>

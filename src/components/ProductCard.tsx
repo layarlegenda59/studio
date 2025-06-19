@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import type { Product } from '@/lib/types';
 import { Heart } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 const DiscountTagIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-destructive h-3.5 w-3.5">
@@ -16,9 +17,11 @@ const DiscountTagIcon = () => (
 
 interface ProductCardProps {
   product: Product;
+  onToggleWishlist: (product: Product) => void;
+  wishlisted: boolean;
 }
 
-export default function ProductCard({ product }: ProductCardProps) {
+export default function ProductCard({ product, onToggleWishlist, wishlisted }: ProductCardProps) {
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(price);
   };
@@ -27,10 +30,8 @@ export default function ProductCard({ product }: ProductCardProps) {
     ? Math.round(((product.originalPrice - product.promoPrice) / product.originalPrice) * 100)
     : 0;
 
-  // Placeholder click handler for size buttons
   const handleSizeClick = (size: string) => {
     console.log(`Ukuran dipilih: ${size} untuk produk ${product.name}`);
-    // TODO: Implement actual logic for size selection if needed
   };
 
   return (
@@ -58,8 +59,14 @@ export default function ProductCard({ product }: ProductCardProps) {
               {product.name}
             </h3>
           </div>
-          <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0 -mr-1 -mt-1 text-muted-foreground hover:text-destructive">
-            <Heart className="h-4 w-4" />
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="h-7 w-7 shrink-0 -mr-1 -mt-1"
+            onClick={() => onToggleWishlist(product)}
+            aria-label={wishlisted ? `Hapus ${product.name} dari wishlist` : `Tambah ${product.name} ke wishlist`}
+          >
+            <Heart className={cn("h-4 w-4", wishlisted ? "fill-destructive text-destructive" : "text-muted-foreground hover:text-destructive")} />
           </Button>
         </div>
 
@@ -71,7 +78,7 @@ export default function ProductCard({ product }: ProductCardProps) {
                 <Button
                   key={size}
                   variant="outline"
-                  className="h-7 px-2.5 text-xs rounded-sm" // Custom styling for smaller, more square-like buttons
+                  className="h-7 px-2.5 text-xs rounded-sm"
                   onClick={() => handleSizeClick(size)}
                   aria-label={`Pilih ukuran ${size}`}
                 >
@@ -82,8 +89,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           </div>
         )}
 
-        {/* Price Section */}
-        <div className="mt-auto pt-2"> {/* Added pt-2 for spacing if sizes are present */}
+        <div className="mt-auto pt-2">
           {product.promoPrice ? (
             <>
               <div className="inline-flex items-center gap-1 rounded-sm border border-destructive px-1.5 py-0.5 bg-destructive/5">
@@ -102,7 +108,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           )}
         </div>
       </CardContent>
-      <CardFooter className="p-3 pt-2"> {/* Adjusted pt-2 if sizes take more space */}
+      <CardFooter className="p-3 pt-2">
         <Button variant="outline" className="w-full h-9 text-sm">
           Lihat Detail
         </Button>
