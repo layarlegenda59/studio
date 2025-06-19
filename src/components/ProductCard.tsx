@@ -41,17 +41,15 @@ export default function ProductCard({ product, onToggleWishlist, wishlisted, onT
   return (
     <Card className="group w-full overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-all duration-300 flex flex-col h-full">
       <CardHeader className="p-0 relative">
-        <Link href={`/products/${product.id}`} passHref legacyBehavior>
-          <a className="aspect-square w-full overflow-hidden block">
-            <Image
-              src={product.imageUrl}
-              alt={product.name}
-              width={400}
-              height={400}
-              className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
-              data-ai-hint={`${product.category.toLowerCase()} fashion`}
-            />
-          </a>
+        <Link href={`/products/${product.id}`} className="aspect-square w-full overflow-hidden block">
+          <Image
+            src={product.imageUrl}
+            alt={product.name}
+            width={400}
+            height={400}
+            className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
+            data-ai-hint={`${product.category.toLowerCase()} fashion`}
+          />
         </Link>
       </CardHeader>
       <CardContent className="p-3 flex-grow flex flex-col">
