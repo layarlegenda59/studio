@@ -47,7 +47,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       <CardContent className="p-3 flex-grow flex flex-col">
         <div className="flex justify-between items-start mb-2">
           <div className="flex-1 min-w-0 pr-2">
-            <p className="text-xs font-semibold text-foreground truncate" title={product.brand}>{product.brand}</p>
+            <p className="text-xs text-foreground truncate" title={product.brand}>{product.brand}</p>
             <h3 
               className="text-sm font-semibold text-foreground mt-0.5 truncate group-hover:text-primary transition-colors" 
               title={product.name}
