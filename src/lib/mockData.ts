@@ -4,16 +4,15 @@ import type { Product, Promotion, ShippingCost, ShippingVendor } from './types';
 export const mockPromotions: Promotion[] = [
   {
     id: 'promo1',
-    imageUrl: '', // Cleared image URL
+    imageUrl: 'https://ggbivmpazczpgtmnfwfs.supabase.co/storage/v1/object/sign/material/erik-mclean-nfoRa6NHTbU-unsplash.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jYjkzYjM4Zi1kOGJhLTRmYTEtYmM0ZC00MWUzOGU4YTZhNzgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYXRlcmlhbC9lcmlrLW1jbGVhbi1uZm9SYTZOSFRiVS11bnNwbGFzaC5qcGciLCJpYXQiOjE3NTAzMTA4MTYsImV4cCI6MTc4MTg0NjgxNn0.W6d7AjWEOL7BD5PBAEA47uReC5GFBHGFbZMNx3dIG94',
     title: 'BUY 2 GET 1 FREE!',
     description: 'Plus Diskon 50% untuk item tertentu. Jangan lewatkan!',
     ctaText: 'Belanja Sekarang',
     ctaLink: '#products',
-    // objectPosition removed
   },
   {
     id: 'promo2',
-    imageUrl: '', // Cleared image URL
+    imageUrl: '', 
     title: 'Sale Koleksi Terbaru!',
     description: 'Jelajahi gaya terbaru musim ini dengan harga spesial.',
     ctaText: 'Lihat Koleksi',
