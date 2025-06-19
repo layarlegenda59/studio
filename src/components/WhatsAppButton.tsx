@@ -27,8 +27,8 @@ export default function WhatsAppButton({ phoneNumber, message = "Halo Admin Mode
       <Image
         src={imageUrl}
         alt="WhatsApp Icon"
-        width={40}
-        height={40}
+        width={72}
+        height={72}
         data-ai-hint="logo social"
       />
     </Button>
