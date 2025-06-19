@@ -1,5 +1,5 @@
 
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { DollarSign, ShoppingCart, Package, Users, LineChart, MessageCircle, AlertTriangle, CheckCircle2, Clock } from 'lucide-react';
