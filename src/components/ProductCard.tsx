@@ -2,6 +2,7 @@
 "use client";
 
 import Image from 'next/image';
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import type { Product } from '@/lib/types';
@@ -34,21 +35,24 @@ export default function ProductCard({ product, onToggleWishlist, wishlisted, onT
 
   const handleSizeClick = (size: string) => {
     console.log(`Ukuran dipilih: ${size} untuk produk ${product.name}`);
+    // Future: Potentially update a local state or context for selected size on card
   };
 
   return (
     <Card className="group w-full overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-all duration-300 flex flex-col h-full">
       <CardHeader className="p-0 relative">
-        <div className="aspect-square w-full overflow-hidden">
-          <Image
-            src={product.imageUrl}
-            alt={product.name}
-            width={400}
-            height={400}
-            className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
-            data-ai-hint={`${product.category.toLowerCase()} fashion`}
-          />
-        </div>
+        <Link href={`/products/${product.id}`} passHref legacyBehavior>
+          <a className="aspect-square w-full overflow-hidden block">
+            <Image
+              src={product.imageUrl}
+              alt={product.name}
+              width={400}
+              height={400}
+              className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
+              data-ai-hint={`${product.category.toLowerCase()} fashion`}
+            />
+          </a>
+        </Link>
       </CardHeader>
       <CardContent className="p-3 flex-grow flex flex-col">
         <div className="flex justify-between items-start mb-1">
@@ -122,8 +126,8 @@ export default function ProductCard({ product, onToggleWishlist, wishlisted, onT
         </div>
       </CardContent>
       <CardFooter className="p-3 pt-2">
-        <Button variant="outline" className="w-full h-9 text-sm">
-          Lihat Detail
+        <Button asChild variant="outline" className="w-full h-9 text-sm">
+          <Link href={`/products/${product.id}`}>Lihat Detail</Link>
         </Button>
       </CardFooter>
     </Card>
