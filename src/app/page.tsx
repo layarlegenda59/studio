@@ -17,11 +17,11 @@ import { useToast } from "@/hooks/use-toast";
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { FilterIcon } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 // Update FilterState to include brands and remove others
 interface FilterState extends Omit<ProductFilterStateOriginal, 'types' | 'gender' | 'promoOnly'> {
   brands: string[];
-  // Optionally, keep types if needed for other functionalities, but remove from ProductFilters.tsx for now
   types?: string[]; 
   gender?: string;
   promoOnly?: boolean;
@@ -31,10 +31,10 @@ const initialFilters: FilterState = {
   categories: [],
   sizes: [],
   brands: [],
-  types: [], // Keep for potential future use or if menu navigates by type
-  gender: "Unisex", // Keep for potential future use
+  types: [], 
+  gender: "Unisex", 
   priceRange: [0, 2000000],
-  promoOnly: false, // Keep for potential future use
+  promoOnly: false,
 };
 
 export default function Home() {
@@ -56,7 +56,7 @@ export default function Home() {
     const genderParam = params.get('gender');
     if (genderParam) newFiltersState.gender = genderParam;
 
-    const brandParam = params.get('brand'); // Added for brand
+    const brandParam = params.get('brand');
     if (brandParam) newFiltersState.brands = brandParam.split(',');
     
     const minPriceParam = params.get('minPrice');
@@ -72,8 +72,22 @@ export default function Home() {
   const [wishlistItems, setWishlistItems] = useState<Product[]>([]);
   const [itemsAddedToCartFromWishlist, setItemsAddedToCartFromWishlist] = useState<Set<string>>(new Set());
   const [isFilterSheetOpen, setIsFilterSheetOpen] = useState(false);
+  const [showFilterSidebar, setShowFilterSidebar] = useState(false);
   
   const productFiltersRef = useRef<{ setFiltersFromParent: (newFilters: FilterState) => void }>(null);
+
+  useEffect(() => {
+    const params = new URLSearchParams(searchParams.toString());
+    const filterKeys = ['category', 'type', 'gender', 'brand', 'minPrice', 'maxPrice', 'q', 'sizes', 'promoOnly'];
+    let hasActiveFilters = false;
+    for (const key of filterKeys) {
+      if (params.has(key) && params.get(key) !== '') {
+        hasActiveFilters = true;
+        break;
+      }
+    }
+    setShowFilterSidebar(hasActiveFilters);
+  }, [searchParams]);
 
    useEffect(() => {
     const params = new URLSearchParams(searchParams.toString());
@@ -82,7 +96,7 @@ export default function Home() {
       sizes: params.get('sizes')?.split(',') || initialFiltersRef.current.sizes,
       types: params.get('type')?.split(',') || initialFiltersRef.current.types,
       gender: params.get('gender') || initialFiltersRef.current.gender,
-      brands: params.get('brand')?.split(',') || initialFiltersRef.current.brands, // Added for brand
+      brands: params.get('brand')?.split(',') || initialFiltersRef.current.brands,
       priceRange: [
         params.has('minPrice') ? parseInt(params.get('minPrice')!, 10) : initialFiltersRef.current.priceRange[0],
         params.has('maxPrice') ? parseInt(params.get('maxPrice')!, 10) : initialFiltersRef.current.priceRange[1],
@@ -104,13 +118,13 @@ export default function Home() {
 
     if (filters.categories.length > 0) {
       productsToFilter = productsToFilter.filter(product => 
-        filters.categories.includes(product.category)
+        filters.categories.some(cat => product.category === cat)
       );
     }
     
-    if (filters.types && filters.types.length > 0) { // Check if filters.types exists
+    if (filters.types && filters.types.length > 0) {
       productsToFilter = productsToFilter.filter(product =>
-        product.type && filters.types!.includes(product.type)
+        product.type && filters.types.some(type => product.type === type)
       );
     }
 
@@ -120,13 +134,13 @@ export default function Home() {
       );
     }
 
-    if (filters.brands.length > 0) { // Added brand filter logic
+    if (filters.brands.length > 0) {
       productsToFilter = productsToFilter.filter(product =>
-        filters.brands.includes(product.brand)
+        filters.brands.some(brand => product.brand === brand)
       );
     }
     
-    if (filters.gender && filters.gender !== "Unisex") { // Check if filters.gender exists
+    if (filters.gender && filters.gender !== "Unisex") {
          productsToFilter = productsToFilter.filter(product => product.gender === filters.gender || product.gender === "Unisex");
     }
 
@@ -135,7 +149,7 @@ export default function Home() {
       return price >= filters.priceRange[0] && price <= filters.priceRange[1];
     });
 
-    if (filters.promoOnly) { // Check if filters.promoOnly exists
+    if (filters.promoOnly) {
       productsToFilter = productsToFilter.filter(product => product.isPromo);
     }
 
@@ -143,18 +157,34 @@ export default function Home() {
   }, [filters]);
 
   const handleFilterChange = useCallback((newFiltersFromComponent: ProductFilterStateOriginal) => {
-    // newFiltersFromComponent will now be of type ProductFilterState (from ProductFilters.tsx)
-    // which includes `brands` and excludes `types`, `gender`, `promoOnly`.
-    // We merge it with the existing filters, preserving other parts of FilterState in page.tsx
     setFilters(prevFilters => ({
-        ...prevFilters, // Keep existing parts like types, gender, promoOnly if they are still in page.tsx's FilterState
+        ...prevFilters,
         categories: newFiltersFromComponent.categories,
         sizes: newFiltersFromComponent.sizes,
-        brands: (newFiltersFromComponent as FilterState).brands, // Cast to get brands
+        brands: (newFiltersFromComponent as FilterState).brands, 
         priceRange: newFiltersFromComponent.priceRange,
     }));
     setIsFilterSheetOpen(false);
-  }, []);
+
+    // Update URL query parameters
+    const params = new URLSearchParams(searchParams.toString());
+    if (newFiltersFromComponent.categories.length > 0) params.set('category', newFiltersFromComponent.categories.join(',')); else params.delete('category');
+    if (newFiltersFromComponent.sizes.length > 0) params.set('sizes', newFiltersFromComponent.sizes.join(',')); else params.delete('sizes');
+    if ((newFiltersFromComponent as FilterState).brands.length > 0) params.set('brand', (newFiltersFromComponent as FilterState).brands.join(',')); else params.delete('brand');
+    
+    const currentPriceRange = (newFiltersFromComponent as FilterState).priceRange || initialFiltersRef.current.priceRange;
+    if (currentPriceRange[0] !== initialFiltersRef.current.priceRange[0]) params.set('minPrice', currentPriceRange[0].toString()); else params.delete('minPrice');
+    if (currentPriceRange[1] !== initialFiltersRef.current.priceRange[1]) params.set('maxPrice', currentPriceRange[1].toString()); else params.delete('maxPrice');
+    
+    // Preserve other existing params like 'type' and 'gender' from URL if they exist
+    const typeParam = searchParams.get('type');
+    if (typeParam) params.set('type', typeParam);
+    const genderParam = searchParams.get('gender');
+    if (genderParam) params.set('gender', genderParam);
+
+    window.history.pushState(null, '', `?${params.toString()}`);
+
+  }, [searchParams]);
 
   const handleToggleWishlist = (product: Product) => {
     setWishlistItems(prevItems => {
@@ -235,7 +265,10 @@ export default function Home() {
         
         <div className="container mx-auto px-4 py-8">
           <div className="flex flex-col lg:flex-row gap-8">
-            <aside className="hidden lg:block lg:w-1/4 xl:w-1/5 space-y-6 sticky top-20 self-start h-[calc(100vh-10rem)] overflow-y-auto pr-4">
+            <aside className={cn(
+              "lg:w-1/4 xl:w-1/5 space-y-6 sticky top-20 self-start h-[calc(100vh-10rem)] overflow-y-auto pr-4",
+              showFilterSidebar ? "lg:block" : "hidden"
+            )}>
               <h3 className="text-xl font-headline font-semibold">Filter Produk</h3>
               <ProductFilters 
                 ref={productFiltersRef}
@@ -244,7 +277,10 @@ export default function Home() {
               />
             </aside>
 
-            <div className="lg:w-3/4 xl:w-4/5 space-y-12">
+            <div className={cn(
+                "space-y-12",
+                showFilterSidebar ? "lg:w-3/4 xl:w-4/5" : "w-full"
+              )}>
               <section id="products" className="w-full">
                  <div className="flex justify-between items-center mb-6">
                     <h2 className="text-2xl md:text-3xl font-headline text-left">Kamu Mungkin Suka Produk Ini 🥰</h2>
