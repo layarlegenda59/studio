@@ -13,16 +13,24 @@ import React, { useState, useEffect, useImperativeHandle, forwardRef, useMemo } 
 import { mockProducts } from "@/lib/mockData";
 
 const allCategories = ["Sepatu", "Tas", "Pakaian"];
-const allSizes = ["S", "M", "L", "XL", "38", "39", "40", "41", "42", "One Size"].sort((a, b) => {
-  const numA = parseInt(a);
-  const numB = parseInt(b);
-  if (!isNaN(numA) && !isNaN(numB)) return numA - numB;
-  if (!isNaN(numA)) return -1; // numbers first
-  if (!isNaN(numB)) return 1;
+const allSizes = [
+  "S", "M", "L", "XL", 
+  "35", "36", "37", "37.5", "38", "38.5", "39", "40", "41", "42", "43", "44", "45", "46.5", "47", 
+  "One Size"
+].sort((a, b) => {
+  const numA = parseFloat(a);
+  const numB = parseFloat(b);
+  const isANumber = !isNaN(numA);
+  const isBNumber = !isNaN(numB);
+
+  if (isANumber && isBNumber) return numA - numB;
+  if (isANumber) return -1; // numbers first
+  if (isBNumber) return 1;
   if (a === "One Size") return 1; // One Size last among strings
   if (b === "One Size") return -1;
   return a.localeCompare(b); // then alphabetical for S, M, L, XL
 });
+
 
 const providedBrandsList = [
   "adidas", "nike", "Air Jordan", "reebok", "New Balance", "puma", "asics", "Diadora", "Umbro", "Fila",
@@ -33,7 +41,7 @@ const providedBrandsList = [
   "H&M", "The North Face", "calvin klein", "Ecco", "Burberry", "Carhartt", "Christian Louboutin", "Chanel"
 ];
 
-const allBrands = Array.from(new Set(providedBrandsList)).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
+const allBrands = Array.from(new Set(providedBrandsList.map(brand => brand.trim()))).filter(Boolean).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
 
 
 const priceOptions = [
