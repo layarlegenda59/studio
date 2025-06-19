@@ -128,7 +128,7 @@ export const mockProducts: Product[] = [
     brand: 'TrendyStep',
     category: 'Sepatu',
     type: 'Boots',
-    imageUrl: 'https://placehold.co/400x400.png',
+    imageUrl: 'https://images.unsplash.com/photo-1712171079606-8129ddb8f58d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxN3x8d29tZW4lMjBib290c3xlbnwwfHx8fDE3NTAzNTM2MTB8MA&ixlib=rb-4.1.0&q=80&w=1080',
     originalPrice: 850000,
     promoPrice: 700000,
     sizes: ['37', '38', '39', '40'],
@@ -191,3 +191,4 @@ export const mockShippingCosts: ShippingCost[] = [
     { vendor: 'SiCepat', service: 'BEST', cost: 25000, estimatedDelivery: '1-2 hari' },
     { vendor: 'Lion Parcel', service: 'REGPACK', cost: 17000, estimatedDelivery: '3-5 hari' },
 ];
+
