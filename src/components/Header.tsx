@@ -152,7 +152,7 @@ const navItems: NavItem[] = [
         }
     ],
     image: {
-        src: 'https://placehold.co/200x350.png',
+        src: 'https://ggbivmpazczpgtmnfwfs.supabase.co/storage/v1/object/sign/material/irene-kredenets-dwKiHoqqxk8-unsplash.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jYjkzYjM4Zi1kOGJhLTRmYTEtYmM0ZC00MWUzOGU4YTZhNzgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYXRlcmlhbC9pcmVuZS1rcmVkZW5ldHMtZHdLaUhvcXF4azgtdW5zcGxhc2guanBnIiwiaWF0IjoxNzUwMzEzMzU3LCJleHAiOjE3ODE4NDkzNTd9.wRAQgI3il0tNJy91AZ0KFI2zBnecHNXo4-N8TTS4n4E',
         alt: 'Fashion Pakaian Terkini',
         href: '/promo/pakaian',
         dataAiHint: 'clothes fashion'
