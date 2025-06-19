@@ -56,12 +56,16 @@ export default function ProductCard({ product, onToggleWishlist, wishlisted, onT
         <div className="flex justify-between items-start mb-1">
           <div className="flex-1 min-w-0 pr-2">
             <p className="text-sm text-foreground truncate" title={product.brand}>{product.brand}</p>
-            <h3 
-              className="text-base font-semibold text-foreground mt-0.5 truncate group-hover:text-primary transition-colors" 
-              title={product.name}
-            >
-              {product.name}
-            </h3>
+            <Link href={`/products/${product.id}`} passHref legacyBehavior>
+              <a className="block mt-0.5">
+                <h3 
+                  className="text-base font-semibold text-foreground truncate group-hover:text-primary transition-colors" 
+                  title={product.name}
+                >
+                  {product.name}
+                </h3>
+              </a>
+            </Link>
           </div>
           <div className="flex items-center space-x-0.5">
             <Button 
