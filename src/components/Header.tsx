@@ -317,7 +317,7 @@ export default function Header() {
               placeholder="Cari produk..."
               value={mainSearchQuery}
               onChange={(e) => setMainSearchQuery(e.target.value)}
-              className="h-9 w-full pl-3 pr-10 text-sm border-border focus:border-primary rounded-md"
+              className="h-9 w-full pl-3 pr-10 text-sm border-border focus:border-primary rounded-md focus-visible:ring-0 focus-visible:ring-offset-0"
             />
             <Search className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           </form>
@@ -402,6 +402,8 @@ export default function Header() {
     
     
     
+    
+
     
 
     
