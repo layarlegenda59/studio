@@ -56,30 +56,28 @@ export default function ProductCard({ product, onToggleWishlist, wishlisted, onT
         <div className="flex justify-between items-start mb-1">
           <div className="flex-1 min-w-0 pr-2">
             <p className="text-sm text-foreground truncate" title={product.brand}>{product.brand}</p>
-            <Link href={`/products/${product.id}`} passHref legacyBehavior>
-              <a className="block mt-0.5">
-                <h3 
-                  className="text-base font-semibold text-foreground truncate group-hover:text-primary transition-colors" 
+            <Link href={`/products/${product.id}`} className="block mt-0.5 group">
+                <h3
+                  className="text-base font-semibold text-foreground truncate group-hover:text-primary transition-colors"
                   title={product.name}
                 >
                   {product.name}
                 </h3>
-              </a>
             </Link>
           </div>
           <div className="flex items-center space-x-0.5">
-            <Button 
-              variant="ghost" 
-              size="icon" 
+            <Button
+              variant="ghost"
+              size="icon"
               className="h-7 w-7 shrink-0"
               onClick={() => onToggleCart(product)}
               aria-label={isAddedToCart ? `Hapus ${product.name} dari keranjang` : `Tambah ${product.name} ke keranjang`}
             >
               <ShoppingCart className={cn("h-4 w-4", isAddedToCart ? "fill-current text-primary" : "text-muted-foreground hover:text-primary")} />
             </Button>
-            <Button 
-              variant="ghost" 
-              size="icon" 
+            <Button
+              variant="ghost"
+              size="icon"
               className="h-7 w-7 shrink-0"
               onClick={() => onToggleWishlist(product)}
               aria-label={wishlisted ? `Hapus ${product.name} dari wishlist` : `Tambah ${product.name} ke wishlist`}
