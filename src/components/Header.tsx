@@ -322,14 +322,13 @@ export default function Header() {
             <Search className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           </form>
 
-          {/* User Actions */}
-          <Button variant="ghost" size="icon" aria-label="Wishlist" className="h-9 w-9 text-foreground/80 hover:text-primary">
-            <Heart className="h-4 w-4" />
-          </Button>
+          {/* User Actions - Ordered as: Tas, Wishlist, Masuk/Daftar */}
           <Button variant="ghost" size="icon" aria-label="Shopping Bag" className="h-9 w-9 text-foreground/80 hover:text-primary">
             <ShoppingBag className="h-4 w-4" />
           </Button>
-          
+          <Button variant="ghost" size="icon" aria-label="Wishlist" className="h-9 w-9 text-foreground/80 hover:text-primary">
+            <Heart className="h-4 w-4" />
+          </Button>
           <Button variant="ghost" size="sm" className="h-9 px-3 text-foreground/80 hover:text-primary">
             <User className="h-4 w-4" />
             Masuk / Daftar
@@ -403,6 +402,8 @@ export default function Header() {
     
     
     
+    
+
     
 
     
