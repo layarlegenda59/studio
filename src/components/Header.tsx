@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { Search, User, Menu, ShoppingCart, Heart, X } from 'lucide-react';
+import { Search, User, Menu, Heart, X, ShoppingCart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import {
@@ -16,6 +16,7 @@ import React, { useState, type FormEvent, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import type { Product } from '@/lib/types';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { cn } from '@/lib/utils';
 
 
 interface SubCategoryItem {
@@ -185,6 +186,8 @@ export default function Header({ wishlistItems, onRemoveFromWishlist }: HeaderPr
   let hoverTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
 
   const [isWishlistPopoverOpen, setIsWishlistPopoverOpen] = useState(false);
+  const [itemsAddedToCartFromWishlist, setItemsAddedToCartFromWishlist] = useState<Set<string>>(new Set());
+
 
   const textLogoUrl = "https://ggbivmpazczpgtmnfwfs.supabase.co/storage/v1/object/sign/material/Tulisan%20goodstock-x.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jYjkzYjM4Zi1kOGJhLTRmYTEtYmM0ZC00MWUzOGU4YTZhNzgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYXRlcmlhbC9UdWxpc2FuIGdvb2RzdG9jay14LnBuZyIsImlhdCI6MTc1MDIyMDkwMSwiZXhwIjoxNzgxNzU2OTAxfQ.8YG6sCtxclkFeZuwzQqCFaWzjhQtOYbnJRWt-leGlCE";
   const iconLogoUrl = "https://ggbivmpazczpgtmnfwfs.supabase.co/storage/v1/object/sign/material/Logo%20goodstock-x%20(transparan)%20(1).png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jYjkzYjM4Zi1kOGJhLTRmYTEtYmM0ZC00MWUzOGU4YTZhNzgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYXRlcmlhbC9Mb2dvIGdvb2RzdG9jay14ICh0cmFuc3BhcmFuKSAoMSkucG5nIiwiaWF0IjoxNzUwMzIwODEwLCJleHAiOjE3ODE4NTY4MTB9.14Cw5nlZ5gYYOmWPUIWZU_bJwyvi1ipFzvuZF72y24A";
@@ -213,6 +216,20 @@ export default function Header({ wishlistItems, onRemoveFromWishlist }: HeaderPr
     if (mainSearchQuery.trim()) {
       router.push(`/search?q=${encodeURIComponent(mainSearchQuery.trim())}`);
     }
+  };
+
+  const handleToggleCartFromWishlist = (productId: string) => {
+    setItemsAddedToCartFromWishlist(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(productId)) {
+        newSet.delete(productId);
+        // TODO: Add toast "Item removed from cart"
+      } else {
+        newSet.add(productId);
+        // TODO: Add toast "Item added to cart"
+      }
+      return newSet;
+    });
   };
 
 
@@ -346,34 +363,49 @@ export default function Header({ wishlistItems, onRemoveFromWishlist }: HeaderPr
                 <ScrollArea className="h-[300px] w-full">
                   {wishlistItems.length > 0 ? (
                     <div className="space-y-3 pr-3">
-                      {wishlistItems.map((item) => (
-                        <div key={item.id} className="flex items-center space-x-3">
-                          <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded">
-                            <Image
-                              src={item.imageUrl}
-                              alt={item.name}
-                              fill
-                              className="object-cover"
-                              sizes="48px"
-                            />
+                      {wishlistItems.map((item) => {
+                        const isItemInCart = itemsAddedToCartFromWishlist.has(item.id);
+                        return (
+                          <div key={item.id} className="flex items-center space-x-3">
+                            <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded">
+                              <Image
+                                src={item.imageUrl}
+                                alt={item.name}
+                                fill
+                                className="object-cover"
+                                sizes="48px"
+                              />
+                            </div>
+                            <div className="flex-grow min-w-0">
+                              <p className="text-sm font-medium text-foreground truncate">{item.name}</p>
+                              <p className="text-xs text-muted-foreground">
+                                {item.promoPrice ? `Rp${item.promoPrice.toLocaleString()}` : `Rp${item.originalPrice.toLocaleString()}`}
+                              </p>
+                            </div>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className={cn(
+                                "h-7 w-7 shrink-0",
+                                isItemInCart ? "text-primary" : "text-muted-foreground hover:text-primary"
+                              )}
+                              onClick={() => handleToggleCartFromWishlist(item.id)}
+                              aria-label={isItemInCart ? `Hapus ${item.name} dari keranjang` : `Tambah ${item.name} ke keranjang`}
+                            >
+                              <ShoppingCart className={cn("h-4 w-4", isItemInCart && "fill-primary")} />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-7 w-7 text-muted-foreground hover:text-destructive shrink-0"
+                              onClick={() => onRemoveFromWishlist(item.id)}
+                              aria-label={`Hapus ${item.name} dari wishlist`}
+                            >
+                              <X className="h-4 w-4" />
+                            </Button>
                           </div>
-                          <div className="flex-grow min-w-0">
-                            <p className="text-sm font-medium text-foreground truncate">{item.name}</p>
-                            <p className="text-xs text-muted-foreground">
-                              {item.promoPrice ? `Rp${item.promoPrice.toLocaleString()}` : `Rp${item.originalPrice.toLocaleString()}`}
-                            </p>
-                          </div>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-7 w-7 text-muted-foreground hover:text-destructive shrink-0"
-                            onClick={() => onRemoveFromWishlist(item.id)}
-                            aria-label={`Hapus ${item.name} dari wishlist`}
-                          >
-                            <X className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   ) : (
                     <p className="text-sm text-muted-foreground text-center py-4">Wishlist Anda kosong.</p>
@@ -455,4 +487,3 @@ export default function Header({ wishlistItems, onRemoveFromWishlist }: HeaderPr
     </header>
   );
 }
-
