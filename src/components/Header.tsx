@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { Search, User, Menu, ShoppingBag } from 'lucide-react';
+import { Search, User, Menu, ShoppingBag, Heart, ChevronDown } from 'lucide-react'; // Added Heart and ChevronDown if they were missing, Search is used for multiple places
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import {
@@ -11,7 +11,10 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import React, { useState } from 'react';
+import { Input } from '@/components/ui/input'; // Added Input
+import React, { useState, type FormEvent } from 'react';
+import { useRouter } from 'next/navigation';
+
 
 interface SubCategoryItem {
   label: string;
@@ -169,8 +172,11 @@ const mobileNavLinks = navItems.map(item => ({ label: item.label, href: item.hre
 
 
 export default function Header() {
+  const router = useRouter();
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [popoverOpenStates, setPopoverOpenStates] = useState<Record<string, boolean>>({});
+  const [mainSearchQuery, setMainSearchQuery] = useState('');
+  const [isMainSearchPopoverOpen, setIsMainSearchPopoverOpen] = useState(false);
   let hoverTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
 
   const textLogoUrl = "https://ggbivmpazczpgtmnfwfs.supabase.co/storage/v1/object/sign/material/Tulisan%20goodstock-x.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jYjkzYjM4Zi1kOGJhLTRmYTEtYmM0ZC00MWUzOGU4YTZhNzgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYXRlcmlhbC9UdWxpc2FuIGdvb2RzdG9jay14LnBuZyIsImlhdCI6MTc1MDIyMDkwMSwiZXhwIjoxNzgxNzU2OTAxfQ.8YG6sCtxclkFeZuwzQqCFaWzjhQtOYbnJRWt-leGlCE";
@@ -195,9 +201,46 @@ export default function Header() {
     setPopoverOpenStates(prev => ({ ...prev, [label]: false }));
   };
 
+  const handleMainSearchSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    if (mainSearchQuery.trim()) {
+      router.push(`/search?q=${encodeURIComponent(mainSearchQuery.trim())}`);
+      setIsMainSearchPopoverOpen(false); // Close popover on search
+    }
+  };
+
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 shadow-sm">
+      {/* Top announcement/search bar (visible on md screens and up) */}
+      <div className="hidden md:flex h-10 items-center justify-between border-b bg-secondary/10 px-4">
+        {/* Search input on the left */}
+        <div className="relative flex-grow max-w-md">
+          <Input
+            type="text"
+            placeholder="DISKON 50% UNTUK PRODUK BARU!"
+            className="h-8 w-full pl-3 pr-10 text-xs border-muted-foreground/30 focus:border-primary"
+            // Add onKeyDown for Enter key submission if desired for top search bar
+          />
+          <Search className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+        </div>
+
+        {/* User actions on the right */}
+        <div className="flex items-center space-x-3">
+          <Button variant="ghost" size="sm" className="text-xs px-2 py-1 h-auto text-foreground/80 hover:text-primary">
+            <User className="mr-1.5 h-3.5 w-3.5" />
+            Masuk / Daftar
+          </Button>
+          <Button variant="ghost" size="icon" aria-label="Wishlist" className="h-7 w-7 text-foreground/80 hover:text-primary">
+            <Heart className="h-4 w-4" />
+          </Button>
+          <Button variant="ghost" size="icon" aria-label="Shopping Bag" className="h-7 w-7 text-foreground/80 hover:text-primary">
+            <ShoppingBag className="h-4 w-4" />
+          </Button>
+        </div>
+      </div>
+      
+      {/* Main navigation bar */}
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <Link href="/" className="flex items-center gap-2">
           <Image
@@ -232,7 +275,8 @@ export default function Header() {
                     <span className="relative z-10">
                       {item.label}
                     </span>
-                    <span className={`absolute bottom-0 left-0 h-0.5 ${item.isPromo ? 'bg-destructive' : 'bg-primary'} transition-all duration-300 ${popoverOpenStates[item.label] ? 'w-full' : 'w-0'}`}></span>
+                    {/* Removed ChevronDown icon here */}
+                    <span className={`absolute bottom-0 left-0 h-0.5 ${item.isPromo ? 'bg-destructive' : 'bg-primary'} transition-all duration-300 ${popoverOpenStates[item.label] ? 'w-full' : 'w-0 group-hover:w-full'}`}></span>
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent
@@ -297,9 +341,26 @@ export default function Header() {
         </nav>
 
         <div className="hidden md:flex items-center space-x-4">
-          <Button variant="ghost" size="icon" aria-label="Search">
-            <Search className="h-5 w-5" />
-          </Button>
+          <Popover open={isMainSearchPopoverOpen} onOpenChange={setIsMainSearchPopoverOpen}>
+            <PopoverTrigger asChild>
+              <Button variant="ghost" size="icon" aria-label="Search">
+                <Search className="h-5 w-5" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-80 p-4" align="end">
+              <form onSubmit={handleMainSearchSubmit} className="flex gap-2">
+                <Input
+                  type="search"
+                  placeholder="Cari produk..."
+                  value={mainSearchQuery}
+                  onChange={(e) => setMainSearchQuery(e.target.value)}
+                  className="flex-grow"
+                />
+                <Button type="submit" size="sm">Cari</Button>
+              </form>
+            </PopoverContent>
+          </Popover>
+          
           <Button variant="outline" size="sm">
             Login
           </Button>
@@ -369,6 +430,3 @@ export default function Header() {
     
 
     
-
-    
-
