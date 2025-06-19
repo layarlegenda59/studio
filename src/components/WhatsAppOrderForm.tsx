@@ -10,15 +10,17 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { useToast } from "@/hooks/use-toast";
 import type { Product } from '@/lib/types';
+import { X } from 'lucide-react';
 
 // Replace with your admin's WhatsApp number
 const ADMIN_WHATSAPP_NUMBER = "+6281234567890"; 
 
 interface WhatsAppOrderFormProps {
   orderedItems?: Product[];
+  onRemoveItem?: (productId: string) => void;
 }
 
-export default function WhatsAppOrderForm({ orderedItems = [] }: WhatsAppOrderFormProps) {
+export default function WhatsAppOrderForm({ orderedItems = [], onRemoveItem }: WhatsAppOrderFormProps) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [whatsapp, setWhatsapp] = useState('');
@@ -106,17 +108,30 @@ export default function WhatsAppOrderForm({ orderedItems = [] }: WhatsAppOrderFo
               <Label>Barang yang dipesan:</Label>
               <div className="space-y-2 rounded-md border p-3 max-h-48 overflow-y-auto bg-background/50">
                 {orderedItems.map(item => (
-                  <div key={item.id} className="flex items-center space-x-2">
-                    <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-sm">
-                      <Image 
-                        src={item.imageUrl} 
-                        alt={item.name} 
-                        fill 
-                        sizes="40px" 
-                        className="object-cover" 
-                      />
+                  <div key={item.id} className="flex items-center justify-between space-x-2">
+                    <div className="flex items-center space-x-2">
+                      <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-sm">
+                        <Image 
+                          src={item.imageUrl} 
+                          alt={item.name} 
+                          fill 
+                          sizes="40px" 
+                          className="object-cover" 
+                        />
+                      </div>
+                      <span className="text-sm text-foreground">{item.name}</span>
                     </div>
-                    <span className="text-sm text-foreground">{item.name}</span>
+                    {onRemoveItem && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-7 w-7 text-muted-foreground hover:text-destructive shrink-0"
+                        onClick={() => onRemoveItem(item.id)}
+                        aria-label={`Hapus ${item.name} dari pesanan`}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    )}
                   </div>
                 ))}
               </div>
@@ -137,3 +152,4 @@ export default function WhatsAppOrderForm({ orderedItems = [] }: WhatsAppOrderFo
     </Card>
   );
 }
+

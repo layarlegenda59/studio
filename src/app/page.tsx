@@ -124,6 +124,7 @@ export default function Home() {
   };
   
   // Compatibility for Header's onToggleCartFromWishlist which expects productId string
+  // and also for WhatsAppOrderForm's onRemoveItem
   const handleToggleCartFromWishlistById = (productId: string) => {
     const product = mockProducts.find(p => p.id === productId);
     if (product) {
@@ -141,7 +142,7 @@ export default function Home() {
         wishlistItems={wishlistItems}
         onRemoveFromWishlist={handleRemoveFromWishlistById}
         itemsAddedToCartFromWishlist={itemsAddedToCartFromWishlist}
-        onToggleCartFromWishlist={handleToggleCartFromWishlistById} // Pass string-based handler
+        onToggleCartFromWishlist={handleToggleCartFromWishlistById} 
       />
       <main className="flex-grow">
         <PromoCarousel promotions={mockPromotions} />
@@ -153,7 +154,7 @@ export default function Home() {
               products={filteredProducts} 
               onToggleWishlist={handleToggleWishlist}
               wishlistItems={wishlistItems}
-              onToggleCart={handleToggleCartFromWishlist} // Pass product-based handler
+              onToggleCart={handleToggleCartFromWishlist} 
               itemsAddedToCartFromWishlist={itemsAddedToCartFromWishlist}
             />
           </section>
@@ -165,7 +166,10 @@ export default function Home() {
 
           <section id="whatsapp-order" className="my-16 p-6 bg-secondary/20 rounded-xl shadow-lg">
             <h2 className="text-3xl font-headline mb-8 text-center">Pesan Cepat via WhatsApp</h2>
-            <WhatsAppOrderForm orderedItems={orderedItemsForWhatsAppForm} />
+            <WhatsAppOrderForm 
+              orderedItems={orderedItemsForWhatsAppForm} 
+              onRemoveItem={handleToggleCartFromWishlistById} 
+            />
           </section>
         </div>
       </main>
@@ -179,3 +183,4 @@ export default function Home() {
     </div>
   );
 }
+
