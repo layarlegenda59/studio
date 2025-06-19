@@ -21,7 +21,7 @@ export default function WhatsAppButton({ phoneNumber, message = "Halo Admin Mode
   return (
     <Button
       onClick={openWhatsApp}
-      className="fixed bottom-6 right-6 h-24 w-24 rounded-full bg-[#25D366] hover:bg-[#128C7E] text-white shadow-lg z-50 p-0 flex items-center justify-center"
+      className="fixed bottom-6 right-6 h-20 w-20 rounded-full bg-[#25D366] hover:bg-[#128C7E] text-white shadow-lg z-50 p-0 flex items-center justify-center"
       aria-label="Chat via WhatsApp"
     >
       <Image
@@ -34,4 +34,3 @@ export default function WhatsAppButton({ phoneNumber, message = "Halo Admin Mode
     </Button>
   );
 }
-
