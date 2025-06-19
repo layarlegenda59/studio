@@ -9,7 +9,7 @@ export const mockPromotions: Promotion[] = [
     description: 'Plus Diskon 50% untuk item tertentu. Jangan lewatkan!',
     ctaText: 'Belanja Sekarang',
     ctaLink: '#products',
-    objectPosition: '50% 40%', // Updated from 50% 70%
+    objectPosition: '50% 80%', // Updated from 50% 40%
   },
   {
     id: 'promo2',
