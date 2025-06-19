@@ -110,7 +110,7 @@ const navItems: NavItem[] = [
       }
     ],
     image: {
-        src: 'https://placehold.co/200x350.png',
+        src: 'https://ggbivmpazczpgtmnfwfs.supabase.co/storage/v1/object/sign/material/tamara-bellis-nOnT17lKYz8-unsplash.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jYjkzYjM4Zi1kOGJhLTRmYTEtYmM0ZC00MWUzOGU4YTZhNzgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYXRlcmlhbC90YW1hcmEtYmVsbGlzLW5PblQxN2xLWXo4LXVuc3BsYXNoLmpwZyIsImlhdCI6MTc1MDMxMzg1NiwiZXhwIjoxNzgxODQ5ODU2fQ.t0opmhBQSCwKw0hU5-HwokP7B8NnKQKyQbg7RrOXDog',
         alt: 'Koleksi Tas Eksklusif',
         href: '/promo/tas',
         dataAiHint: 'bags collection'
