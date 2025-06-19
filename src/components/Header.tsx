@@ -271,7 +271,7 @@ export default function Header({
                 >
                   <div className="grid grid-cols-12 gap-x-6">
                     <div className="col-span-9 grid grid-cols-3 gap-x-6 gap-y-6">
-                      {item.subMenu.map((group) => (
+                      {item.subMenu.map((group, groupIndex) => (
                         <div key={group.title || group.items[0].label}>
                           {group.title && <h4 className="font-headline text-base font-semibold mb-3 text-foreground">{group.title}</h4>}
                           <ul className="space-y-1.5">
@@ -286,6 +286,17 @@ export default function Header({
                                 </Link>
                               </li>
                             ))}
+                            {groupIndex === 0 && item.href && item.label !== "Promo" && (
+                              <li key={`view-all-${item.label}`} className="mt-2 pt-2 border-t border-border/50">
+                                <Link
+                                  href={item.href}
+                                  className="block text-sm text-primary font-semibold hover:underline py-0.5"
+                                  onClick={() => closePopover(item.label)}
+                                >
+                                  Lihat Semua {item.label}
+                                </Link>
+                              </li>
+                            )}
                           </ul>
                         </div>
                       ))}
