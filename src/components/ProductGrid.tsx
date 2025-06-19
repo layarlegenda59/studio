@@ -8,9 +8,11 @@ interface ProductGridProps {
   products: Product[];
   onToggleWishlist: (product: Product) => void;
   wishlistItems: Product[];
+  onToggleCart: (product: Product) => void;
+  itemsAddedToCartFromWishlist: Set<string>;
 }
 
-export default function ProductGrid({ products, onToggleWishlist, wishlistItems }: ProductGridProps) {
+export default function ProductGrid({ products, onToggleWishlist, wishlistItems, onToggleCart, itemsAddedToCartFromWishlist }: ProductGridProps) {
   if (!products || products.length === 0) {
     return <p className="text-center text-muted-foreground py-8">Tidak ada produk yang ditemukan.</p>;
   }
@@ -23,6 +25,8 @@ export default function ProductGrid({ products, onToggleWishlist, wishlistItems 
           product={product} 
           onToggleWishlist={onToggleWishlist}
           wishlisted={wishlistItems.some(item => item.id === product.id)}
+          onToggleCart={onToggleCart}
+          isAddedToCart={itemsAddedToCartFromWishlist.has(product.id)}
         />
       ))}
     </div>

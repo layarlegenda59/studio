@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import type { Product } from '@/lib/types';
-import { Heart } from 'lucide-react';
+import { Heart, ShoppingCart } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const DiscountTagIcon = () => (
@@ -19,9 +19,11 @@ interface ProductCardProps {
   product: Product;
   onToggleWishlist: (product: Product) => void;
   wishlisted: boolean;
+  onToggleCart: (product: Product) => void;
+  isAddedToCart: boolean;
 }
 
-export default function ProductCard({ product, onToggleWishlist, wishlisted }: ProductCardProps) {
+export default function ProductCard({ product, onToggleWishlist, wishlisted, onToggleCart, isAddedToCart }: ProductCardProps) {
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(price);
   };
@@ -59,15 +61,26 @@ export default function ProductCard({ product, onToggleWishlist, wishlisted }: P
               {product.name}
             </h3>
           </div>
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            className="h-7 w-7 shrink-0 -mr-1 -mt-1"
-            onClick={() => onToggleWishlist(product)}
-            aria-label={wishlisted ? `Hapus ${product.name} dari wishlist` : `Tambah ${product.name} ke wishlist`}
-          >
-            <Heart className={cn("h-4 w-4", wishlisted ? "fill-destructive text-destructive" : "text-muted-foreground hover:text-destructive")} />
-          </Button>
+          <div className="flex items-center space-x-0.5">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="h-7 w-7 shrink-0"
+              onClick={() => onToggleCart(product)}
+              aria-label={isAddedToCart ? `Hapus ${product.name} dari keranjang` : `Tambah ${product.name} ke keranjang`}
+            >
+              <ShoppingCart className={cn("h-4 w-4", isAddedToCart ? "fill-current text-primary" : "text-muted-foreground hover:text-primary")} />
+            </Button>
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="h-7 w-7 shrink-0"
+              onClick={() => onToggleWishlist(product)}
+              aria-label={wishlisted ? `Hapus ${product.name} dari wishlist` : `Tambah ${product.name} ke wishlist`}
+            >
+              <Heart className={cn("h-4 w-4", wishlisted ? "fill-destructive text-destructive" : "text-muted-foreground hover:text-destructive")} />
+            </Button>
+          </div>
         </div>
 
         {product.sizes && product.sizes.length > 0 && (

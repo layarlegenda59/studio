@@ -103,20 +103,17 @@ export default function Home() {
     }
   };
 
-  const handleToggleCartFromWishlist = (productId: string) => {
-    const product = mockProducts.find(p => p.id === productId);
-    if (!product) return;
-
+  const handleToggleCartFromWishlist = (product: Product) => {
     setItemsAddedToCartFromWishlist(prev => {
       const newSet = new Set(prev);
-      if (newSet.has(productId)) {
-        newSet.delete(productId);
+      if (newSet.has(product.id)) {
+        newSet.delete(product.id);
         toast({
           title: "Keranjang Diperbarui",
           description: `${product.name} dihapus dari keranjang.`,
         });
       } else {
-        newSet.add(productId);
+        newSet.add(product.id);
          toast({
           title: "Keranjang Diperbarui",
           description: `${product.name} ditambahkan ke keranjang.`,
@@ -125,6 +122,15 @@ export default function Home() {
       return newSet;
     });
   };
+  
+  // Compatibility for Header's onToggleCartFromWishlist which expects productId string
+  const handleToggleCartFromWishlistById = (productId: string) => {
+    const product = mockProducts.find(p => p.id === productId);
+    if (product) {
+      handleToggleCartFromWishlist(product);
+    }
+  };
+
 
   const orderedItemsForWhatsAppForm = mockProducts.filter(product => itemsAddedToCartFromWishlist.has(product.id));
 
@@ -135,7 +141,7 @@ export default function Home() {
         wishlistItems={wishlistItems}
         onRemoveFromWishlist={handleRemoveFromWishlistById}
         itemsAddedToCartFromWishlist={itemsAddedToCartFromWishlist}
-        onToggleCartFromWishlist={handleToggleCartFromWishlist}
+        onToggleCartFromWishlist={handleToggleCartFromWishlistById} // Pass string-based handler
       />
       <main className="flex-grow">
         <PromoCarousel promotions={mockPromotions} />
@@ -147,6 +153,8 @@ export default function Home() {
               products={filteredProducts} 
               onToggleWishlist={handleToggleWishlist}
               wishlistItems={wishlistItems}
+              onToggleCart={handleToggleCartFromWishlist} // Pass product-based handler
+              itemsAddedToCartFromWishlist={itemsAddedToCartFromWishlist}
             />
           </section>
 
