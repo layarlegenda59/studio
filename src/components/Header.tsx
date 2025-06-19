@@ -99,6 +99,14 @@ const navItems: NavItem[] = [
           { label: 'Ransel', href: '/products?category=Tas&gender=Wanita&type=Ransel' },
           { label: 'Lihat Semua Tas Wanita', href: '/products?category=Tas&gender=Wanita' },
         ],
+      },
+      {
+        title: 'Anak',
+        items: [
+          { label: 'Tas Anak Laki-laki', href: '/products?category=Tas&gender=Anak&type=Laki-laki' },
+          { label: 'Tas Anak Perempuan', href: '/products?category=Tas&gender=Anak&type=Perempuan' },
+          { label: 'Lihat Semua Tas Anak', href: '/products?category=Tas&gender=Anak' },
+        ],
       }
     ],
     image: {
@@ -117,6 +125,7 @@ const navItems: NavItem[] = [
             items: [
               { label: 'Kemeja', href: '/products?category=Pakaian&gender=Pria&type=Kemeja' },
               { label: 'Kaos', href: '/products?category=Pakaian&gender=Pria&type=Kaos' },
+              { label: 'Hoodies', href: '/products?category=Pakaian&gender=Pria&type=Hoodies' },
               { label: 'Celana', href: '/products?category=Pakaian&gender=Pria&type=Celana' },
               { label: 'Jaket', href: '/products?category=Pakaian&gender=Pria&type=Jaket' },
               { label: 'Pakaian Olahraga', href: '/products?category=Pakaian&gender=Pria&type=Olahraga' },
@@ -127,10 +136,9 @@ const navItems: NavItem[] = [
             title: 'Wanita',
             items: [
               { label: 'Atasan', href: '/products?category=Pakaian&gender=Wanita&type=Atasan' },
-              { label: 'Dress', href: '/products?category=Pakaian&gender=Wanita&type=Dress' },
+              { label: 'Hoodies', href: '/products?category=Pakaian&gender=Wanita&type=Hoodies' },
               { label: 'Bawahan', href: '/products?category=Pakaian&gender=Wanita&type=Bawahan' },
               { label: 'Outerwear', href: '/products?category=Pakaian&gender=Wanita&type=Outerwear' },
-              { label: 'Pakaian Tidur', href: '/products?category=Pakaian&gender=Wanita&type=Tidur' },
               { label: 'Lihat Semua Pakaian Wanita', href: '/products?category=Pakaian&gender=Wanita' },
             ]
         },
@@ -152,12 +160,11 @@ const navItems: NavItem[] = [
   },
   {
     label: 'Promo',
-    href: '#promo', // Direct link to promo section or page
+    href: '#promo', 
     isPromo: true,
   },
 ];
 
-// For mobile menu, we just need label and href
 const mobileNavLinks = navItems.map(item => ({ label: item.label, href: item.href }));
 
 
@@ -217,7 +224,7 @@ export default function Header() {
                 <PopoverTrigger asChild>
                   <Button
                     variant="ghost"
-                    className={`text-sm font-medium px-3 py-2 rounded-md ${item.isPromo ? 'text-destructive hover:text-destructive/80 font-semibold' : 'text-foreground/70 hover:text-primary-foreground'} transition-colors relative group focus-visible:ring-0 focus-visible:ring-offset-0 focus:ring-0 focus:ring-offset-0`}
+                    className={`text-sm font-medium px-3 py-2 rounded-md ${item.isPromo ? 'text-destructive hover:text-destructive/80 font-semibold' : 'text-foreground/70 hover:text-primary-foreground'} transition-colors relative group focus-visible:ring-0 focus-visible:ring-offset-0 focus:ring-0 focus:ring-offset-0 outline-none`}
                     onMouseEnter={() => handleMouseEnter(item.label)}
                     onMouseLeave={() => handleMouseLeave(item.label)} 
                   >
@@ -280,7 +287,7 @@ export default function Header() {
               <Link
                 key={item.label}
                 href={item.href}
-                className={`text-sm font-medium px-3 py-2 rounded-md ${item.isPromo ? 'text-destructive hover:text-destructive/80 font-semibold' : 'text-foreground/70 hover:text-primary-foreground'} transition-colors relative group focus-visible:ring-0 focus-visible:ring-offset-0 focus:ring-0 focus:ring-offset-0`}
+                className={`text-sm font-medium px-3 py-2 rounded-md ${item.isPromo ? 'text-destructive hover:text-destructive/80 font-semibold' : 'text-foreground/70 hover:text-primary-foreground'} transition-colors relative group focus-visible:ring-0 focus-visible:ring-offset-0 focus:ring-0 focus:ring-offset-0 outline-none`}
               >
                 <span className="relative z-10">{item.label}</span>
                 <span className={`absolute bottom-0 left-0 h-0.5 ${item.isPromo ? 'bg-destructive' : 'bg-primary'} transition-all duration-300 group-hover:w-full w-0`}></span>
@@ -358,5 +365,4 @@ export default function Header() {
     </header>
   );
 }
-
     
