@@ -9,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import type { ShippingCost, ShippingVendor } from '@/lib/types';
 import { mockShippingCosts, mockShippingVendors } from '@/lib/mockData';
-import { Loader2 } from 'lucide-react';
+import { Loader2, ChevronUp, ChevronDown } from 'lucide-react';
 
 export default function ShippingCalculator() {
   const [origin, setOrigin] = useState('');
@@ -18,6 +18,7 @@ export default function ShippingCalculator() {
   const [results, setResults] = useState<ShippingCost[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isResultsOpen, setIsResultsOpen] = useState(true); // State for collapsible results
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -28,6 +29,7 @@ export default function ShippingCalculator() {
     }
     setIsLoading(true);
     setResults([]);
+    setIsResultsOpen(true); // Ensure results are open when new calculation is made
 
     // Simulate API call
     setTimeout(() => {
@@ -77,27 +79,40 @@ export default function ShippingCalculator() {
 
       {results.length > 0 && (
         <div className="p-6 border-t">
-          <h3 className="text-lg font-semibold mb-4 font-headline">Hasil Perhitungan:</h3>
-          <div className="space-y-3">
-            {results.map((result, index) => (
-              <Card key={index} className="bg-background/50">
-                <CardContent className="p-4">
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <p className="font-semibold text-foreground">{result.vendor} - {result.service}</p>
-                      <p className="text-sm text-muted-foreground">Estimasi: {result.estimatedDelivery}</p>
-                    </div>
-                    <p className="font-semibold text-lg text-primary">
-                      Rp{result.cost.toLocaleString()}
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+          <div
+            className="flex justify-between items-center cursor-pointer mb-4"
+            onClick={() => setIsResultsOpen(!isResultsOpen)}
+            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setIsResultsOpen(!isResultsOpen); }}
+            role="button"
+            tabIndex={0}
+            aria-expanded={isResultsOpen}
+            aria-controls="shipping-results-content"
+          >
+            <h3 className="text-lg font-semibold font-headline">Hasil Perhitungan:</h3>
+            {isResultsOpen ? <ChevronUp className="h-5 w-5 text-foreground" /> : <ChevronDown className="h-5 w-5 text-foreground" />}
           </div>
+          
+          {isResultsOpen && (
+            <div id="shipping-results-content" className="space-y-3">
+              {results.map((result, index) => (
+                <Card key={index} className="bg-background/50">
+                  <CardContent className="p-4">
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <p className="font-semibold text-foreground">{result.vendor} - {result.service}</p>
+                        <p className="text-sm text-muted-foreground">Estimasi: {result.estimatedDelivery}</p>
+                      </div>
+                      <p className="font-semibold text-lg text-primary">
+                        Rp{result.cost.toLocaleString()}
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </Card>
   );
 }
-
