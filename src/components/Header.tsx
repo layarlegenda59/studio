@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { Search, User, Menu, ShoppingCart, Heart } from 'lucide-react'; // Changed ShoppingBag to ShoppingCart
+import { Search, User, Menu, ShoppingCart, Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import {
@@ -323,8 +323,10 @@ export default function Header() {
           </form>
 
           {/* User Actions - Ordered as: Tas, Wishlist, Masuk/Daftar */}
-          <Button variant="ghost" size="icon" aria-label="Shopping Bag" className="h-9 w-9 text-foreground/80 outline-none focus-visible:ring-0 focus-visible:ring-offset-0">
-            <ShoppingCart className="h-4 w-4" /> {/* Changed from ShoppingBag */}
+          <Button asChild variant="ghost" size="icon" aria-label="Shopping Cart" className="h-9 w-9 text-foreground/80 outline-none focus-visible:ring-0 focus-visible:ring-offset-0">
+            <Link href="/#whatsapp-order">
+              <ShoppingCart className="h-4 w-4" />
+            </Link>
           </Button>
           <Button variant="ghost" size="icon" aria-label="Wishlist" className="h-9 w-9 text-foreground/80 outline-none focus-visible:ring-0 focus-visible:ring-offset-0">
             <Heart className="h-4 w-4" />
@@ -383,9 +385,11 @@ export default function Header() {
                   <Heart className="h-4 w-4" />
                   <span>Wishlist</span>
                 </Button>
-                 <Button variant="ghost" className="w-full justify-start pl-2 space-x-2">
-                  <ShoppingCart className="h-4 w-4" /> {/* Changed from ShoppingBag */}
-                  <span>Tas Belanja</span>
+                 <Button asChild variant="ghost" className="w-full justify-start pl-2 space-x-2" onClick={() => setIsSheetOpen(false)}>
+                  <Link href="/#whatsapp-order">
+                    <ShoppingCart className="h-4 w-4" />
+                    <span>Tas Belanja</span>
+                  </Link>
                 </Button>
                 <Button variant="ghost" className="w-full justify-start pl-2 space-x-2" onClick={() => setIsSheetOpen(false)}>
                   <User className="h-4 w-4" />
