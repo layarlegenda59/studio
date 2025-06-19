@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { Search, User, Menu, ShoppingBag, Heart } from 'lucide-react'; // Removed ChevronDown, User might be re-added if needed elsewhere
+import { Search, User, Menu, ShoppingBag, Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import {
@@ -210,8 +210,6 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 shadow-sm">
-      {/* Top announcement/search bar has been removed */}
-      
       {/* Main navigation bar */}
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <Link href="/" className="flex items-center gap-2">
@@ -332,11 +330,9 @@ export default function Header() {
             <ShoppingBag className="h-4 w-4" />
           </Button>
           
-          <Button variant="outline" size="sm" className="h-9">
-            Login
-          </Button>
-          <Button size="sm" className="h-9">
-            Register
+          <Button variant="ghost" size="sm" className="h-9 px-3 text-foreground/80 hover:text-primary">
+            <User className="h-4 w-4" />
+            Masuk / Daftar
           </Button>
         </div>
 
@@ -381,7 +377,6 @@ export default function Header() {
                 ))}
               </nav>
               <div className="mt-8 flex flex-col space-y-3">
-                 {/* TODO: Add mobile search functionality if needed */}
                 <Button variant="outline" className="w-full">
                   <Search className="mr-2 h-4 w-4" /> Search
                 </Button>
@@ -393,11 +388,9 @@ export default function Header() {
                   <ShoppingBag className="h-4 w-4" />
                   <span>Tas Belanja</span>
                 </Button>
-                <Button variant="outline" className="w-full" onClick={() => setIsSheetOpen(false)}>
-                  Login
-                </Button>
-                <Button className="w-full" onClick={() => setIsSheetOpen(false)}>
-                  Register
+                <Button variant="ghost" className="w-full justify-start pl-2 space-x-2" onClick={() => setIsSheetOpen(false)}>
+                  <User className="h-4 w-4" />
+                  <span>Masuk / Daftar</span>
                 </Button>
               </div>
             </SheetContent>
@@ -408,7 +401,8 @@ export default function Header() {
   );
 }
     
-
+    
+    
     
 
     
