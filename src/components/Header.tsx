@@ -163,7 +163,7 @@ const navItems: NavItem[] = [
   },
   {
     label: 'Promo',
-    href: '#promo', 
+    href: '#promo',
     isPromo: true,
   },
 ];
@@ -195,7 +195,7 @@ export default function Header() {
         setPopoverOpenStates(prev => ({ ...prev, [label]: false }));
     }, 200);
   };
-  
+
   const closePopover = (label: string) => {
     setPopoverOpenStates(prev => ({ ...prev, [label]: false }));
   };
@@ -225,8 +225,8 @@ export default function Header() {
           <Image
             src={textLogoUrl}
             alt="Goodstock-X"
-            width={120} 
-            height={28} 
+            width={120}
+            height={28}
             priority
           />
         </Link>
@@ -240,7 +240,7 @@ export default function Header() {
                     variant="ghost"
                     className={`text-sm font-medium px-3 py-2 rounded-md ${item.isPromo ? 'text-destructive hover:text-destructive/80 font-semibold' : 'text-foreground/70 hover:text-primary-foreground'} transition-colors relative group outline-none focus-visible:ring-0 focus-visible:ring-offset-0`}
                     onMouseEnter={() => handleMouseEnter(item.label)}
-                    onMouseLeave={() => handleMouseLeave(item.label)} 
+                    onMouseLeave={() => handleMouseLeave(item.label)}
                   >
                     <span className="relative z-10">
                       {item.label}
@@ -250,7 +250,7 @@ export default function Header() {
                 </PopoverTrigger>
                 <PopoverContent
                   className="w-screen max-w-4xl mt-1 p-6 shadow-xl rounded-lg border bg-background"
-                  onMouseEnter={() => handleMouseEnter(item.label)} 
+                  onMouseEnter={() => handleMouseEnter(item.label)}
                   onMouseLeave={() => handleMouseLeave(item.label)}
                   align="start"
                   sideOffset={5}
@@ -323,13 +323,13 @@ export default function Header() {
           </form>
 
           {/* User Actions - Ordered as: Tas, Wishlist, Masuk/Daftar */}
-          <Button variant="ghost" size="icon" aria-label="Shopping Bag" className="h-9 w-9 text-foreground/80 hover:text-primary">
+          <Button variant="ghost" size="icon" aria-label="Shopping Bag" className="h-9 w-9 text-foreground/80 outline-none focus-visible:ring-0 focus-visible:ring-offset-0">
             <ShoppingBag className="h-4 w-4" />
           </Button>
-          <Button variant="ghost" size="icon" aria-label="Wishlist" className="h-9 w-9 text-foreground/80 hover:text-primary">
+          <Button variant="ghost" size="icon" aria-label="Wishlist" className="h-9 w-9 text-foreground/80 outline-none focus-visible:ring-0 focus-visible:ring-offset-0">
             <Heart className="h-4 w-4" />
           </Button>
-          <Button variant="ghost" size="sm" className="h-9 px-3 text-foreground/80 hover:text-primary">
+          <Button variant="ghost" size="sm" className="h-9 px-3 text-foreground/80 outline-none focus-visible:ring-0 focus-visible:ring-offset-0">
             <User className="h-4 w-4" />
             Masuk / Daftar
           </Button>
@@ -399,13 +399,3 @@ export default function Header() {
     </header>
   );
 }
-    
-    
-    
-    
-
-    
-
-    
-
-    
