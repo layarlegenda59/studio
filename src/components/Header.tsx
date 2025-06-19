@@ -42,17 +42,6 @@ const navItems: NavItem[] = [
     href: '/products?category=Sepatu',
     subMenu: [
       {
-        title: 'Wanita',
-        items: [
-          { label: 'Sneakers', href: '/products?category=Sepatu&gender=Wanita&type=Sneakers' },
-          { label: 'Flat Shoes', href: '/products?category=Sepatu&gender=Wanita&type=FlatShoes' },
-          { label: 'Heels', href: '/products?category=Sepatu&gender=Wanita&type=Heels' },
-          { label: 'Boots', href: '/products?category=Sepatu&gender=Wanita&type=Boots' },
-          { label: 'Sandal', href: '/products?category=Sepatu&gender=Wanita&type=Sandal' },
-          { label: 'Lihat Semua Sepatu Wanita', href: '/products?category=Sepatu&gender=Wanita' },
-        ],
-      },
-      {
         title: 'Pria',
         items: [
           { label: 'Sneakers', href: '/products?category=Sepatu&gender=Pria&type=Sneakers' },
@@ -61,6 +50,17 @@ const navItems: NavItem[] = [
           { label: 'Sandal', href: '/products?category=Sepatu&gender=Pria&type=Sandal' },
           { label: 'Sepatu Olahraga', href: '/products?category=Sepatu&gender=Pria&type=Olahraga' },
           { label: 'Lihat Semua Sepatu Pria', href: '/products?category=Sepatu&gender=Pria' },
+        ],
+      },
+      {
+        title: 'Wanita',
+        items: [
+          { label: 'Sneakers', href: '/products?category=Sepatu&gender=Wanita&type=Sneakers' },
+          { label: 'Flat Shoes', href: '/products?category=Sepatu&gender=Wanita&type=FlatShoes' },
+          { label: 'Heels', href: '/products?category=Sepatu&gender=Wanita&type=Heels' },
+          { label: 'Boots', href: '/products?category=Sepatu&gender=Wanita&type=Boots' },
+          { label: 'Sandal', href: '/products?category=Sepatu&gender=Wanita&type=Sandal' },
+          { label: 'Lihat Semua Sepatu Wanita', href: '/products?category=Sepatu&gender=Wanita' },
         ],
       },
       {
@@ -84,16 +84,6 @@ const navItems: NavItem[] = [
     href: '/products?category=Tas',
     subMenu: [
       {
-        title: 'Wanita',
-        items: [
-          { label: 'Tas Tangan', href: '/products?category=Tas&gender=Wanita&type=Tangan' },
-          { label: 'Tas Selempang', href: '/products?category=Tas&gender=Wanita&type=Selempang' },
-          { label: 'Dompet', href: '/products?category=Tas&gender=Wanita&type=Dompet' },
-          { label: 'Ransel', href: '/products?category=Tas&gender=Wanita&type=Ransel' },
-          { label: 'Lihat Semua Tas Wanita', href: '/products?category=Tas&gender=Wanita' },
-        ],
-      },
-      {
         title: 'Pria',
         items: [
           { label: 'Tas Selempang', href: '/products?category=Tas&gender=Pria&type=Selempang' },
@@ -101,6 +91,16 @@ const navItems: NavItem[] = [
           { label: 'Tas Pinggang', href: '/products?category=Tas&gender=Pria&type=Pinggang' },
           { label: 'Dompet', href: '/products?category=Tas&gender=Pria&type=Dompet' },
           { label: 'Lihat Semua Tas Pria', href: '/products?category=Tas&gender=Pria' },
+        ],
+      },
+      {
+        title: 'Wanita',
+        items: [
+          { label: 'Tas Tangan', href: '/products?category=Tas&gender=Wanita&type=Tangan' },
+          { label: 'Tas Selempang', href: '/products?category=Tas&gender=Wanita&type=Selempang' },
+          { label: 'Dompet', href: '/products?category=Tas&gender=Wanita&type=Dompet' },
+          { label: 'Ransel', href: '/products?category=Tas&gender=Wanita&type=Ransel' },
+          { label: 'Lihat Semua Tas Wanita', href: '/products?category=Tas&gender=Wanita' },
         ],
       }
     ],
@@ -116,17 +116,6 @@ const navItems: NavItem[] = [
     href: '/products?category=Pakaian',
     subMenu: [
         {
-            title: 'Wanita',
-            items: [
-              { label: 'Atasan', href: '/products?category=Pakaian&gender=Wanita&type=Atasan' },
-              { label: 'Dress', href: '/products?category=Pakaian&gender=Wanita&type=Dress' },
-              { label: 'Bawahan', href: '/products?category=Pakaian&gender=Wanita&type=Bawahan' },
-              { label: 'Outerwear', href: '/products?category=Pakaian&gender=Wanita&type=Outerwear' },
-              { label: 'Pakaian Tidur', href: '/products?category=Pakaian&gender=Wanita&type=Tidur' },
-              { label: 'Lihat Semua Pakaian Wanita', href: '/products?category=Pakaian&gender=Wanita' },
-            ]
-        },
-        {
             title: 'Pria',
             items: [
               { label: 'Kemeja', href: '/products?category=Pakaian&gender=Pria&type=Kemeja' },
@@ -135,6 +124,17 @@ const navItems: NavItem[] = [
               { label: 'Jaket', href: '/products?category=Pakaian&gender=Pria&type=Jaket' },
               { label: 'Pakaian Olahraga', href: '/products?category=Pakaian&gender=Pria&type=Olahraga' },
               { label: 'Lihat Semua Pakaian Pria', href: '/products?category=Pakaian&gender=Pria' },
+            ]
+        },
+        {
+            title: 'Wanita',
+            items: [
+              { label: 'Atasan', href: '/products?category=Pakaian&gender=Wanita&type=Atasan' },
+              { label: 'Dress', href: '/products?category=Pakaian&gender=Wanita&type=Dress' },
+              { label: 'Bawahan', href: '/products?category=Pakaian&gender=Wanita&type=Bawahan' },
+              { label: 'Outerwear', href: '/products?category=Pakaian&gender=Wanita&type=Outerwear' },
+              { label: 'Pakaian Tidur', href: '/products?category=Pakaian&gender=Wanita&type=Tidur' },
+              { label: 'Lihat Semua Pakaian Wanita', href: '/products?category=Pakaian&gender=Wanita' },
             ]
         },
         {
@@ -220,7 +220,7 @@ export default function Header() {
                 <PopoverTrigger asChild>
                   <Button
                     variant="ghost"
-                    className={`text-sm font-medium px-3 py-2 rounded-md ${item.isPromo ? 'text-destructive hover:text-destructive/80 font-semibold' : 'text-foreground/70 hover:text-primary-foreground'} transition-colors relative group focus-visible:ring-0 focus-visible:ring-offset-0`}
+                    className={`text-sm font-medium px-3 py-2 rounded-md ${item.isPromo ? 'text-destructive hover:text-destructive/80 font-semibold' : 'text-foreground/70 hover:text-primary-foreground'} transition-colors relative group focus-visible:ring-0 focus-visible:ring-offset-0 focus:ring-0 focus:ring-offset-0`}
                     onMouseEnter={() => handleMouseEnter(item.label)}
                     onMouseLeave={() => handleMouseLeave(item.label)} 
                   >
@@ -283,7 +283,7 @@ export default function Header() {
               <Link
                 key={item.label}
                 href={item.href}
-                className={`text-sm font-medium px-3 py-2 rounded-md ${item.isPromo ? 'text-destructive hover:text-destructive/80 font-semibold' : 'text-foreground/70 hover:text-primary-foreground'} transition-colors relative group focus-visible:ring-0 focus-visible:ring-offset-0`}
+                className={`text-sm font-medium px-3 py-2 rounded-md ${item.isPromo ? 'text-destructive hover:text-destructive/80 font-semibold' : 'text-foreground/70 hover:text-primary-foreground'} transition-colors relative group focus-visible:ring-0 focus-visible:ring-offset-0 focus:ring-0 focus:ring-offset-0`}
               >
                 <span className="relative z-10">{item.label}</span>
                 <span className={`absolute bottom-0 left-0 h-0.5 ${item.isPromo ? 'bg-destructive' : 'bg-primary'} transition-all duration-300 group-hover:w-full w-0`}></span>
