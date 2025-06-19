@@ -12,7 +12,7 @@ export const mockPromotions: Promotion[] = [
   },
   {
     id: 'promo2',
-    imageUrl: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxmYXNoaW9uJTIwc2FsZXxlbnwwfHx8fDE3NTAyMTc4MDN8MA&ixlib=rb-4.1.0&q=80&w=1080',
+    imageUrl: 'https://images.unsplash.com/photo-1750079521605-9ac6f0edd902?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxmYXNoaW9uJTIwc2FsZSUyMGJhbm5lcnxlbnwwfHx8fDE3NTAyMTc4MDN8MA&ixlib=rb-4.1.0&q=80&w=1080',
     title: 'Sale Koleksi Terbaru!',
     description: 'Jelajahi gaya terbaru musim ini dengan harga spesial.',
     ctaText: 'Lihat Koleksi',
@@ -108,4 +108,3 @@ export const mockShippingCosts: ShippingCost[] = [
     { vendor: 'SiCepat', service: 'BEST', cost: 25000, estimatedDelivery: '1-2 hari' },
     { vendor: 'Lion Parcel', service: 'REGPACK', cost: 17000, estimatedDelivery: '3-5 hari' },
 ];
-
