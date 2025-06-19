@@ -47,7 +47,6 @@ const navItems: NavItem[] = [
           { label: 'Sneakers', href: '/products?category=Sepatu&gender=Pria&type=Sneakers' },
           { label: 'Sepatu Formal', href: '/products?category=Sepatu&gender=Pria&type=Formal' },
           { label: 'Boots', href: '/products?category=Sepatu&gender=Pria&type=Boots' },
-          { label: 'Sandal', href: '/products?category=Sepatu&gender=Pria&type=Sandal' },
           { label: 'Sepatu Olahraga', href: '/products?category=Sepatu&gender=Pria&type=Olahraga' },
           { label: 'Lihat Semua Sepatu Pria', href: '/products?category=Sepatu&gender=Pria' },
         ],
@@ -57,9 +56,7 @@ const navItems: NavItem[] = [
         items: [
           { label: 'Sneakers', href: '/products?category=Sepatu&gender=Wanita&type=Sneakers' },
           { label: 'Flat Shoes', href: '/products?category=Sepatu&gender=Wanita&type=FlatShoes' },
-          { label: 'Heels', href: '/products?category=Sepatu&gender=Wanita&type=Heels' },
           { label: 'Boots', href: '/products?category=Sepatu&gender=Wanita&type=Boots' },
-          { label: 'Sandal', href: '/products?category=Sepatu&gender=Wanita&type=Sandal' },
           { label: 'Lihat Semua Sepatu Wanita', href: '/products?category=Sepatu&gender=Wanita' },
         ],
       },
