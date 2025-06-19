@@ -41,7 +41,15 @@ const providedBrandsList = [
   "H&M", "The North Face", "calvin klein", "Ecco", "Burberry", "Carhartt", "Christian Louboutin", "Chanel"
 ];
 
-const allBrands = Array.from(new Set(providedBrandsList.map(brand => brand.trim()))).filter(Boolean).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
+const capitalizeBrandName = (name: string): string => {
+  return name
+    .toLowerCase()
+    .split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+};
+
+const allBrands = Array.from(new Set(providedBrandsList.map(brand => capitalizeBrandName(brand.trim())))).filter(Boolean).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
 
 const defaultMaxPriceValue = 2000000;
 
