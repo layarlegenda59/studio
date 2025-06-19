@@ -78,7 +78,7 @@ export default function Home() {
           {/* Mobile Filter Sheet and Desktop Filter Aside have been removed */}
           
           <section id="products" className="w-full mb-12">
-            <h2 className="text-2xl font-bold mb-6 text-center">Kamu Mungkin Suka Produk Ini 🥰</h2>
+            <h2 className="text-3xl font-headline mb-6 text-center">Kamu Mungkin Suka Produk Ini 🥰</h2>
             <ProductGrid products={filteredProducts} />
           </section>
 
