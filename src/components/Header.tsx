@@ -222,10 +222,12 @@ export default function Header() {
                     variant="ghost"
                     className={`text-sm font-medium px-3 py-2 rounded-md ${item.isPromo ? 'text-destructive hover:text-destructive/80 font-semibold' : 'text-foreground/70 hover:text-primary'} transition-colors relative group`}
                     onMouseEnter={() => handleMouseEnter(item.label)}
-                    onMouseLeave={() => handleMouseLeave(item.label)} // Keep trigger hover active while over content
+                    onMouseLeave={() => handleMouseLeave(item.label)} 
                   >
-                    {item.label}
-                    <ChevronDown className={`ml-1 h-4 w-4 transition-transform duration-200 ${popoverOpenStates[item.label] ? 'rotate-180' : ''}`} />
+                    <span className="relative z-10 flex items-center">
+                      {item.label}
+                      <ChevronDown className={`ml-1 h-4 w-4 transition-transform duration-200 ${popoverOpenStates[item.label] ? 'rotate-180' : ''}`} />
+                    </span>
                     <span className={`absolute bottom-0 left-0 h-0.5 ${item.isPromo ? 'bg-destructive' : 'bg-primary'} transition-all duration-300 group-hover:w-full ${popoverOpenStates[item.label] ? 'w-full' : 'w-0'}`}></span>
                   </Button>
                 </PopoverTrigger>
@@ -283,7 +285,7 @@ export default function Header() {
                 href={item.href}
                 className={`text-sm font-medium px-3 py-2 rounded-md ${item.isPromo ? 'text-destructive hover:text-destructive/80 font-semibold' : 'text-foreground/70 hover:text-primary'} transition-colors relative group`}
               >
-                {item.label}
+                <span className="relative z-10">{item.label}</span>
                 <span className={`absolute bottom-0 left-0 h-0.5 ${item.isPromo ? 'bg-destructive' : 'bg-primary'} transition-all duration-300 group-hover:w-full w-0`}></span>
               </Link>
             )
