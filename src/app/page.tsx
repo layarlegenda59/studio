@@ -99,11 +99,12 @@ export default function Home() {
       ],
     };
     
+    // Deep comparison of filter states
     const filtersAreEqual = 
-      JSON.stringify(newRelevantFiltersState.categories) === JSON.stringify(filters.categories) &&
-      JSON.stringify(newRelevantFiltersState.sizes) === JSON.stringify(filters.sizes) &&
-      JSON.stringify(newRelevantFiltersState.brands) === JSON.stringify(filters.brands) &&
-      JSON.stringify(newRelevantFiltersState.priceRange) === JSON.stringify(filters.priceRange);
+        JSON.stringify(newRelevantFiltersState.categories.sort()) === JSON.stringify(filters.categories.sort()) &&
+        JSON.stringify(newRelevantFiltersState.sizes.sort()) === JSON.stringify(filters.sizes.sort()) &&
+        JSON.stringify(newRelevantFiltersState.brands.sort()) === JSON.stringify(filters.brands.sort()) &&
+        JSON.stringify(newRelevantFiltersState.priceRange) === JSON.stringify(filters.priceRange);
 
     if (!filtersAreEqual) {
         setFilters(newRelevantFiltersState);
@@ -111,7 +112,7 @@ export default function Home() {
             productFiltersRef.current.setFiltersFromParent(newRelevantFiltersState);
         }
     }
-  }, [searchParams, filters]);
+  }, [searchParams, filters]); // Keep `filters` in dependency to allow internal updates to reflect if needed.
 
 
   useEffect(() => {
@@ -210,6 +211,12 @@ export default function Home() {
       const valueFromUrl = searchParams.get(key);
       if (valueFromUrl) { 
          params.set(key, valueFromUrl);
+      } else {
+        // If the filter is being cleared by ProductFilters, it might not be in updatedFilters
+        // but we still want to remove it from params if it's not actively being set.
+        // However, handleFilterChange is mainly driven by ProductFilters, which doesn't manage 'type', 'gender', 'q'.
+        // So, we generally preserve them if they are in the URL.
+        // If a specific action *should* clear them, that logic would be separate.
       }
     });
 
@@ -314,7 +321,7 @@ export default function Home() {
               )}>
               <section id="products" className="w-full">
                  <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-2xl md:text-3xl font-headline text-left">Kamu Mungkin Suka Produk Ini 🥰</h2>
+                    <h2 className="text-2xl md:text-3xl font-headline text-center w-full">Kamu Mungkin Suka Produk Ini 🥰</h2>
                     <div className="lg:hidden">
                     <Sheet open={isFilterSheetOpen} onOpenChange={setIsFilterSheetOpen}>
                         <SheetTrigger asChild>
