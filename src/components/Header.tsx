@@ -70,7 +70,7 @@ const navItems: NavItem[] = [
       }
     ],
     image: {
-        src: 'https://placehold.co/200x350.png',
+        src: 'https://ggbivmpazczpgtmnfwfs.supabase.co/storage/v1/object/sign/material/irene-kredenets-dwKiHoqqxk8-unsplash.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jYjkzYjM4Zi1kOGJhLTRmYTEtYmM0ZC00MWUzOGU4YTZhNzgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYXRlcmlhbC9pcmVuZS1rcmVkZW5ldHMtZHdLaUhvcXF4azgtdW5zcGxhc2guanBnIiwiaWF0IjoxNzUwMzEzNzQzLCJleHAiOjE3ODE4NDk3NDN9.HExOYze3LHMJxj89desF1SQYW1IFBJa1k0wdVTVCY00',
         alt: 'Promo Sepatu Terbaru',
         href: '/promo/sepatu',
         dataAiHint: 'shoes model'
@@ -224,7 +224,7 @@ export default function Header() {
                 <PopoverTrigger asChild>
                   <Button
                     variant="ghost"
-                    className={`text-sm font-medium px-3 py-2 rounded-md ${item.isPromo ? 'text-destructive hover:text-destructive/80 font-semibold' : 'text-foreground/70 hover:text-primary-foreground'} transition-colors relative group focus-visible:ring-0 focus-visible:ring-offset-0 focus:ring-0 focus:ring-offset-0 outline-none`}
+                    className={`text-sm font-medium px-3 py-2 rounded-md ${item.isPromo ? 'text-destructive hover:text-destructive/80 font-semibold' : 'text-foreground/70 hover:text-primary-foreground'} transition-colors relative group outline-none focus-visible:ring-0 focus-visible:ring-offset-0`}
                     onMouseEnter={() => handleMouseEnter(item.label)}
                     onMouseLeave={() => handleMouseLeave(item.label)} 
                   >
@@ -287,7 +287,7 @@ export default function Header() {
               <Link
                 key={item.label}
                 href={item.href}
-                className={`text-sm font-medium px-3 py-2 rounded-md ${item.isPromo ? 'text-destructive hover:text-destructive/80 font-semibold' : 'text-foreground/70 hover:text-primary-foreground'} transition-colors relative group focus-visible:ring-0 focus-visible:ring-offset-0 focus:ring-0 focus:ring-offset-0 outline-none`}
+                className={`text-sm font-medium px-3 py-2 rounded-md ${item.isPromo ? 'text-destructive hover:text-destructive/80 font-semibold' : 'text-foreground/70 hover:text-primary-foreground'} transition-colors relative group outline-none focus-visible:ring-0 focus-visible:ring-offset-0`}
               >
                 <span className="relative z-10">{item.label}</span>
                 <span className={`absolute bottom-0 left-0 h-0.5 ${item.isPromo ? 'bg-destructive' : 'bg-primary'} transition-all duration-300 group-hover:w-full w-0`}></span>
