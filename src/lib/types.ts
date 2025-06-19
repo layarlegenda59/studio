@@ -19,6 +19,7 @@ export interface Promotion {
   description: string;
   ctaText: string;
   ctaLink: string;
+  objectPosition?: string; // Added for image positioning
 }
 
 export type ShippingVendor = 'JNE' | 'JNT' | 'SiCepat' | 'Lion Parcel';

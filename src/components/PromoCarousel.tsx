@@ -69,6 +69,7 @@ export default function PromoCarousel({ promotions }: PromoCarouselProps) {
                     alt={promo.title}
                     layout="fill"
                     objectFit="cover"
+                    objectPosition={promo.objectPosition || '50% 50%'} // Use defined position or default
                     priority={index === 0}
                     data-ai-hint="fashion sale banner"
                   />

@@ -9,6 +9,7 @@ export const mockPromotions: Promotion[] = [
     description: 'Plus Diskon 50% untuk item tertentu. Jangan lewatkan!',
     ctaText: 'Belanja Sekarang',
     ctaLink: '#products',
+    objectPosition: '50% 70%', // Added image positioning
   },
   {
     id: 'promo2',
@@ -108,4 +109,3 @@ export const mockShippingCosts: ShippingCost[] = [
     { vendor: 'SiCepat', service: 'BEST', cost: 25000, estimatedDelivery: '1-2 hari' },
     { vendor: 'Lion Parcel', service: 'REGPACK', cost: 17000, estimatedDelivery: '3-5 hari' },
 ];
-
