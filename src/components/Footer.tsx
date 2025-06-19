@@ -44,8 +44,6 @@ export default function Footer() {
               <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">Promo Partner Kami</Link></li>
               <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">Konfirmasi Transfer</Link></li>
               <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">Hubungi Kami</Link></li>
-              <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">Cara Berjualan</Link></li>
-              <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">Pengembalian Ongkir</Link></li>
               <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">Status Order</Link></li>
               <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">Brand di Goodstock-X</Link></li>
             </ul>
@@ -57,11 +55,8 @@ export default function Footer() {
             <ul className="space-y-2 text-sm">
               <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">About Us</Link></li>
               <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">Promosikan Brand Anda</Link></li>
-              <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">Pers/Media</Link></li>
-              <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">Karir</Link></li>
               <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">Persyaratan & Ketentuan</Link></li>
               <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">Kebijakan Privasi</Link></li>
-              <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">Responsible Disclosure</Link></li>
               <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">Influencer Program</Link></li>
               <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">Goodstock-X THREAD</Link></li>
             </ul>
