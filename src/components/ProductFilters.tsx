@@ -23,7 +23,18 @@ const allSizes = ["S", "M", "L", "XL", "38", "39", "40", "41", "42", "One Size"]
   if (b === "One Size") return -1;
   return a.localeCompare(b); // then alphabetical for S, M, L, XL
 });
-const allBrands = Array.from(new Set(mockProducts.map(p => p.brand))).sort();
+
+const providedBrandsList = [
+  "adidas", "nike", "Air Jordan", "reebok", "New Balance", "puma", "asics", "Diadora", "Umbro", "Fila",
+  "GAP", "Uniqlo", "onitsuka tiger", "under armour", "Salomon", "On Cloud", "Li-Ning", "yonex", "mizuno",
+  "columbia", "timberland", "Dr. Martens", "Clarks", "Converse", "Vans", "Skechers", "lacoste",
+  "Stone Island", "Saucony", "K-Swiss", "Kenzo", "Levis", "balenciaga", "Fendi", "Louis Vuitton",
+  "Coach", "Bally", "Versace", "Ferragamo", "Tumi", "Gucci", "Dior", "prada", "Givenchy", "Hermes",
+  "H&M", "The North Face", "calvin klein", "Ecco", "Burberry", "Carhartt", "Christian Louboutin", "Chanel"
+];
+
+const allBrands = Array.from(new Set(providedBrandsList)).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
+
 
 const priceOptions = [
   { label: "RP 0 - RP 100.000", value: [0, 100000] },
