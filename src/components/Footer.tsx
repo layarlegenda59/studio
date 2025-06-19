@@ -24,7 +24,7 @@ export default function Footer() {
             <p className="text-sm text-gray-400">E-mail: <a href="mailto:customer@goodstockx.com" className="hover:text-white hover:underline">customer@goodstockx.com</a></p>
             <p className="text-sm text-gray-400">WhatsApp: <a href="https://wa.me/6281234567890" target="_blank" rel="noopener noreferrer" className="hover:text-white hover:underline">+62 812 3456 7890</a></p>
             
-            <h6 className="text-xl font-headline font-semibold mt-6 mb-3">Temukan Kami</h6>
+            <h6 className="text-lg font-headline font-semibold mt-6 mb-3">Temukan Kami</h6>
             <div className="flex space-x-3">
               <Link href="#" aria-label="Facebook" className="text-gray-400 hover:text-white"><Facebook size={20} /></Link>
               <Link href="#" aria-label="Instagram" className="text-gray-400 hover:text-white"><Instagram size={20} /></Link>
