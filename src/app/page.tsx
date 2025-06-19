@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState, useEffect, useRef, useCallback, useImperativeHandle } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Header from '@/components/Header';
 import PromoCarousel from '@/components/PromoCarousel';
@@ -10,7 +10,7 @@ import WhatsAppButton from '@/components/WhatsAppButton';
 import ShippingCalculator from '@/components/ShippingCalculator';
 import WhatsAppOrderForm from '@/components/WhatsAppOrderForm';
 import Footer from '@/components/Footer';
-import ProductFilters, { type FilterState as ProductFilterState } from '@/components/ProductFilters';
+import ProductFilters, { type FilterState as ProductFilterStateOriginal } from '@/components/ProductFilters';
 import { mockProducts, mockPromotions } from '@/lib/mockData';
 import type { Product } from '@/lib/types';
 import { useToast } from "@/hooks/use-toast";
@@ -18,18 +18,23 @@ import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { FilterIcon } from 'lucide-react';
 
-interface FilterState extends ProductFilterState {
-  types: string[];
+// Update FilterState to include brands and remove others
+interface FilterState extends Omit<ProductFilterStateOriginal, 'types' | 'gender' | 'promoOnly'> {
+  brands: string[];
+  // Optionally, keep types if needed for other functionalities, but remove from ProductFilters.tsx for now
+  types?: string[]; 
+  gender?: string;
+  promoOnly?: boolean;
 }
 
-// Define initialFilters directly in the component scope
 const initialFilters: FilterState = {
   categories: [],
   sizes: [],
-  types: [],
-  gender: "Unisex",
+  brands: [],
+  types: [], // Keep for potential future use or if menu navigates by type
+  gender: "Unisex", // Keep for potential future use
   priceRange: [0, 2000000],
-  promoOnly: false,
+  promoOnly: false, // Keep for potential future use
 };
 
 export default function Home() {
@@ -50,15 +55,15 @@ export default function Home() {
 
     const genderParam = params.get('gender');
     if (genderParam) newFiltersState.gender = genderParam;
+
+    const brandParam = params.get('brand'); // Added for brand
+    if (brandParam) newFiltersState.brands = brandParam.split(',');
     
     const minPriceParam = params.get('minPrice');
     const maxPriceParam = params.get('maxPrice');
     if (minPriceParam && maxPriceParam) {
       newFiltersState.priceRange = [parseInt(minPriceParam, 10), parseInt(maxPriceParam, 10)];
     }
-
-    const promoParam = params.get('promoOnly');
-    if (promoParam) newFiltersState.promoOnly = promoParam === 'true';
     
     return newFiltersState;
   });
@@ -74,9 +79,10 @@ export default function Home() {
     const params = new URLSearchParams(searchParams.toString());
     const newFiltersState: FilterState = { 
       categories: params.get('category')?.split(',') || initialFiltersRef.current.categories,
-      sizes: params.get('sizes')?.split(',') || initialFiltersRef.current.sizes, // Assuming sizes can also come from URL
+      sizes: params.get('sizes')?.split(',') || initialFiltersRef.current.sizes,
       types: params.get('type')?.split(',') || initialFiltersRef.current.types,
       gender: params.get('gender') || initialFiltersRef.current.gender,
+      brands: params.get('brand')?.split(',') || initialFiltersRef.current.brands, // Added for brand
       priceRange: [
         params.has('minPrice') ? parseInt(params.get('minPrice')!, 10) : initialFiltersRef.current.priceRange[0],
         params.has('maxPrice') ? parseInt(params.get('maxPrice')!, 10) : initialFiltersRef.current.priceRange[1],
@@ -84,14 +90,13 @@ export default function Home() {
       promoOnly: params.get('promoOnly') === 'true' || initialFiltersRef.current.promoOnly,
     };
 
-    // Only update if there are actual changes based on URL params compared to current filters
     if (JSON.stringify(newFiltersState) !== JSON.stringify(filters)) {
         setFilters(newFiltersState);
         if (productFiltersRef.current) {
             productFiltersRef.current.setFiltersFromParent(newFiltersState);
         }
     }
-  }, [searchParams, filters]); // Add filters to dependency array for re-evaluation when filters change through UI
+  }, [searchParams, filters]);
 
 
   useEffect(() => {
@@ -103,9 +108,9 @@ export default function Home() {
       );
     }
     
-    if (filters.types.length > 0) {
+    if (filters.types && filters.types.length > 0) { // Check if filters.types exists
       productsToFilter = productsToFilter.filter(product =>
-        product.type && filters.types.includes(product.type)
+        product.type && filters.types!.includes(product.type)
       );
     }
 
@@ -114,8 +119,14 @@ export default function Home() {
         product.sizes.some(size => filters.sizes.includes(size))
       );
     }
+
+    if (filters.brands.length > 0) { // Added brand filter logic
+      productsToFilter = productsToFilter.filter(product =>
+        filters.brands.includes(product.brand)
+      );
+    }
     
-    if (filters.gender !== "Unisex") {
+    if (filters.gender && filters.gender !== "Unisex") { // Check if filters.gender exists
          productsToFilter = productsToFilter.filter(product => product.gender === filters.gender || product.gender === "Unisex");
     }
 
@@ -124,21 +135,25 @@ export default function Home() {
       return price >= filters.priceRange[0] && price <= filters.priceRange[1];
     });
 
-    if (filters.promoOnly) {
+    if (filters.promoOnly) { // Check if filters.promoOnly exists
       productsToFilter = productsToFilter.filter(product => product.isPromo);
     }
 
     setFilteredProducts(productsToFilter);
   }, [filters]);
 
-  const handleFilterChange = useCallback((newFilters: ProductFilterState) => {
-    // Preserve types from existing filters if not explicitly changed by ProductFilters
+  const handleFilterChange = useCallback((newFiltersFromComponent: ProductFilterStateOriginal) => {
+    // newFiltersFromComponent will now be of type ProductFilterState (from ProductFilters.tsx)
+    // which includes `brands` and excludes `types`, `gender`, `promoOnly`.
+    // We merge it with the existing filters, preserving other parts of FilterState in page.tsx
     setFilters(prevFilters => ({
-        ...prevFilters, // Keep existing types if ProductFilterState doesn't include types
-        ...newFilters, // Override with new filters from ProductFilters
-        types: (newFilters as FilterState).types || prevFilters.types, // Ensure types are correctly merged
+        ...prevFilters, // Keep existing parts like types, gender, promoOnly if they are still in page.tsx's FilterState
+        categories: newFiltersFromComponent.categories,
+        sizes: newFiltersFromComponent.sizes,
+        brands: (newFiltersFromComponent as FilterState).brands, // Cast to get brands
+        priceRange: newFiltersFromComponent.priceRange,
     }));
-    setIsFilterSheetOpen(false); // Close sheet on mobile after applying
+    setIsFilterSheetOpen(false);
   }, []);
 
   const handleToggleWishlist = (product: Product) => {
@@ -220,7 +235,6 @@ export default function Home() {
         
         <div className="container mx-auto px-4 py-8">
           <div className="flex flex-col lg:flex-row gap-8">
-            {/* Filter Sidebar for Desktop */}
             <aside className="hidden lg:block lg:w-1/4 xl:w-1/5 space-y-6 sticky top-20 self-start h-[calc(100vh-10rem)] overflow-y-auto pr-4">
               <h3 className="text-xl font-headline font-semibold">Filter Produk</h3>
               <ProductFilters 
@@ -230,12 +244,10 @@ export default function Home() {
               />
             </aside>
 
-            {/* Product Grid and other sections */}
             <div className="lg:w-3/4 xl:w-4/5 space-y-12">
               <section id="products" className="w-full">
                  <div className="flex justify-between items-center mb-6">
                     <h2 className="text-2xl md:text-3xl font-headline text-left">Kamu Mungkin Suka Produk Ini 🥰</h2>
-                    {/* Filter Trigger for Mobile */}
                     <div className="lg:hidden">
                     <Sheet open={isFilterSheetOpen} onOpenChange={setIsFilterSheetOpen}>
                         <SheetTrigger asChild>
@@ -248,7 +260,7 @@ export default function Home() {
                             <SheetHeader className="p-4 border-b">
                                 <SheetTitle>Filter Produk</SheetTitle>
                             </SheetHeader>
-                            <div className="p-4 overflow-y-auto h-[calc(100vh-4rem)]"> {/* Adjust height as needed */}
+                            <div className="p-4 overflow-y-auto h-[calc(100vh-4rem)]">
                                 <ProductFilters 
                                     ref={productFiltersRef}
                                     onFilterChange={handleFilterChange} 
@@ -284,7 +296,7 @@ export default function Home() {
           </div>
         </div>
       </main>
-      <WhatsAppButton phoneNumber="+6281234567890" /> {/* Replace with actual number */}
+      <WhatsAppButton phoneNumber="+6281234567890" />
       <Footer />
       <style jsx global>{`
         .shadow-text {
@@ -294,3 +306,4 @@ export default function Home() {
     </div>
   );
 }
+

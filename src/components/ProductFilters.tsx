@@ -4,26 +4,24 @@
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Slider } from "@/components/ui/slider";
-import { Switch } from "@/components/ui/switch";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import React, { useState, useEffect, useImperativeHandle, forwardRef } from 'react';
+import { Input } from "@/components/ui/input"; // Ditambahkan
+import { ScrollArea } from "@/components/ui/scroll-area"; // Ditambahkan
+import React, { useState, useEffect, useImperativeHandle, forwardRef, useMemo } from 'react';
+import { mockProducts } from "@/lib/mockData"; // Ditambahkan untuk mendapatkan daftar brand
 
 const allCategories = ["Sepatu", "Tas", "Pakaian"];
 const allSizes = ["S", "M", "L", "XL", "38", "39", "40", "41", "42", "One Size"];
-const allGenders = ["Pria", "Wanita", "Unisex"];
-// Tipe produk bisa dinamis, untuk sekarang kita hardcode beberapa contoh
-const allTypes = ["Sneakers", "Formal", "Boots", "Olahraga", "Selempang", "Ransel", "Dompet", "Kemeja", "Kaos", "Hoodies", "Jaket", "Atasan", "Bawahan", "Outerwear"];
 
+// Mendapatkan semua brand unik dari mockProducts
+const allBrands = Array.from(new Set(mockProducts.map(p => p.brand))).sort();
 
 export interface FilterState {
   categories: string[];
   sizes: string[];
-  types: string[];
-  gender: string;
+  brands: string[]; // Ditambahkan
   priceRange: [number, number];
-  promoOnly: boolean;
 }
 
 interface ProductFiltersProps {
@@ -38,19 +36,16 @@ const ProductFilters = forwardRef<
   
   const [selectedCategories, setSelectedCategories] = useState<string[]>(initialFilters?.categories || []);
   const [selectedSizes, setSelectedSizes] = useState<string[]>(initialFilters?.sizes || []);
-  const [selectedTypes, setSelectedTypes] = useState<string[]>(initialFilters?.types || []);
-  const [selectedGender, setSelectedGender] = useState<string>(initialFilters?.gender || "Unisex");
+  const [selectedBrands, setSelectedBrands] = useState<string[]>(initialFilters?.brands || []); // Ditambahkan
   const [priceRange, setPriceRange] = useState<[number, number]>(initialFilters?.priceRange || [0, 2000000]);
-  const [promoOnly, setPromoOnly] = useState<boolean>(initialFilters?.promoOnly || false);
+  const [brandSearchTerm, setBrandSearchTerm] = useState(''); // Ditambahkan
 
   useImperativeHandle(ref, () => ({
     setFiltersFromParent: (newFilters: FilterState) => {
       setSelectedCategories(newFilters.categories || []);
       setSelectedSizes(newFilters.sizes || []);
-      setSelectedTypes(newFilters.types || []);
-      setSelectedGender(newFilters.gender || "Unisex");
+      setSelectedBrands(newFilters.brands || []); // Ditambahkan
       setPriceRange(newFilters.priceRange || [0, 2000000]);
-      setPromoOnly(newFilters.promoOnly || false);
     }
   }));
   
@@ -58,23 +53,22 @@ const ProductFilters = forwardRef<
     if (initialFilters) {
       setSelectedCategories(initialFilters.categories || []);
       setSelectedSizes(initialFilters.sizes || []);
-      setSelectedTypes(initialFilters.types || []);
-      setSelectedGender(initialFilters.gender || "Unisex");
+      setSelectedBrands(initialFilters.brands || []); // Ditambahkan
       setPriceRange(initialFilters.priceRange || [0, 2000000]);
-      setPromoOnly(initialFilters.promoOnly || false);
     }
   }, [initialFilters]);
 
+  const filteredBrands = useMemo(() => {
+    return allBrands.filter(brand => brand.toLowerCase().includes(brandSearchTerm.toLowerCase()));
+  }, [brandSearchTerm]);
 
   const handleApplyFilters = () => {
     if (onFilterChange) {
       onFilterChange({
         categories: selectedCategories,
         sizes: selectedSizes,
-        types: selectedTypes,
-        gender: selectedGender,
+        brands: selectedBrands, // Ditambahkan
         priceRange,
-        promoOnly,
       });
     }
   };
@@ -91,16 +85,15 @@ const ProductFilters = forwardRef<
     );
   };
   
-  const handleTypeChange = (type: string) => {
-    setSelectedTypes(prev =>
-      prev.includes(type) ? prev.filter(t => t !== type) : [...prev, type]
+  const handleBrandChange = (brand: string) => { // Ditambahkan
+    setSelectedBrands(prev =>
+      prev.includes(brand) ? prev.filter(b => b !== brand) : [...prev, brand]
     );
   };
 
-
   return (
     <div className="space-y-6">
-      <Accordion type="multiple" defaultValue={['category', 'type', 'price', 'gender']} className="w-full">
+      <Accordion type="multiple" defaultValue={['category', 'brand', 'price', 'size']} className="w-full">
         <AccordionItem value="category">
           <AccordionTrigger className="font-headline text-base">Kategori</AccordionTrigger>
           <AccordionContent className="space-y-2 pt-2">
@@ -117,49 +110,50 @@ const ProductFilters = forwardRef<
           </AccordionContent>
         </AccordionItem>
 
-        <AccordionItem value="type">
-          <AccordionTrigger className="font-headline text-base">Tipe Produk</AccordionTrigger>
-          <AccordionContent className="space-y-2 pt-2 max-h-48 overflow-y-auto">
-            {allTypes.map((type) => (
-              <div key={type} className="flex items-center space-x-2">
-                <Checkbox 
-                  id={`type-${type}`}
-                  checked={selectedTypes.includes(type)}
-                  onCheckedChange={() => handleTypeChange(type)}
-                />
-                <Label htmlFor={`type-${type}`} className="font-normal">{type}</Label>
+        <AccordionItem value="brand"> 
+          <AccordionTrigger className="font-headline text-base">Merk</AccordionTrigger>
+          <AccordionContent className="space-y-3 pt-2">
+            <Input 
+              type="search"
+              placeholder="Cari merk..."
+              value={brandSearchTerm}
+              onChange={(e) => setBrandSearchTerm(e.target.value)}
+              className="h-9 text-sm"
+            />
+            <ScrollArea className="h-40">
+              <div className="space-y-2 pr-2">
+                {filteredBrands.length > 0 ? filteredBrands.map((brand) => (
+                  <div key={brand} className="flex items-center space-x-2">
+                    <Checkbox 
+                      id={`brand-${brand}`}
+                      checked={selectedBrands.includes(brand)}
+                      onCheckedChange={() => handleBrandChange(brand)}
+                    />
+                    <Label htmlFor={`brand-${brand}`} className="font-normal">{brand}</Label>
+                  </div>
+                )) : <p className="text-xs text-muted-foreground">Merk tidak ditemukan.</p>}
               </div>
-            ))}
+            </ScrollArea>
           </AccordionContent>
         </AccordionItem>
 
         <AccordionItem value="size">
           <AccordionTrigger className="font-headline text-base">Ukuran</AccordionTrigger>
-          <AccordionContent className="space-y-2 pt-2 max-h-48 overflow-y-auto">
-            {allSizes.map((size) => (
-              <div key={size} className="flex items-center space-x-2">
-                <Checkbox 
-                  id={`size-${size}`}
-                  checked={selectedSizes.includes(size)}
-                  onCheckedChange={() => handleSizeChange(size)}
-                />
-                <Label htmlFor={`size-${size}`} className="font-normal">{size}</Label>
+          <AccordionContent className="space-y-2 pt-2">
+            <ScrollArea className="h-40">
+              <div className="space-y-2 pr-2">
+                {allSizes.map((size) => (
+                  <div key={size} className="flex items-center space-x-2">
+                    <Checkbox 
+                      id={`size-${size}`}
+                      checked={selectedSizes.includes(size)}
+                      onCheckedChange={() => handleSizeChange(size)}
+                    />
+                    <Label htmlFor={`size-${size}`} className="font-normal">{size}</Label>
+                  </div>
+                ))}
               </div>
-            ))}
-          </AccordionContent>
-        </AccordionItem>
-
-        <AccordionItem value="gender">
-          <AccordionTrigger className="font-headline text-base">Gender</AccordionTrigger>
-          <AccordionContent className="pt-2">
-            <RadioGroup value={selectedGender} onValueChange={setSelectedGender}>
-              {allGenders.map((gender) => (
-                <div key={gender} className="flex items-center space-x-2">
-                  <RadioGroupItem value={gender} id={`gender-${gender}`} />
-                  <Label htmlFor={`gender-${gender}`} className="font-normal">{gender}</Label>
-                </div>
-              ))}
-            </RadioGroup>
+            </ScrollArea>
           </AccordionContent>
         </AccordionItem>
 
@@ -181,16 +175,6 @@ const ProductFilters = forwardRef<
             </div>
           </AccordionContent>
         </AccordionItem>
-
-        <AccordionItem value="promo">
-          <AccordionTrigger className="font-headline text-base">Status Promo</AccordionTrigger>
-          <AccordionContent className="pt-2">
-            <div className="flex items-center space-x-2">
-              <Switch id="promo-status" checked={promoOnly} onCheckedChange={setPromoOnly} />
-              <Label htmlFor="promo-status" className="font-normal">Hanya Produk Promo</Label>
-            </div>
-          </AccordionContent>
-        </AccordionItem>
       </Accordion>
 
       <Button onClick={handleApplyFilters} className="w-full">
@@ -202,3 +186,4 @@ const ProductFilters = forwardRef<
 
 ProductFilters.displayName = "ProductFilters";
 export default ProductFilters;
+
