@@ -357,7 +357,7 @@ export default function Header({ wishlistItems, onRemoveFromWishlist }: HeaderPr
                 <Heart className="h-4 w-4" />
               </Button>
             </PopoverTrigger>
-            <PopoverContent align="end" sideOffset={5} className="w-80 p-4">
+            <PopoverContent align="end" sideOffset={5} className="w-96 p-4">
               <div className="space-y-4">
                 <h4 className="font-medium leading-none text-foreground">Wishlist Saya</h4>
                 <ScrollArea className="h-[300px] w-full">
@@ -487,3 +487,4 @@ export default function Header({ wishlistItems, onRemoveFromWishlist }: HeaderPr
     </header>
   );
 }
+
