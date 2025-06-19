@@ -14,8 +14,8 @@ import { mockProducts } from "@/lib/mockData";
 
 const allCategories = ["Sepatu", "Tas", "Pakaian"];
 const allSizes = [
-  "S", "M", "L", "XL", 
-  "35", "36", "37", "37.5", "38", "38.5", "39", "40", "41", "42", "43", "44", "45", "46.5", "47", 
+  "S", "M", "L", "XL",
+  "35", "36", "37", "37.5", "38", "38.5", "39", "40", "41", "42", "43", "44", "45", "46.5", "47",
   "One Size"
 ].sort((a, b) => {
   const numA = parseFloat(a);
@@ -45,11 +45,11 @@ const allBrands = Array.from(new Set(providedBrandsList.map(brand => brand.trim(
 
 
 const priceOptions = [
-  { label: "RP 0 - RP 100.000", value: [0, 100000] },
-  { label: "RP 100.000 - RP 250.000", value: [100000, 250000] },
-  { label: "RP 250.000 - RP 500.000", value: [250000, 500000] },
-  { label: "RP 500.000 - RP 1.000.000", value: [500000, 1000000] },
-  { label: "Diatas RP 1.000.000", value: [1000000, 2000000] }, // Max price up to 2M as per initialFilters
+  { label: "Rp. 0 - Rp. 100.000", value: [0, 100000] },
+  { label: "Rp. 100.000 - Rp. 250.000", value: [100000, 250000] },
+  { label: "Rp. 250.000 - Rp. 500.000", value: [250000, 500000] },
+  { label: "Rp. 500.000 - Rp. 1.000.000", value: [500000, 1000000] },
+  { label: "Diatas Rp. 1.000.000", value: [1000000, 2000000] },
 ];
 
 export interface FilterState {
@@ -98,8 +98,6 @@ const ProductFilters = forwardRef<
   }));
   
   useEffect(() => {
-    // This effect ensures that when initialFilters prop changes (e.g., from URL params on page load),
-    // the internal state of ProductFilters is updated accordingly.
     if (initialFilters) {
       setSelectedCategories(initialFilters.categories || []);
       setSelectedSizes(initialFilters.sizes || []);
@@ -108,7 +106,6 @@ const ProductFilters = forwardRef<
       const initMax = initialFilters.priceRange?.[1]?.toString() || "2000000";
       setMinPrice(initMin);
       setMaxPrice(initMax);
-      // Sync radio button state with initial price range
       const matchingOption = priceOptions.find(opt => opt.value[0] === (initialFilters.priceRange?.[0] ?? 0) && opt.value[1] === (initialFilters.priceRange?.[1] ?? 2000000));
       setActivePriceRadio(matchingOption ? JSON.stringify(matchingOption.value) : undefined);
     }
@@ -124,8 +121,6 @@ const ProductFilters = forwardRef<
       const numMaxPrice = parseInt(maxPrice, 10);
 
       const validMinPrice = isNaN(numMinPrice) ? 0 : numMinPrice;
-      // Ensure maxPrice is not less than minPrice, if maxPrice is less, set to a default high or minPrice itself.
-      // For simplicity, keeping current behavior: if maxPrice is invalid, default to 2,000,000.
       const validMaxPrice = (isNaN(numMaxPrice) || numMaxPrice < validMinPrice) ? 2000000 : numMaxPrice;
       
       onFilterChange({
