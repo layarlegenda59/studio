@@ -335,7 +335,7 @@ export default function Header({
             <Search className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           </form>
 
-          <Button asChild variant="ghost" size="icon" aria-label="Shopping Cart" className="h-9 w-9 text-foreground/80 outline-none focus-visible:ring-0 focus-visible:ring-offset-0">
+          <Button asChild variant="ghost" size="icon" aria-label="Shopping Cart" className="h-9 w-9 text-foreground/80 outline-none focus-visible:ring-0 focus-visible:ring-offset-0 hover:bg-accent hover:text-accent-foreground">
             <Link href="/#whatsapp-order">
               <ShoppingCart className="h-4 w-4" />
             </Link>
@@ -343,7 +343,7 @@ export default function Header({
           
           <Popover open={isWishlistPopoverOpen} onOpenChange={setIsWishlistPopoverOpen}>
             <PopoverTrigger asChild>
-              <Button variant="ghost" size="icon" aria-label="Wishlist" className="h-9 w-9 text-foreground/80 outline-none focus-visible:ring-0 focus-visible:ring-offset-0">
+              <Button variant="ghost" size="icon" aria-label="Wishlist" className="h-9 w-9 text-foreground/80 outline-none focus-visible:ring-0 focus-visible:ring-offset-0 hover:bg-accent hover:text-accent-foreground">
                 <Heart className="h-4 w-4" />
               </Button>
             </PopoverTrigger>
@@ -405,9 +405,11 @@ export default function Header({
             </PopoverContent>
           </Popover>
 
-          <Button variant="ghost" size="sm" className="h-9 px-3 text-foreground/80 outline-none focus-visible:ring-0 focus-visible:ring-offset-0">
-            <User className="h-4 w-4 mr-1.5" />
-            Masuk / Daftar
+          <Button asChild variant="ghost" size="sm" className="h-9 px-3 text-foreground/80 outline-none focus-visible:ring-0 focus-visible:ring-offset-0 hover:bg-accent hover:text-accent-foreground">
+            <Link href="/login">
+              <User className="h-4 w-4" />
+              Masuk / Daftar
+            </Link>
           </Button>
         </div>
 
@@ -465,9 +467,11 @@ export default function Header({
                     <span>Tas Belanja</span>
                   </Link>
                 </Button>
-                <Button variant="ghost" className="w-full justify-start pl-2 space-x-2" onClick={() => setIsSheetOpen(false)}>
-                  <User className="h-4 w-4" />
-                  <span>Masuk / Daftar</span>
+                <Button asChild variant="ghost" className="w-full justify-start pl-2 space-x-2" onClick={() => setIsSheetOpen(false)}>
+                  <Link href="/login">
+                    <User className="h-4 w-4" />
+                    <span>Masuk / Daftar</span>
+                  </Link>
                 </Button>
               </div>
             </SheetContent>
@@ -477,3 +481,4 @@ export default function Header({
     </header>
   );
 }
+
