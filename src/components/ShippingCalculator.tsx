@@ -46,7 +46,7 @@ export default function ShippingCalculator() {
   return (
     <Card className="w-full max-w-2xl mx-auto shadow-lg">
       <CardHeader>
-        <CardTitle className="font-bold text-xl">Kalkulator Ongkos Kirim</CardTitle>
+        <CardTitle className="font-headline text-xl">Kalkulator Ongkos Kirim</CardTitle>
         <CardDescription>Hitung estimasi biaya pengiriman untuk pesanan Anda.</CardDescription>
       </CardHeader>
       <form onSubmit={handleSubmit}>
@@ -100,3 +100,4 @@ export default function ShippingCalculator() {
     </Card>
   );
 }
+
