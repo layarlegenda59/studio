@@ -4,7 +4,7 @@ import type { Product, Promotion, ShippingCost, ShippingVendor } from './types';
 export const mockPromotions: Promotion[] = [
   {
     id: 'promo1',
-    imageUrl: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxmYXNoaW9uJTIwc2FsZXxlbnwwfHx8fDE3NTAyMTc4MDN8MA&ixlib=rb-4.1.0&q=80&w=1080', // Placeholder: Replace with your uploaded image URL
+    imageUrl: 'https://images.unsplash.com/photo-1750079521605-9ac6f0edd902?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxmYXNoaW9uJTIwc2FsZSUyMGJhbm5lcnxlbnwwfHx8fDE3NTAyMTc4MDN8MA&ixlib=rb-4.1.0&q=80&w=1080',
     title: 'BELI 2 DAPAT 1 GRATIS!',
     description: 'Plus Diskon 50% untuk item tertentu. Jangan lewatkan!',
     ctaText: 'Belanja Sekarang',
@@ -12,20 +12,20 @@ export const mockPromotions: Promotion[] = [
   },
   {
     id: 'promo2',
-    imageUrl: 'https://images.unsplash.com/photo-1445205170230-053b83016050?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxmYXNoaW9uJTIwc2FsZSUyMGJhbm5lcnxlbnwwfHx8fDE3NTAyMjY0NzJ8MA&ixlib=rb-4.1.0&q=80&w=1080',
+    imageUrl: 'https://images.unsplash.com/photo-1699178199548-54ccec588de1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxmYXNoaW9uJTIwc2FsZSUyMGJhbm5lcnxlbnwwfHx8fDE3NTAyMTc4MDN8MA&ixlib=rb-4.1.0&q=80&w=1080',
     title: 'Koleksi Terbaru Telah Tiba',
     description: 'Jelajahi gaya terbaru musim ini.',
     ctaText: 'Lihat Koleksi',
     ctaLink: '#products',
   },
-  {
-    id: 'promo3',
-    imageUrl: 'https://images.unsplash.com/photo-1559563458-527999e24240?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxmYXNoaW9uJTIwc2FsZSUyMGJhbm5lcnxlbnwwfHx8fDE3NTAyMjY0NzJ8MA&ixlib=rb-4.1.0&q=80&w=1080',
-    title: 'Gratis Ongkir Seluruh Indonesia',
-    description: 'Nikmati gratis ongkir dengan minimal pembelian Rp200.000.',
-    ctaText: 'S&K Berlaku',
-    ctaLink: '#',
-  },
+  // {
+  //   id: 'promo3',
+  //   imageUrl: 'https://ggbivmpazczpgtmnfwfs.supabase.co/storage/v1/object/sign/material/promo-2.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jYjkzYjM4Zi1kOGJhLTRmYTEtYmM0ZC00MWUzOGU4YTZhNzgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYXRlcmlhbC9wcm9tby0yLnBuZyIsImlhdCI6MTc1MDIyNDA4NSwiZXhwIjoxNzgxNzYwMDg1fQ.PMI7Kw026CFpVVM75dgFWGd36ZcJx5xvkB_mqDdmWhI',
+  //   title: 'Gratis Ongkir Seluruh Indonesia',
+  //   description: 'Nikmati gratis ongkir dengan minimal pembelian Rp200.000.',
+  //   ctaText: 'S&K Berlaku',
+  //   ctaLink: '#',
+  // },
 ];
 
 export const mockProducts: Product[] = [
