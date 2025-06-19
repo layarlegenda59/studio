@@ -27,6 +27,12 @@ export default function ProductCard({ product }: ProductCardProps) {
     ? Math.round(((product.originalPrice - product.promoPrice) / product.originalPrice) * 100)
     : 0;
 
+  // Placeholder click handler for size buttons
+  const handleSizeClick = (size: string) => {
+    console.log(`Ukuran dipilih: ${size} untuk produk ${product.name}`);
+    // TODO: Implement actual logic for size selection if needed
+  };
+
   return (
     <Card className="group w-full overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-all duration-300 flex flex-col h-full">
       <CardHeader className="p-0 relative">
@@ -44,9 +50,9 @@ export default function ProductCard({ product }: ProductCardProps) {
       <CardContent className="p-3 flex-grow flex flex-col">
         <div className="flex justify-between items-start mb-1">
           <div className="flex-1 min-w-0 pr-2">
-            <p className="text-xs text-foreground truncate" title={product.brand}>{product.brand}</p>
+            <p className="text-sm text-foreground truncate" title={product.brand}>{product.brand}</p>
             <h3 
-              className="text-sm font-semibold text-foreground mt-0.5 truncate group-hover:text-primary transition-colors" 
+              className="text-base font-semibold text-foreground mt-0.5 truncate group-hover:text-primary transition-colors" 
               title={product.name}
             >
               {product.name}
@@ -59,14 +65,25 @@ export default function ProductCard({ product }: ProductCardProps) {
 
         {product.sizes && product.sizes.length > 0 && (
           <div className="mb-2">
-            <p className="text-xs text-muted-foreground">
-              Ukuran: {product.sizes.join(', ')}
-            </p>
+            <p className="text-xs text-muted-foreground mb-1.5">Ukuran:</p>
+            <div className="flex flex-wrap gap-1.5">
+              {product.sizes.map((size) => (
+                <Button
+                  key={size}
+                  variant="outline"
+                  className="h-7 px-2.5 text-xs rounded-sm" // Custom styling for smaller, more square-like buttons
+                  onClick={() => handleSizeClick(size)}
+                  aria-label={`Pilih ukuran ${size}`}
+                >
+                  {size}
+                </Button>
+              ))}
+            </div>
           </div>
         )}
 
         {/* Price Section */}
-        <div className="mt-auto"> {/* This ensures price is pushed down if content above varies */}
+        <div className="mt-auto pt-2"> {/* Added pt-2 for spacing if sizes are present */}
           {product.promoPrice ? (
             <>
               <div className="inline-flex items-center gap-1 rounded-sm border border-destructive px-1.5 py-0.5 bg-destructive/5">
@@ -85,7 +102,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           )}
         </div>
       </CardContent>
-      <CardFooter className="p-3 pt-0">
+      <CardFooter className="p-3 pt-2"> {/* Adjusted pt-2 if sizes take more space */}
         <Button variant="outline" className="w-full h-9 text-sm">
           Lihat Detail
         </Button>
