@@ -83,7 +83,7 @@ export default function Home() {
           </section>
 
           <section id="shipping-calculator" className="my-16 p-6 bg-secondary/20 rounded-xl shadow-lg">
-            <h2 className="text-2xl font-bold mb-8 text-center">Hitung Ongkos Kirim</h2>
+            <h2 className="text-3xl font-headline mb-8 text-center">Hitung Ongkos Kirim</h2>
             <ShippingCalculator />
           </section>
 
