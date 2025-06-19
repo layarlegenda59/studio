@@ -45,128 +45,119 @@ interface NavItem {
 const navItems: NavItem[] = [
   {
     label: 'Sepatu',
-    href: '/products?category=Sepatu',
+    href: '/?category=Sepatu',
     subMenu: [
       {
         title: 'Pria',
         items: [
-          { label: 'Sneakers', href: '/products?category=Sepatu&gender=Pria&type=Sneakers' },
-          { label: 'Sepatu Formal', href: '/products?category=Sepatu&gender=Pria&type=Formal' },
-          { label: 'Boots', href: '/products?category=Sepatu&gender=Pria&type=Boots' },
-          { label: 'Sepatu Olahraga', href: '/products?category=Sepatu&gender=Pria&type=Olahraga' },
-          { label: 'Lihat Semua Sepatu Pria', href: '/products?category=Sepatu&gender=Pria' },
+          { label: 'Sneakers', href: '/?category=Sepatu&gender=Pria&type=Sneakers' },
+          { label: 'Sepatu Formal', href: '/?category=Sepatu&gender=Pria&type=Formal' },
+          { label: 'Boots', href: '/?category=Sepatu&gender=Pria&type=Boots' },
+          { label: 'Sepatu Olahraga', href: '/?category=Sepatu&gender=Pria&type=Olahraga' },
         ],
       },
       {
         title: 'Wanita',
         items: [
-          { label: 'Sneakers', href: '/products?category=Sepatu&gender=Wanita&type=Sneakers' },
-          { label: 'Flat Shoes', href: '/products?category=Sepatu&gender=Wanita&type=FlatShoes' },
-          { label: 'Boots', href: '/products?category=Sepatu&gender=Wanita&type=Boots' },
-          { label: 'Lihat Semua Sepatu Wanita', href: '/products?category=Sepatu&gender=Wanita' },
+          { label: 'Sneakers', href: '/?category=Sepatu&gender=Wanita&type=Sneakers' },
+          { label: 'Flat Shoes', href: '/?category=Sepatu&gender=Wanita&type=FlatShoes' },
+          { label: 'Boots', href: '/?category=Sepatu&gender=Wanita&type=Boots' },
         ],
       },
       {
         title: 'Anak',
         items: [
-          { label: 'Sepatu Anak Laki-laki', href: '/products?category=Sepatu&gender=Anak&type=Laki-laki' },
-          { label: 'Sepatu Anak Perempuan', href: '/products?category=Sepatu&gender=Anak&type=Perempuan' },
-          { label: 'Lihat Semua Sepatu Anak', href: '/products?category=Sepatu&gender=Anak' },
+          { label: 'Sepatu Anak Laki-laki', href: '/?category=Sepatu&gender=Anak&type=Laki-laki' },
+          { label: 'Sepatu Anak Perempuan', href: '/?category=Sepatu&gender=Anak&type=Perempuan' },
         ],
       }
     ],
     image: {
         src: 'https://ggbivmpazczpgtmnfwfs.supabase.co/storage/v1/object/sign/material/hemesh-patil-Kv1GtuqBVIY-unsplash.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jYjkzYjM4Zi1kOGJhLTRmYTEtYmM0ZC00MWUzOGU4YTZhNzgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYXRlcmlhbC9oZW1lc2gtcGF0aWwtS3YxR3R1cUJWSVktdW5zcGxhc2guanBnIiwiaWF0IjoxNzUwMzI2MjU4LCJleHAiOjE3ODE4NjIyNTh9.9WDexcgQMltvcVcfzX-wVqIzr7zjRNymOmJ5_lg7N9k',
         alt: 'Promo Sepatu Terbaru',
-        href: '/promo/sepatu',
+        href: '/?promo=sepatu',
         dataAiHint: 'shoes model'
     }
   },
   {
     label: 'Tas',
-    href: '/products?category=Tas',
+    href: '/?category=Tas',
     subMenu: [
        {
         title: 'Pria',
         items: [
-          { label: 'Tas Selempang', href: '/products?category=Tas&gender=Pria&type=Selempang' },
-          { label: 'Ransel', href: '/products?category=Tas&gender=Pria&type=Ransel' },
-          { label: 'Tas Pinggang', href: '/products?category=Tas&gender=Pria&type=Pinggang' },
-          { label: 'Dompet', href: '/products?category=Tas&gender=Pria&type=Dompet' },
-          { label: 'Lihat Semua Tas Pria', href: '/products?category=Tas&gender=Pria' },
+          { label: 'Tas Selempang', href: '/?category=Tas&gender=Pria&type=Selempang' },
+          { label: 'Ransel', href: '/?category=Tas&gender=Pria&type=Ransel' },
+          { label: 'Tas Pinggang', href: '/?category=Tas&gender=Pria&type=Pinggang' },
+          { label: 'Dompet', href: '/?category=Tas&gender=Pria&type=Dompet' },
         ],
       },
       {
         title: 'Wanita',
         items: [
-          { label: 'Tas Tangan', href: '/products?category=Tas&gender=Wanita&type=Tangan' },
-          { label: 'Tas Selempang', href: '/products?category=Tas&gender=Wanita&type=Selempang' },
-          { label: 'Dompet', href: '/products?category=Tas&gender=Wanita&type=Dompet' },
-          { label: 'Ransel', href: '/products?category=Tas&gender=Wanita&type=Ransel' },
-          { label: 'Lihat Semua Tas Wanita', href: '/products?category=Tas&gender=Wanita' },
+          { label: 'Tas Tangan', href: '/?category=Tas&gender=Wanita&type=Tangan' },
+          { label: 'Tas Selempang', href: '/?category=Tas&gender=Wanita&type=Selempang' },
+          { label: 'Dompet', href: '/?category=Tas&gender=Wanita&type=Dompet' },
+          { label: 'Ransel', href: '/?category=Tas&gender=Wanita&type=Ransel' },
         ],
       },
       {
         title: 'Anak',
         items: [
-          { label: 'Tas Anak Laki-laki', href: '/products?category=Tas&gender=Anak&type=Laki-laki' },
-          { label: 'Tas Anak Perempuan', href: '/products?category=Tas&gender=Anak&type=Perempuan' },
-          { label: 'Lihat Semua Tas Anak', href: '/products?category=Tas&gender=Anak' },
+          { label: 'Tas Anak Laki-laki', href: '/?category=Tas&gender=Anak&type=Laki-laki' },
+          { label: 'Tas Anak Perempuan', href: '/?category=Tas&gender=Anak&type=Perempuan' },
         ],
       }
     ],
     image: {
         src: 'https://ggbivmpazczpgtmnfwfs.supabase.co/storage/v1/object/sign/material/tamara-bellis-nOnT17lKYz8-unsplash.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jYjkzYjM4Zi1kOGJhLTRmYTEtYmM0ZC00MWUzOGU4YTZhNzgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYXRlcmlhbC90YW1hcmEtYmVsbGlzLW5PblQxN2xLWXo4LXVuc3BsYXNoLmpwZyIsImlhdCI6MTc1MDMxMzg1NiwiZXhwIjoxNzgxODQ5ODU2fQ.t0opmhBQSCwKw0hU5-HwokP7B8NnKQKyQbg7RrOXDog',
         alt: 'Koleksi Tas Eksklusif',
-        href: '/promo/tas',
+        href: '/?promo=tas',
         dataAiHint: 'bags collection'
     }
   },
   {
     label: 'Pakaian',
-    href: '/products?category=Pakaian',
+    href: '/?category=Pakaian',
     subMenu: [
         {
             title: 'Pria',
             items: [
-              { label: 'Kemeja', href: '/products?category=Pakaian&gender=Pria&type=Kemeja' },
-              { label: 'Kaos', href: '/products?category=Pakaian&gender=Pria&type=Kaos' },
-              { label: 'Hoodies', href: '/products?category=Pakaian&gender=Pria&type=Hoodies' },
-              { label: 'Celana', href: '/products?category=Pakaian&gender=Pria&type=Celana' },
-              { label: 'Jaket', href: '/products?category=Pakaian&gender=Pria&type=Jaket' },
-              { label: 'Pakaian Olahraga', href: '/products?category=Pakaian&gender=Pria&type=Olahraga' },
-              { label: 'Lihat Semua Pakaian Pria', href: '/products?category=Pakaian&gender=Pria' },
+              { label: 'Kemeja', href: '/?category=Pakaian&gender=Pria&type=Kemeja' },
+              { label: 'Kaos', href: '/?category=Pakaian&gender=Pria&type=Kaos' },
+              { label: 'Hoodies', href: '/?category=Pakaian&gender=Pria&type=Hoodies' },
+              { label: 'Celana', href: '/?category=Pakaian&gender=Pria&type=Celana' },
+              { label: 'Jaket', href: '/?category=Pakaian&gender=Pria&type=Jaket' },
+              { label: 'Pakaian Olahraga', href: '/?category=Pakaian&gender=Pria&type=Olahraga' },
             ]
         },
         {
             title: 'Wanita',
             items: [
-              { label: 'Atasan', href: '/products?category=Pakaian&gender=Wanita&type=Atasan' },
-              { label: 'Hoodies', href: '/products?category=Pakaian&gender=Wanita&type=Hoodies' },
-              { label: 'Bawahan', href: '/products?category=Pakaian&gender=Wanita&type=Bawahan' },
-              { label: 'Outerwear', href: '/products?category=Pakaian&gender=Wanita&type=Outerwear' },
-              { label: 'Lihat Semua Pakaian Wanita', href: '/products?category=Pakaian&gender=Wanita' },
+              { label: 'Atasan', href: '/?category=Pakaian&gender=Wanita&type=Atasan' },
+              { label: 'Hoodies', href: '/?category=Pakaian&gender=Wanita&type=Hoodies' },
+              { label: 'Bawahan', href: '/?category=Pakaian&gender=Wanita&type=Bawahan' },
+              { label: 'Outerwear', href: '/?category=Pakaian&gender=Wanita&type=Outerwear' },
             ]
         },
         {
             title: 'Anak',
             items: [
-              { label: 'Pakaian Anak Laki-laki', href: '/products?category=Pakaian&gender=Anak&type=Laki-laki' },
-              { label: 'Pakaian Anak Perempuan', href: '/products?category=Pakaian&gender=Anak&type=Perempuan' },
-              { label: 'Lihat Semua Pakaian Anak', href: '/products?category=Pakaian&gender=Anak' },
+              { label: 'Pakaian Anak Laki-laki', href: '/?category=Pakaian&gender=Anak&type=Laki-laki' },
+              { label: 'Pakaian Anak Perempuan', href: '/?category=Pakaian&gender=Anak&type=Perempuan' },
             ]
         }
     ],
     image: {
         src: 'https://ggbivmpazczpgtmnfwfs.supabase.co/storage/v1/object/sign/material/christian-bolt-VW5VjskNXZ8-unsplash.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jYjkzYjM4Zi1kOGJhLTRmYTEtYmM0ZC00MWUzOGU4YTZhNzgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYXRlcmlhbC9jaHJpc3RpYW4tYm9sdC1WVzVWanNrTlhaOC11bnNwbGFzaC5qcGciLCJpYXQiOjE3NTAzMTQxODEsImV4cCI6MTc4MTg1MDE4MX0.YukU4GE7kuBjt8i3A4sjr93kJer8Lrjkkbwmf_JIQ50',
         alt: 'Fashion Pakaian Terkini',
-        href: '/promo/pakaian',
+        href: '/?promo=pakaian',
         dataAiHint: 'clothes fashion'
     }
   },
   {
     label: 'Promo',
-    href: '#promo',
+    href: '/#promo', // Should link to a section or a promo page /?promo=all
     isPromo: true,
   },
 ];
@@ -219,7 +210,7 @@ export default function Header({
   const handleMainSearchSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (mainSearchQuery.trim()) {
-      router.push(`/search?q=${encodeURIComponent(mainSearchQuery.trim())}`);
+      router.push(`/?q=${encodeURIComponent(mainSearchQuery.trim())}`);
     }
   };
 
@@ -286,16 +277,17 @@ export default function Header({
                                 </Link>
                               </li>
                             ))}
-                            {groupIndex === 0 && item.href && item.label !== "Promo" && (
-                              <li key={`view-all-${item.label}`} className="mt-2 pt-2 border-t border-border/50">
+                             {/* Add "Lihat Semua [Kategori]" link for each gender group, linking to the main category page for that gender */}
+                            {group.title && item.href && item.label !== "Promo" && (
+                                <li key={`view-all-${item.label}-${group.title}`} className="mt-2 pt-2 border-t border-border/50">
                                 <Link
-                                  href={item.href}
-                                  className="block text-sm text-primary font-semibold hover:underline py-0.5"
-                                  onClick={() => closePopover(item.label)}
+                                    href={`${item.href}&gender=${group.title}`} // e.g. /?category=Sepatu&gender=Pria
+                                    className="block text-sm text-primary font-semibold hover:underline py-0.5"
+                                    onClick={() => closePopover(item.label)}
                                 >
-                                  Lihat Semua {item.label}
+                                    Lihat Semua {item.label} {group.title}
                                 </Link>
-                              </li>
+                                </li>
                             )}
                           </ul>
                         </div>
@@ -319,6 +311,18 @@ export default function Header({
                       </div>
                     )}
                   </div>
+                   {/* Add a general "Lihat Semua [Kategori]" link at the bottom if not already covered or for a general view */}
+                  {item.href && item.label !== "Promo" && (
+                    <div className="col-span-full mt-4 pt-4 border-t border-border/50">
+                        <Link
+                        href={item.href} // Main category link e.g. /?category=Sepatu
+                        className="block text-sm text-primary font-semibold hover:underline py-0.5 text-center"
+                        onClick={() => closePopover(item.label)}
+                        >
+                        Lihat Semua {item.label}
+                        </Link>
+                    </div>
+                    )}
                 </PopoverContent>
               </Popover>
             ) : (
@@ -492,4 +496,3 @@ export default function Header({
     </header>
   );
 }
-

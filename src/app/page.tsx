@@ -1,7 +1,8 @@
 
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useImperativeHandle } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Header from '@/components/Header';
 import PromoCarousel from '@/components/PromoCarousel';
 import ProductGrid from '@/components/ProductGrid';
@@ -9,30 +10,89 @@ import WhatsAppButton from '@/components/WhatsAppButton';
 import ShippingCalculator from '@/components/ShippingCalculator';
 import WhatsAppOrderForm from '@/components/WhatsAppOrderForm';
 import Footer from '@/components/Footer';
+import ProductFilters, { type FilterState as ProductFilterState } from '@/components/ProductFilters';
 import { mockProducts, mockPromotions } from '@/lib/mockData';
 import type { Product } from '@/lib/types';
 import { useToast } from "@/hooks/use-toast";
+import { Button } from '@/components/ui/button';
+import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from '@/components/ui/sheet';
+import { FilterIcon } from 'lucide-react';
 
-interface FilterState {
-  categories: string[];
-  sizes: string[];
-  gender: string;
-  priceRange: [number, number];
-  promoOnly: boolean;
+interface FilterState extends ProductFilterState {
+  types: string[];
 }
 
+// Define initialFilters directly in the component scope
+const initialFilters: FilterState = {
+  categories: [],
+  sizes: [],
+  types: [],
+  gender: "Unisex",
+  priceRange: [0, 2000000],
+  promoOnly: false,
+};
+
 export default function Home() {
-  const [filters, setFilters] = useState<FilterState>({
-    categories: [],
-    sizes: [],
-    gender: "Unisex",
-    priceRange: [0, 2000000],
-    promoOnly: false,
+  const searchParams = useSearchParams();
+  const { toast } = useToast();
+  
+  const initialFiltersRef = useRef<FilterState>({ ...initialFilters });
+
+  const [filters, setFilters] = useState<FilterState>(() => {
+    const params = new URLSearchParams(searchParams.toString());
+    const newFiltersState: FilterState = { ...initialFiltersRef.current };
+
+    const categoryParam = params.get('category');
+    if (categoryParam) newFiltersState.categories = categoryParam.split(',');
+    
+    const typeParam = params.get('type');
+    if (typeParam) newFiltersState.types = typeParam.split(',');
+
+    const genderParam = params.get('gender');
+    if (genderParam) newFiltersState.gender = genderParam;
+    
+    const minPriceParam = params.get('minPrice');
+    const maxPriceParam = params.get('maxPrice');
+    if (minPriceParam && maxPriceParam) {
+      newFiltersState.priceRange = [parseInt(minPriceParam, 10), parseInt(maxPriceParam, 10)];
+    }
+
+    const promoParam = params.get('promoOnly');
+    if (promoParam) newFiltersState.promoOnly = promoParam === 'true';
+    
+    return newFiltersState;
   });
+
   const [filteredProducts, setFilteredProducts] = useState<Product[]>(mockProducts);
   const [wishlistItems, setWishlistItems] = useState<Product[]>([]);
   const [itemsAddedToCartFromWishlist, setItemsAddedToCartFromWishlist] = useState<Set<string>>(new Set());
-  const { toast } = useToast();
+  const [isFilterSheetOpen, setIsFilterSheetOpen] = useState(false);
+  
+  const productFiltersRef = useRef<{ setFiltersFromParent: (newFilters: FilterState) => void }>(null);
+
+   useEffect(() => {
+    const params = new URLSearchParams(searchParams.toString());
+    const newFiltersState: FilterState = { 
+      categories: params.get('category')?.split(',') || initialFiltersRef.current.categories,
+      sizes: params.get('sizes')?.split(',') || initialFiltersRef.current.sizes, // Assuming sizes can also come from URL
+      types: params.get('type')?.split(',') || initialFiltersRef.current.types,
+      gender: params.get('gender') || initialFiltersRef.current.gender,
+      priceRange: [
+        params.has('minPrice') ? parseInt(params.get('minPrice')!, 10) : initialFiltersRef.current.priceRange[0],
+        params.has('maxPrice') ? parseInt(params.get('maxPrice')!, 10) : initialFiltersRef.current.priceRange[1],
+      ],
+      promoOnly: params.get('promoOnly') === 'true' || initialFiltersRef.current.promoOnly,
+    };
+
+    // Only update if there are actual changes based on URL params compared to current filters
+    if (JSON.stringify(newFiltersState) !== JSON.stringify(filters)) {
+        setFilters(newFiltersState);
+        if (productFiltersRef.current) {
+            productFiltersRef.current.setFiltersFromParent(newFiltersState);
+        }
+    }
+  }, [searchParams, filters]); // Add filters to dependency array for re-evaluation when filters change through UI
+
 
   useEffect(() => {
     let productsToFilter = [...mockProducts];
@@ -40,6 +100,12 @@ export default function Home() {
     if (filters.categories.length > 0) {
       productsToFilter = productsToFilter.filter(product => 
         filters.categories.includes(product.category)
+      );
+    }
+    
+    if (filters.types.length > 0) {
+      productsToFilter = productsToFilter.filter(product =>
+        product.type && filters.types.includes(product.type)
       );
     }
 
@@ -65,6 +131,16 @@ export default function Home() {
     setFilteredProducts(productsToFilter);
   }, [filters]);
 
+  const handleFilterChange = useCallback((newFilters: ProductFilterState) => {
+    // Preserve types from existing filters if not explicitly changed by ProductFilters
+    setFilters(prevFilters => ({
+        ...prevFilters, // Keep existing types if ProductFilterState doesn't include types
+        ...newFilters, // Override with new filters from ProductFilters
+        types: (newFilters as FilterState).types || prevFilters.types, // Ensure types are correctly merged
+    }));
+    setIsFilterSheetOpen(false); // Close sheet on mobile after applying
+  }, []);
+
   const handleToggleWishlist = (product: Product) => {
     setWishlistItems(prevItems => {
       const isWishlisted = prevItems.find(item => item.id === product.id);
@@ -87,7 +163,6 @@ export default function Home() {
   const handleRemoveFromWishlistById = (productId: string) => {
     const itemToRemove = wishlistItems.find(item => item.id === productId);
     setWishlistItems(prevItems => prevItems.filter(item => item.id !== productId));
-    // If item removed from wishlist is also in cart, remove from cart
     if (itemsAddedToCartFromWishlist.has(productId)) {
         setItemsAddedToCartFromWishlist(prevCartItems => {
             const newCartItems = new Set(prevCartItems);
@@ -123,8 +198,6 @@ export default function Home() {
     });
   };
   
-  // Compatibility for Header's onToggleCartFromWishlist which expects productId string
-  // and also for WhatsAppOrderForm's onRemoveItem
   const handleToggleCartFromWishlistById = (productId: string) => {
     const product = mockProducts.find(p => p.id === productId);
     if (product) {
@@ -132,9 +205,7 @@ export default function Home() {
     }
   };
 
-
   const orderedItemsForWhatsAppForm = mockProducts.filter(product => itemsAddedToCartFromWishlist.has(product.id));
-
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
@@ -148,29 +219,69 @@ export default function Home() {
         <PromoCarousel promotions={mockPromotions} />
         
         <div className="container mx-auto px-4 py-8">
-          <section id="products" className="w-full mb-12">
-            <h2 className="text-3xl font-headline mb-6 text-center">Kamu Mungkin Suka Produk Ini 🥰</h2>
-            <ProductGrid 
-              products={filteredProducts} 
-              onToggleWishlist={handleToggleWishlist}
-              wishlistItems={wishlistItems}
-              onToggleCart={handleToggleCartFromWishlist} 
-              itemsAddedToCartFromWishlist={itemsAddedToCartFromWishlist}
-            />
-          </section>
+          <div className="flex flex-col lg:flex-row gap-8">
+            {/* Filter Sidebar for Desktop */}
+            <aside className="hidden lg:block lg:w-1/4 xl:w-1/5 space-y-6 sticky top-20 self-start h-[calc(100vh-10rem)] overflow-y-auto pr-4">
+              <h3 className="text-xl font-headline font-semibold">Filter Produk</h3>
+              <ProductFilters 
+                ref={productFiltersRef}
+                onFilterChange={handleFilterChange}
+                initialFilters={filters} 
+              />
+            </aside>
 
-          <section id="shipping-calculator" className="my-16 p-6 bg-secondary/20 rounded-xl shadow-lg">
-            <h2 className="text-3xl font-headline mb-8 text-center">Hitung Ongkos Kirim</h2>
-            <ShippingCalculator />
-          </section>
+            {/* Product Grid and other sections */}
+            <div className="lg:w-3/4 xl:w-4/5 space-y-12">
+              <section id="products" className="w-full">
+                 <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-2xl md:text-3xl font-headline text-left">Kamu Mungkin Suka Produk Ini 🥰</h2>
+                    {/* Filter Trigger for Mobile */}
+                    <div className="lg:hidden">
+                    <Sheet open={isFilterSheetOpen} onOpenChange={setIsFilterSheetOpen}>
+                        <SheetTrigger asChild>
+                        <Button variant="outline" size="icon">
+                            <FilterIcon className="h-5 w-5" />
+                            <span className="sr-only">Buka Filter</span>
+                        </Button>
+                        </SheetTrigger>
+                        <SheetContent side="right" className="w-[300px] sm:w-[350px] p-0">
+                            <SheetHeader className="p-4 border-b">
+                                <SheetTitle>Filter Produk</SheetTitle>
+                            </SheetHeader>
+                            <div className="p-4 overflow-y-auto h-[calc(100vh-4rem)]"> {/* Adjust height as needed */}
+                                <ProductFilters 
+                                    ref={productFiltersRef}
+                                    onFilterChange={handleFilterChange} 
+                                    initialFilters={filters}
+                                />
+                            </div>
+                        </SheetContent>
+                    </Sheet>
+                    </div>
+                </div>
+                <ProductGrid 
+                  products={filteredProducts} 
+                  onToggleWishlist={handleToggleWishlist}
+                  wishlistItems={wishlistItems}
+                  onToggleCart={handleToggleCartFromWishlist} 
+                  itemsAddedToCartFromWishlist={itemsAddedToCartFromWishlist}
+                />
+              </section>
 
-          <section id="whatsapp-order" className="my-16 p-6 bg-secondary/20 rounded-xl shadow-lg">
-            <h2 className="text-3xl font-headline mb-8 text-center">Pesan Cepat via WhatsApp</h2>
-            <WhatsAppOrderForm 
-              orderedItems={orderedItemsForWhatsAppForm} 
-              onRemoveItem={handleToggleCartFromWishlistById} 
-            />
-          </section>
+              <section id="shipping-calculator" className="my-16 p-6 bg-secondary/20 rounded-xl shadow-lg">
+                <h2 className="text-3xl font-headline mb-8 text-center">Hitung Ongkos Kirim</h2>
+                <ShippingCalculator />
+              </section>
+
+              <section id="whatsapp-order" className="my-16 p-6 bg-secondary/20 rounded-xl shadow-lg">
+                <h2 className="text-3xl font-headline mb-8 text-center">Pesan Cepat via WhatsApp</h2>
+                <WhatsAppOrderForm 
+                  orderedItems={orderedItemsForWhatsAppForm} 
+                  onRemoveItem={handleToggleCartFromWishlistById} 
+                />
+              </section>
+            </div>
+          </div>
         </div>
       </main>
       <WhatsAppButton phoneNumber="+6281234567890" /> {/* Replace with actual number */}
@@ -183,4 +294,3 @@ export default function Home() {
     </div>
   );
 }
-

@@ -1,3 +1,4 @@
+
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -7,43 +8,75 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import React, { useState } from 'react';
+import React, { useState, useEffect, useImperativeHandle, forwardRef } from 'react';
 
-const categories = ["Sepatu", "Tas", "Pakaian"];
-const sizes = ["S", "M", "L", "XL", "38", "39", "40", "41", "42"];
-const genders = ["Pria", "Wanita", "Unisex"];
+const allCategories = ["Sepatu", "Tas", "Pakaian"];
+const allSizes = ["S", "M", "L", "XL", "38", "39", "40", "41", "42", "One Size"];
+const allGenders = ["Pria", "Wanita", "Unisex"];
+// Tipe produk bisa dinamis, untuk sekarang kita hardcode beberapa contoh
+const allTypes = ["Sneakers", "Formal", "Boots", "Olahraga", "Selempang", "Ransel", "Dompet", "Kemeja", "Kaos", "Hoodies", "Jaket", "Atasan", "Bawahan", "Outerwear"];
+
 
 export interface FilterState {
   categories: string[];
   sizes: string[];
+  types: string[];
   gender: string;
   priceRange: [number, number];
   promoOnly: boolean;
 }
 
 interface ProductFiltersProps {
-  onFilterChange?: (filters: FilterState) => void; // Optional for now
+  onFilterChange: (filters: FilterState) => void;
+  initialFilters?: FilterState;
 }
 
-export default function ProductFilters({ onFilterChange }: ProductFiltersProps) {
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
-  const [selectedGender, setSelectedGender] = useState<string>("Unisex");
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 1000000]);
-  const [promoOnly, setPromoOnly] = useState<boolean>(false);
+const ProductFilters = forwardRef<
+  { setFiltersFromParent: (newFilters: FilterState) => void }, 
+  ProductFiltersProps
+>(({ onFilterChange, initialFilters }, ref) => {
+  
+  const [selectedCategories, setSelectedCategories] = useState<string[]>(initialFilters?.categories || []);
+  const [selectedSizes, setSelectedSizes] = useState<string[]>(initialFilters?.sizes || []);
+  const [selectedTypes, setSelectedTypes] = useState<string[]>(initialFilters?.types || []);
+  const [selectedGender, setSelectedGender] = useState<string>(initialFilters?.gender || "Unisex");
+  const [priceRange, setPriceRange] = useState<[number, number]>(initialFilters?.priceRange || [0, 2000000]);
+  const [promoOnly, setPromoOnly] = useState<boolean>(initialFilters?.promoOnly || false);
 
-  // Placeholder for applying filters
+  useImperativeHandle(ref, () => ({
+    setFiltersFromParent: (newFilters: FilterState) => {
+      setSelectedCategories(newFilters.categories || []);
+      setSelectedSizes(newFilters.sizes || []);
+      setSelectedTypes(newFilters.types || []);
+      setSelectedGender(newFilters.gender || "Unisex");
+      setPriceRange(newFilters.priceRange || [0, 2000000]);
+      setPromoOnly(newFilters.promoOnly || false);
+    }
+  }));
+  
+  useEffect(() => {
+    if (initialFilters) {
+      setSelectedCategories(initialFilters.categories || []);
+      setSelectedSizes(initialFilters.sizes || []);
+      setSelectedTypes(initialFilters.types || []);
+      setSelectedGender(initialFilters.gender || "Unisex");
+      setPriceRange(initialFilters.priceRange || [0, 2000000]);
+      setPromoOnly(initialFilters.promoOnly || false);
+    }
+  }, [initialFilters]);
+
+
   const handleApplyFilters = () => {
     if (onFilterChange) {
       onFilterChange({
         categories: selectedCategories,
         sizes: selectedSizes,
+        types: selectedTypes,
         gender: selectedGender,
         priceRange,
         promoOnly,
       });
     }
-    // console.log("Filters applied:", { selectedCategories, selectedSizes, selectedGender, priceRange, promoOnly });
   };
 
   const handleCategoryChange = (category: string) => {
@@ -57,15 +90,21 @@ export default function ProductFilters({ onFilterChange }: ProductFiltersProps) 
       prev.includes(size) ? prev.filter(s => s !== size) : [...prev, size]
     );
   };
+  
+  const handleTypeChange = (type: string) => {
+    setSelectedTypes(prev =>
+      prev.includes(type) ? prev.filter(t => t !== type) : [...prev, type]
+    );
+  };
 
 
   return (
     <div className="space-y-6">
-      <Accordion type="multiple" defaultValue={['category', 'price', 'gender']} className="w-full">
+      <Accordion type="multiple" defaultValue={['category', 'type', 'price', 'gender']} className="w-full">
         <AccordionItem value="category">
           <AccordionTrigger className="font-headline text-base">Kategori</AccordionTrigger>
           <AccordionContent className="space-y-2 pt-2">
-            {categories.map((category) => (
+            {allCategories.map((category) => (
               <div key={category} className="flex items-center space-x-2">
                 <Checkbox 
                   id={`cat-${category}`} 
@@ -78,10 +117,26 @@ export default function ProductFilters({ onFilterChange }: ProductFiltersProps) 
           </AccordionContent>
         </AccordionItem>
 
+        <AccordionItem value="type">
+          <AccordionTrigger className="font-headline text-base">Tipe Produk</AccordionTrigger>
+          <AccordionContent className="space-y-2 pt-2 max-h-48 overflow-y-auto">
+            {allTypes.map((type) => (
+              <div key={type} className="flex items-center space-x-2">
+                <Checkbox 
+                  id={`type-${type}`}
+                  checked={selectedTypes.includes(type)}
+                  onCheckedChange={() => handleTypeChange(type)}
+                />
+                <Label htmlFor={`type-${type}`} className="font-normal">{type}</Label>
+              </div>
+            ))}
+          </AccordionContent>
+        </AccordionItem>
+
         <AccordionItem value="size">
           <AccordionTrigger className="font-headline text-base">Ukuran</AccordionTrigger>
-          <AccordionContent className="space-y-2 pt-2">
-            {sizes.map((size) => (
+          <AccordionContent className="space-y-2 pt-2 max-h-48 overflow-y-auto">
+            {allSizes.map((size) => (
               <div key={size} className="flex items-center space-x-2">
                 <Checkbox 
                   id={`size-${size}`}
@@ -98,7 +153,7 @@ export default function ProductFilters({ onFilterChange }: ProductFiltersProps) 
           <AccordionTrigger className="font-headline text-base">Gender</AccordionTrigger>
           <AccordionContent className="pt-2">
             <RadioGroup value={selectedGender} onValueChange={setSelectedGender}>
-              {genders.map((gender) => (
+              {allGenders.map((gender) => (
                 <div key={gender} className="flex items-center space-x-2">
                   <RadioGroupItem value={gender} id={`gender-${gender}`} />
                   <Label htmlFor={`gender-${gender}`} className="font-normal">{gender}</Label>
@@ -112,7 +167,7 @@ export default function ProductFilters({ onFilterChange }: ProductFiltersProps) 
           <AccordionTrigger className="font-headline text-base">Rentang Harga</AccordionTrigger>
           <AccordionContent className="pt-4">
             <Slider
-              defaultValue={[0, 1000000]}
+              defaultValue={[0, 2000000]}
               min={0}
               max={2000000}
               step={50000}
@@ -143,4 +198,7 @@ export default function ProductFilters({ onFilterChange }: ProductFiltersProps) 
       </Button>
     </div>
   );
-}
+});
+
+ProductFilters.displayName = "ProductFilters";
+export default ProductFilters;

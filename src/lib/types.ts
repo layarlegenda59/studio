@@ -4,6 +4,7 @@ export interface Product {
   name: string;
   brand: string; 
   category: 'Sepatu' | 'Tas' | 'Pakaian';
+  type?: string; // Misalnya: 'Sneakers', 'Kemeja', 'Ransel'
   imageUrl: string;
   originalPrice: number;
   promoPrice?: number;
