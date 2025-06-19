@@ -24,6 +24,7 @@ export const mockProducts: Product[] = [
   {
     id: 'prod1',
     name: 'Sneakers Klasik Pria',
+    brand: 'Nike',
     category: 'Sepatu',
     imageUrl: 'https://images.unsplash.com/photo-1605348532760-6753d2c43329?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxN3x8c25lYWtlcnxlbnwwfHx8fDE3NTAyMTc5MTF8MA&ixlib=rb-4.1.0&q=80&w=1080',
     originalPrice: 500000,
@@ -37,6 +38,7 @@ export const mockProducts: Product[] = [
   {
     id: 'prod2',
     name: 'Tas Selempang Wanita Elegan',
+    brand: 'ModeElegance',
     category: 'Tas',
     imageUrl: 'https://images.unsplash.com/photo-1554745028-65db781f9fa7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHx0YXMlMjB3YW5pdGF8ZW58MHx8fHwxNzUwMjE3OTUzfDA&ixlib=rb-4.1.0&q=80&w=1080',
     originalPrice: 750000,
@@ -49,6 +51,7 @@ export const mockProducts: Product[] = [
   {
     id: 'prod3',
     name: 'Kemeja Flanel Kotak-kotak',
+    brand: 'PlaidPerfect',
     category: 'Pakaian',
     imageUrl: 'https://images.unsplash.com/photo-1613447895642-b36fc3186cb2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxrZW1lamElMjB8ZW58MHx8fHwxNzUwMjE4MDU1fDA&ixlib=rb-4.1.0&q=80&w=1080',
     originalPrice: 350000,
@@ -61,6 +64,7 @@ export const mockProducts: Product[] = [
   {
     id: 'prod4',
     name: 'Sepatu Lari Ringan Wanita',
+    brand: 'AeroStride',
     category: 'Sepatu',
     imageUrl: 'https://images.unsplash.com/photo-1610894980089-9d87aff3b9d2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxM3x8d29tZW4lMjBydW5uaW5nJTIwc2hvZXN8ZW58MHx8fHwxNzUwMjE4MDc4fDA&ixlib=rb-4.1.0&q=80&w=1080',
     originalPrice: 600000,
@@ -74,6 +78,7 @@ export const mockProducts: Product[] = [
   {
     id: 'prod5',
     name: 'Ransel Laptop Adventure',
+    brand: 'TechRover',
     category: 'Tas',
     imageUrl: 'https://images.unsplash.com/photo-1673505705697-763b670e9afd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxsYXB0b3AlMjBiYWNrcGFja3xlbnwwfHx8fDE3NTAyMTgxMzN8MA&ixlib=rb-4.1.0&q=80&w=1080',
     originalPrice: 800000,
@@ -86,6 +91,7 @@ export const mockProducts: Product[] = [
   {
     id: 'prod6',
     name: 'Jaket Bomber Pria Keren',
+    brand: 'StreetStyle',
     category: 'Pakaian',
     imageUrl: 'https://images.unsplash.com/photo-1629353689974-af4d5c70440f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxib21iZXIlMjBqYWNrZXR8ZW58MHx8fHwxNzUwMjE4MTc4fDA&ixlib=rb-4.1.0&q=80&w=1080',
     originalPrice: 900000,
