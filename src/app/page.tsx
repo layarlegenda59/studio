@@ -99,18 +99,19 @@ export default function Home() {
       ],
     };
     
-    if (
-      JSON.stringify(newRelevantFiltersState.categories) !== JSON.stringify(filters.categories) ||
-      JSON.stringify(newRelevantFiltersState.sizes) !== JSON.stringify(filters.sizes) ||
-      JSON.stringify(newRelevantFiltersState.brands) !== JSON.stringify(filters.brands) ||
-      JSON.stringify(newRelevantFiltersState.priceRange) !== JSON.stringify(filters.priceRange)
-    ) {
+    const filtersAreEqual = 
+      JSON.stringify(newRelevantFiltersState.categories) === JSON.stringify(filters.categories) &&
+      JSON.stringify(newRelevantFiltersState.sizes) === JSON.stringify(filters.sizes) &&
+      JSON.stringify(newRelevantFiltersState.brands) === JSON.stringify(filters.brands) &&
+      JSON.stringify(newRelevantFiltersState.priceRange) === JSON.stringify(filters.priceRange);
+
+    if (!filtersAreEqual) {
         setFilters(newRelevantFiltersState);
         if (productFiltersRef.current) {
             productFiltersRef.current.setFiltersFromParent(newRelevantFiltersState);
         }
     }
-  }, [searchParams, filters.categories, filters.sizes, filters.brands, filters.priceRange]);
+  }, [searchParams, filters]);
 
 
   useEffect(() => {
@@ -203,18 +204,18 @@ export default function Home() {
       params.delete('maxPrice');
     }
     
-    // Preserve 'type', 'gender', and 'q' from URL if they exist and were not part of ProductFilters.tsx submission
+    // Preserve 'type', 'gender', and 'q' from URL if they exist
     const preservedKeys = ['type', 'gender', 'q'];
     preservedKeys.forEach(key => {
       const valueFromUrl = searchParams.get(key);
-      if (valueFromUrl && !params.has(key)) { // Ensure it's not already set by this filter action
+      if (valueFromUrl) { 
          params.set(key, valueFromUrl);
       }
     });
 
     window.history.pushState(null, '', `?${params.toString()}`);
 
-  }, [searchParams]);
+  }, [searchParams, initialFiltersRef]); // initialFiltersRef is stable
 
   const handleToggleWishlist = (product: Product) => {
     setWishlistItems(prevItems => {
@@ -372,5 +373,4 @@ export default function Home() {
     </div>
   );
 }
-
     
