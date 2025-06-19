@@ -228,7 +228,7 @@ export default function Header() {
                       {item.label}
                       <ChevronDown className={`ml-1 h-4 w-4 transition-transform duration-200 ${popoverOpenStates[item.label] ? 'rotate-180' : ''}`} />
                     </span>
-                    <span className={`absolute bottom-0 left-0 h-0.5 ${item.isPromo ? 'bg-destructive' : 'bg-primary'} transition-all duration-300 group-hover:w-full ${popoverOpenStates[item.label] ? 'w-full' : 'w-0'}`}></span>
+                    <span className={`absolute bottom-0 left-0 h-0.5 ${item.isPromo ? 'bg-destructive' : 'bg-primary'} transition-all duration-300 ${popoverOpenStates[item.label] ? 'w-full' : 'w-0'}`}></span>
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent
