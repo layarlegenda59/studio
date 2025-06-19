@@ -143,7 +143,7 @@ export const mockProducts: Product[] = [
     brand: 'ClassicWallet',
     category: 'Tas',
     type: 'Dompet',
-    imageUrl: 'https://placehold.co/400x400.png',
+    imageUrl: 'https://images.unsplash.com/photo-1675582122314-cabef1d757ec?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxtZW4lMjBsZWF0aGVyJTIwd2FsbGV0fGVufDB8fHx8MTc1MDM1MzgwNXww&ixlib=rb-4.1.0&q=80&w=1080',
     originalPrice: 300000,
     sizes: ['One Size'],
     salesCount: 150,
