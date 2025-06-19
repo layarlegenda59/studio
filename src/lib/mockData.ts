@@ -4,7 +4,7 @@ import type { Product, Promotion, ShippingCost, ShippingVendor } from './types';
 export const mockPromotions: Promotion[] = [
   {
     id: 'promo1',
-    imageUrl: 'https://ggbivmpazczpgtmnfwfs.supabase.co/storage/v1/object/sign/material/mahdi-chaghari-Pb5nw1U-Rks-unsplash.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jYjkzYjM4Zi1kOGJhLTRmYTEtYmM0ZC00MWUzOGU4YTZhNzgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYXRlcmlhbC9tYWhkaS1jaGFnaGFyaS1QYjVudzFVLVJrcy11bnNwbGFzaC5qcGciLCJpYXQiOjE3NTAzMDcxOTUsImV4cCI6MTc4MTg0MzE5NX0.9NG9dzMNK33A9cNY7d-fvY1XF6tx36diPDp1I0va0aA',
+    imageUrl: 'https://ggbivmpazczpgtmnfwfs.supabase.co/storage/v1/object/sign/material/erik-mclean-nfoRa6NHTbU-unsplash.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jYjkzYjM4Zi1kOGJhLTRmYTEtYmM0ZC00MWUzOGU4YTZhNzgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYXRlcmlhbC9lcmlrLW1jbGVhbi1uZm9SYTZOSFRiVS11bnNwbGFzaC5qcGciLCJpYXQiOjE3NTAzMTA4MTYsImV4cCI6MTc4MTg0NjgxNn0.W6d7AjWEOL7BD5PBAEA47uReC5GFBHGFbZMNx3dIG94',
     title: 'BUY 2 GET 1 FREE!',
     description: 'Plus Diskon 50% untuk item tertentu. Jangan lewatkan!',
     ctaText: 'Belanja Sekarang',
@@ -109,3 +109,4 @@ export const mockShippingCosts: ShippingCost[] = [
     { vendor: 'SiCepat', service: 'BEST', cost: 25000, estimatedDelivery: '1-2 hari' },
     { vendor: 'Lion Parcel', service: 'REGPACK', cost: 17000, estimatedDelivery: '3-5 hari' },
 ];
+
