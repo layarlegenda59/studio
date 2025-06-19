@@ -4,7 +4,7 @@ import type { Product, Promotion, ShippingCost, ShippingVendor } from './types';
 export const mockPromotions: Promotion[] = [
   {
     id: 'promo1',
-    imageUrl: 'https://images.unsplash.com/photo-1558981001-5864b32d0ae8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHx5ZWxsb3clMjBzYWxlJTIwYmFubmVyfGVufDB8fHx8MTc1MDIzNjAwMHww&ixlib=rb-4.1.0&q=80&w=1080',
+    imageUrl: 'https://ggbivmpazczpgtmnfwfs.supabase.co/storage/v1/object/sign/material/mahdi-chaghari-Pb5nw1U-Rks-unsplash.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jYjkzYjM4Zi1kOGJhLTRmYTEtYmM0ZC00MWUzOGU4YTZhNzgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYXRlcmlhbC9tYWhkaS1jaGFnaGFyaS1QYjVudzFVLVJrcy11bnNwbGFzaC5qcGciLCJpYXQiOjE3NTAzMDcxOTUsImV4cCI6MTc4MTg0MzE5NX0.9NG9dzMNK33A9cNY7d-fvY1XF6tx36diPDp1I0va0aA',
     title: 'BUY 2 GET 1 FREE!',
     description: 'Plus Diskon 50% untuk item tertentu. Jangan lewatkan!',
     ctaText: 'Belanja Sekarang',
@@ -108,3 +108,4 @@ export const mockShippingCosts: ShippingCost[] = [
     { vendor: 'SiCepat', service: 'BEST', cost: 25000, estimatedDelivery: '1-2 hari' },
     { vendor: 'Lion Parcel', service: 'REGPACK', cost: 17000, estimatedDelivery: '3-5 hari' },
 ];
+
