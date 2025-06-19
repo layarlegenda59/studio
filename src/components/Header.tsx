@@ -3,22 +3,194 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { Search, User, Menu } from 'lucide-react';
+import { Search, User, Menu, ChevronDown, ShoppingBag } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from '@/components/ui/sheet';
-import { useState } from 'react';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import React, { useState } from 'react';
 
-const navLinks = [
-  { href: '#sepatu', label: 'Sepatu' },
-  { href: '#tas', label: 'Tas' },
-  { href: '#pakaian', label: 'Pakaian' },
-  { href: '#promo', label: 'Promo' },
+interface SubCategoryItem {
+  label: string;
+  href: string;
+}
+
+interface SubCategoryGroup {
+  title?: string;
+  items: SubCategoryItem[];
+}
+
+interface NavItem {
+  label: string;
+  href: string;
+  subMenu?: SubCategoryGroup[];
+  isPromo?: boolean;
+  image?: {
+    src: string;
+    alt: string;
+    href: string;
+    dataAiHint?: string;
+  };
+}
+
+const navItems: NavItem[] = [
+  {
+    label: 'Sepatu',
+    href: '/products?category=Sepatu',
+    subMenu: [
+      {
+        title: 'Wanita',
+        items: [
+          { label: 'Sneakers', href: '/products?category=Sepatu&gender=Wanita&type=Sneakers' },
+          { label: 'Flat Shoes', href: '/products?category=Sepatu&gender=Wanita&type=FlatShoes' },
+          { label: 'Heels', href: '/products?category=Sepatu&gender=Wanita&type=Heels' },
+          { label: 'Boots', href: '/products?category=Sepatu&gender=Wanita&type=Boots' },
+          { label: 'Sandal', href: '/products?category=Sepatu&gender=Wanita&type=Sandal' },
+          { label: 'Lihat Semua Sepatu Wanita', href: '/products?category=Sepatu&gender=Wanita' },
+        ],
+      },
+      {
+        title: 'Pria',
+        items: [
+          { label: 'Sneakers', href: '/products?category=Sepatu&gender=Pria&type=Sneakers' },
+          { label: 'Sepatu Formal', href: '/products?category=Sepatu&gender=Pria&type=Formal' },
+          { label: 'Boots', href: '/products?category=Sepatu&gender=Pria&type=Boots' },
+          { label: 'Sandal', href: '/products?category=Sepatu&gender=Pria&type=Sandal' },
+          { label: 'Sepatu Olahraga', href: '/products?category=Sepatu&gender=Pria&type=Olahraga' },
+          { label: 'Lihat Semua Sepatu Pria', href: '/products?category=Sepatu&gender=Pria' },
+        ],
+      },
+      {
+        title: 'Anak',
+        items: [
+          { label: 'Sepatu Anak Laki-laki', href: '/products?category=Sepatu&gender=Anak&type=Laki-laki' },
+          { label: 'Sepatu Anak Perempuan', href: '/products?category=Sepatu&gender=Anak&type=Perempuan' },
+          { label: 'Lihat Semua Sepatu Anak', href: '/products?category=Sepatu&gender=Anak' },
+        ],
+      }
+    ],
+    image: {
+        src: 'https://placehold.co/200x350.png',
+        alt: 'Promo Sepatu Terbaru',
+        href: '/promo/sepatu',
+        dataAiHint: 'shoes model'
+    }
+  },
+  {
+    label: 'Tas',
+    href: '/products?category=Tas',
+    subMenu: [
+      {
+        title: 'Wanita',
+        items: [
+          { label: 'Tas Tangan', href: '/products?category=Tas&gender=Wanita&type=Tangan' },
+          { label: 'Tas Selempang', href: '/products?category=Tas&gender=Wanita&type=Selempang' },
+          { label: 'Dompet', href: '/products?category=Tas&gender=Wanita&type=Dompet' },
+          { label: 'Ransel', href: '/products?category=Tas&gender=Wanita&type=Ransel' },
+          { label: 'Lihat Semua Tas Wanita', href: '/products?category=Tas&gender=Wanita' },
+        ],
+      },
+      {
+        title: 'Pria',
+        items: [
+          { label: 'Tas Selempang', href: '/products?category=Tas&gender=Pria&type=Selempang' },
+          { label: 'Ransel', href: '/products?category=Tas&gender=Pria&type=Ransel' },
+          { label: 'Tas Pinggang', href: '/products?category=Tas&gender=Pria&type=Pinggang' },
+          { label: 'Dompet', href: '/products?category=Tas&gender=Pria&type=Dompet' },
+          { label: 'Lihat Semua Tas Pria', href: '/products?category=Tas&gender=Pria' },
+        ],
+      }
+    ],
+    image: {
+        src: 'https://placehold.co/200x350.png',
+        alt: 'Koleksi Tas Eksklusif',
+        href: '/promo/tas',
+        dataAiHint: 'bags collection'
+    }
+  },
+  {
+    label: 'Pakaian',
+    href: '/products?category=Pakaian',
+    subMenu: [
+        {
+            title: 'Wanita',
+            items: [
+              { label: 'Atasan', href: '/products?category=Pakaian&gender=Wanita&type=Atasan' },
+              { label: 'Dress', href: '/products?category=Pakaian&gender=Wanita&type=Dress' },
+              { label: 'Bawahan', href: '/products?category=Pakaian&gender=Wanita&type=Bawahan' },
+              { label: 'Outerwear', href: '/products?category=Pakaian&gender=Wanita&type=Outerwear' },
+              { label: 'Pakaian Tidur', href: '/products?category=Pakaian&gender=Wanita&type=Tidur' },
+              { label: 'Lihat Semua Pakaian Wanita', href: '/products?category=Pakaian&gender=Wanita' },
+            ]
+        },
+        {
+            title: 'Pria',
+            items: [
+              { label: 'Kemeja', href: '/products?category=Pakaian&gender=Pria&type=Kemeja' },
+              { label: 'Kaos', href: '/products?category=Pakaian&gender=Pria&type=Kaos' },
+              { label: 'Celana', href: '/products?category=Pakaian&gender=Pria&type=Celana' },
+              { label: 'Jaket', href: '/products?category=Pakaian&gender=Pria&type=Jaket' },
+              { label: 'Pakaian Olahraga', href: '/products?category=Pakaian&gender=Pria&type=Olahraga' },
+              { label: 'Lihat Semua Pakaian Pria', href: '/products?category=Pakaian&gender=Pria' },
+            ]
+        },
+        {
+            title: 'Anak',
+            items: [
+              { label: 'Pakaian Anak Laki-laki', href: '/products?category=Pakaian&gender=Anak&type=Laki-laki' },
+              { label: 'Pakaian Anak Perempuan', href: '/products?category=Pakaian&gender=Anak&type=Perempuan' },
+              { label: 'Lihat Semua Pakaian Anak', href: '/products?category=Pakaian&gender=Anak' },
+            ]
+        }
+    ],
+    image: {
+        src: 'https://placehold.co/200x350.png',
+        alt: 'Fashion Pakaian Terkini',
+        href: '/promo/pakaian',
+        dataAiHint: 'clothes fashion'
+    }
+  },
+  {
+    label: 'Promo',
+    href: '#promo', // Direct link to promo section or page
+    isPromo: true,
+  },
 ];
+
+// For mobile menu, we just need label and href
+const mobileNavLinks = navItems.map(item => ({ label: item.label, href: item.href }));
+
 
 export default function Header() {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [popoverOpenStates, setPopoverOpenStates] = useState<Record<string, boolean>>({});
+  let hoverTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
+
   const textLogoUrl = "https://ggbivmpazczpgtmnfwfs.supabase.co/storage/v1/object/sign/material/Tulisan%20goodstock-x.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jYjkzYjM4Zi1kOGJhLTRmYTEtYmM0ZC00MWUzOGU4YTZhNzgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYXRlcmlhbC9UdWxpc2FuIGdvb2RzdG9jay14LnBuZyIsImlhdCI6MTc1MDIyMDkwMSwiZXhwIjoxNzgxNzU2OTAxfQ.8YG6sCtxclkFeZuwzQqCFaWzjhQtOYbnJRWt-leGlCE";
   const iconLogoUrl = "https://ggbivmpazczpgtmnfwfs.supabase.co/storage/v1/object/sign/material/Logo.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jYjkzYjM4Zi1kOGJhLTRmYTEtYmM0ZC00MWUzOGU4YTZhNzgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYXRlcmlhbC9Mb2dvLmpwZyIsImlhdCI6MTc1MDIyNjU1MiwiZXhwIjoxNzgxNzYyNTUyfQ.ZYeRMgaRp_lrdX1yfxoLrAMM1jUGf9tTzJZsaNrhYm4";
+
+
+  const handleMouseEnter = (label: string) => {
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+      hoverTimeoutRef.current = null;
+    }
+    setPopoverOpenStates(prev => ({ ...Object.fromEntries(Object.keys(prev).map(k => [k, false])), [label]: true }));
+  };
+
+  const handleMouseLeave = (label: string) => {
+    hoverTimeoutRef.current = setTimeout(() => {
+        setPopoverOpenStates(prev => ({ ...prev, [label]: false }));
+    }, 200);
+  };
+  
+  const closePopover = (label: string) => {
+    setPopoverOpenStates(prev => ({ ...prev, [label]: false }));
+  };
+
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 shadow-sm">
@@ -26,7 +198,7 @@ export default function Header() {
         <Link href="/" className="flex items-center gap-2">
           <Image
             src={iconLogoUrl}
-            alt="Goodstock-X Logo"
+            alt="Goodstock-X Logo Icon"
             width={28}
             height={28}
             priority
@@ -41,15 +213,80 @@ export default function Header() {
           />
         </Link>
 
-        <nav className="hidden md:flex items-center space-x-6">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="text-sm font-medium text-foreground/70 hover:text-primary transition-colors"
-            >
-              {link.label}
-            </Link>
+        <nav className="hidden md:flex items-center space-x-1">
+          {navItems.map((item) => (
+            item.subMenu ? (
+              <Popover key={item.label} open={popoverOpenStates[item.label]} onOpenChange={(isOpen) => setPopoverOpenStates(prev => ({ ...prev, [item.label]: isOpen }))}>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    className={`text-sm font-medium px-3 py-2 rounded-md ${item.isPromo ? 'text-destructive hover:text-destructive/80 font-semibold' : 'text-foreground/70 hover:text-primary'} transition-colors relative group`}
+                    onMouseEnter={() => handleMouseEnter(item.label)}
+                    onMouseLeave={() => handleMouseLeave(item.label)} // Keep trigger hover active while over content
+                  >
+                    {item.label}
+                    <ChevronDown className={`ml-1 h-4 w-4 transition-transform duration-200 ${popoverOpenStates[item.label] ? 'rotate-180' : ''}`} />
+                    <span className={`absolute bottom-0 left-0 h-0.5 ${item.isPromo ? 'bg-destructive' : 'bg-primary'} transition-all duration-300 group-hover:w-full ${popoverOpenStates[item.label] ? 'w-full' : 'w-0'}`}></span>
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent
+                  className="w-screen max-w-4xl mt-1 p-6 shadow-xl rounded-lg border bg-background"
+                  onMouseEnter={() => handleMouseEnter(item.label)} 
+                  onMouseLeave={() => handleMouseLeave(item.label)}
+                  align="start"
+                  sideOffset={5}
+                >
+                  <div className="grid grid-cols-12 gap-x-6">
+                    <div className="col-span-9 grid grid-cols-3 gap-x-6 gap-y-6">
+                      {item.subMenu.map((group) => (
+                        <div key={group.title || group.items[0].label}>
+                          {group.title && <h4 className="font-headline text-base font-semibold mb-3 text-foreground">{group.title}</h4>}
+                          <ul className="space-y-1.5">
+                            {group.items.map((subItem) => (
+                              <li key={subItem.label}>
+                                <Link
+                                  href={subItem.href}
+                                  className="block text-sm text-foreground/80 hover:text-primary hover:underline py-0.5"
+                                  onClick={() => closePopover(item.label)}
+                                >
+                                  {subItem.label}
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
+                    {item.image && (
+                      <div className="col-span-3">
+                        <Link href={item.image.href} onClick={() => closePopover(item.label)}>
+                           <div className="aspect-[2/3] w-full overflow-hidden rounded-md">
+                            <Image
+                                src={item.image.src}
+                                alt={item.image.alt}
+                                width={200}
+                                height={300}
+                                className="object-cover w-full h-full transition-transform duration-300 hover:scale-105"
+                                data-ai-hint={item.image.dataAiHint}
+                            />
+                           </div>
+                        </Link>
+                         <p className="text-xs text-muted-foreground mt-2 text-center">{item.image.alt}</p>
+                      </div>
+                    )}
+                  </div>
+                </PopoverContent>
+              </Popover>
+            ) : (
+              <Link
+                key={item.label}
+                href={item.href}
+                className={`text-sm font-medium px-3 py-2 rounded-md ${item.isPromo ? 'text-destructive hover:text-destructive/80 font-semibold' : 'text-foreground/70 hover:text-primary'} transition-colors relative group`}
+              >
+                {item.label}
+                <span className={`absolute bottom-0 left-0 h-0.5 ${item.isPromo ? 'bg-destructive' : 'bg-primary'} transition-all duration-300 group-hover:w-full w-0`}></span>
+              </Link>
+            )
           ))}
         </nav>
 
@@ -78,7 +315,7 @@ export default function Header() {
                   <Link href="/" className="flex items-center gap-2" onClick={() => setIsSheetOpen(false)}>
                      <Image
                         src={iconLogoUrl}
-                        alt="Goodstock-X Logo"
+                        alt="Goodstock-X Logo Icon"
                         width={24}
                         height={24}
                         className="h-6 w-6"
@@ -93,7 +330,7 @@ export default function Header() {
                 </SheetTitle>
               </SheetHeader>
               <nav className="flex flex-col space-y-4">
-                {navLinks.map((link) => (
+                {mobileNavLinks.map((link) => (
                   <Link
                     key={link.href}
                     href={link.href}
