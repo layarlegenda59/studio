@@ -110,7 +110,7 @@ const navItems: NavItem[] = [
       }
     ],
     image: {
-        src: 'https://ggbivmpazczpgtmnfwfs.supabase.co/storage/v1/object/sign/material/tamara-bellis-nOnT17lKYz8-unsplash.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jYjkzYjM4Zi1kOGJhLTRmYTEtYmM0ZC00MWUzOGU4YTZhNzgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYXRlcmlhbC90YW1hcmEtYmVsbGlzLW5PblQxN2xLWXo4LXVuc3BsYXNoLmpwZyIsImlhdCI6MTc1MDMxMzg1NiwiZXhwIjoxNzgxODQ5ODU2fQ.t0opmhBQSCwKw0hU5-HwokP7B8NnKQKyQbg7RrOXDog',
+        src: 'https://ggbivmpazczpgtmnfwfs.supabase.co/storage/v1/object/sign/material/laura-chouette-irG6YMkrrcQ-unsplash.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jYjkzYjM4Zi1kOGJhLTRmYTEtYmM0ZC00MWUzOGU4YTZhNzgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYXRlcmlhbC9sYXVyYS1jaG91ZXR0ZS1pckc2WU1rcnJjUS11bnNwbGFzaC5qcGciLCJpYXQiOjE3NTAzNzQ3MzEsImV4cCI6MTc4MTkxMDczMX0.7N5Vy-ntAEBXoFF4GjZJC34Lclrgk8OhC7ap4o6_1f8',
         alt: 'Koleksi Tas Eksklusif',
         href: '/?promo=tas',
         dataAiHint: 'bags collection'
@@ -496,3 +496,4 @@ export default function Header({
     </header>
   );
 }
+
