@@ -19,7 +19,7 @@ import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from '@/co
 import { FilterIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-// Define FilterState consistent with ProductFilters.tsx
+// Define FilterState consistent with ProductFilters.tsx and internal page state
 interface FilterState {
   categories: string[];
   sizes: string[];
@@ -76,7 +76,7 @@ export default function Home() {
 
   useEffect(() => {
     const params = new URLSearchParams(searchParams.toString());
-    const filterKeys = ['category', 'sizes', 'brand', 'minPrice', 'maxPrice', 'q', 'type', 'gender', 'promoOnly'];
+    const filterKeys = ['category', 'sizes', 'brand', 'minPrice', 'maxPrice', 'q', 'type', 'gender'];
     let hasActiveFilters = false;
     for (const key of filterKeys) {
       if (params.has(key) && params.get(key) !== '') {
@@ -89,7 +89,6 @@ export default function Home() {
 
    useEffect(() => {
     const params = new URLSearchParams(searchParams.toString());
-    // This newFiltersState is what ProductFilters component understands and controls
     const newRelevantFiltersState: FilterState = { 
       categories: params.get('category')?.split(',').filter(Boolean) || initialFiltersRef.current.categories,
       sizes: params.get('sizes')?.split(',').filter(Boolean) || initialFiltersRef.current.sizes,
@@ -100,27 +99,32 @@ export default function Home() {
       ],
     };
     
-    if (JSON.stringify(newRelevantFiltersState) !== JSON.stringify(filters)) { 
+    if (
+      JSON.stringify(newRelevantFiltersState.categories) !== JSON.stringify(filters.categories) ||
+      JSON.stringify(newRelevantFiltersState.sizes) !== JSON.stringify(filters.sizes) ||
+      JSON.stringify(newRelevantFiltersState.brands) !== JSON.stringify(filters.brands) ||
+      JSON.stringify(newRelevantFiltersState.priceRange) !== JSON.stringify(filters.priceRange)
+    ) {
         setFilters(newRelevantFiltersState);
         if (productFiltersRef.current) {
             productFiltersRef.current.setFiltersFromParent(newRelevantFiltersState);
         }
     }
-  }, [searchParams, filters]);
+  }, [searchParams, filters.categories, filters.sizes, filters.brands, filters.priceRange]);
 
 
   useEffect(() => {
     let productsToFilter = [...mockProducts];
     const params = new URLSearchParams(searchParams.toString());
 
-    // Filter by categories from ProductFilters state
+    // Filter by categories from ProductFilters state (filters object)
     if (filters.categories.length > 0) {
       productsToFilter = productsToFilter.filter(product => 
         filters.categories.some(cat => product.category === cat)
       );
     }
 
-    // Additional filter by 'type' from URL (from Header links)
+    // Additional filter by 'type' from URL (searchParams object)
     const typeParam = params.get('type');
     if (typeParam) {
       const typesFromUrl = typeParam.split(',').filter(Boolean);
@@ -131,45 +135,43 @@ export default function Home() {
       }
     }
     
-    // Filter by sizes from ProductFilters state
+    // Filter by sizes from ProductFilters state (filters object)
     if (filters.sizes.length > 0) {
       productsToFilter = productsToFilter.filter(product =>
         product.sizes.some(size => filters.sizes.includes(size))
       );
     }
 
-    // Filter by brands from ProductFilters state
+    // Filter by brands from ProductFilters state (filters object)
     if (filters.brands.length > 0) {
       productsToFilter = productsToFilter.filter(product =>
         product.brand && filters.brands.some(brand => product.brand === brand)
       );
     }
     
-    // Additional filter by 'gender' from URL (from Header links)
+    // Additional filter by 'gender' from URL (searchParams object)
     const genderParam = params.get('gender');
-    if (genderParam && genderParam !== "Unisex") {
+    if (genderParam && genderParam !== "Unisex") { // "Unisex" products should show for Pria or Wanita if gender is specified
          productsToFilter = productsToFilter.filter(product => product.gender === genderParam || product.gender === "Unisex");
     }
 
-    // Filter by priceRange from ProductFilters state
+    // Filter by priceRange from ProductFilters state (filters object)
     productsToFilter = productsToFilter.filter(product => {
       const price = product.promoPrice ?? product.originalPrice;
       return price >= filters.priceRange[0] && price <= filters.priceRange[1];
     });
     
-    // Search query from URL
+    // Search query from URL (searchParams object)
     const queryParam = params.get('q');
     if (queryParam) {
       const searchTerm = queryParam.toLowerCase();
       productsToFilter = productsToFilter.filter(product =>
         product.name.toLowerCase().includes(searchTerm) ||
-        (product.brand && product.brand.toLowerCase().includes(searchTerm)) || // Added check for product.brand
+        (product.brand && product.brand.toLowerCase().includes(searchTerm)) || 
         product.category.toLowerCase().includes(searchTerm) ||
         (product.type && product.type.toLowerCase().includes(searchTerm))
       );
     }
-
-
     setFilteredProducts(productsToFilter);
   }, [filters, searchParams]);
 
@@ -181,7 +183,7 @@ export default function Home() {
         priceRange: newFiltersFromComponent.priceRange,
     };
     setFilters(updatedFilters);
-    setIsFilterSheetOpen(false); // Close sheet on mobile after applying filters
+    setIsFilterSheetOpen(false); 
 
     const params = new URLSearchParams(searchParams.toString());
     
@@ -189,22 +191,26 @@ export default function Home() {
     if (updatedFilters.sizes.length > 0) params.set('sizes', updatedFilters.sizes.join(',')); else params.delete('sizes');
     if (updatedFilters.brands.length > 0) params.set('brand', updatedFilters.brands.join(',')); else params.delete('brand');
     
-    if (updatedFilters.priceRange[0] !== initialFiltersRef.current.priceRange[0]) params.set('minPrice', updatedFilters.priceRange[0].toString()); else params.delete('minPrice');
-    if (updatedFilters.priceRange[1] !== initialFiltersRef.current.priceRange[1]) params.set('maxPrice', updatedFilters.priceRange[1].toString()); else params.delete('maxPrice');
-    
-    // Preserve 'type' and 'gender' from URL if they exist and were not part of ProductFilters.tsx submission
-    const typeFromUrl = searchParams.get('type');
-    if (typeFromUrl && !params.has('type')) params.set('type', typeFromUrl);
-
-    const genderFromUrl = searchParams.get('gender');
-    if (genderFromUrl && !params.has('gender')) params.set('gender', genderFromUrl);
-    
-    // Preserve search query
-    const qFromUrl = searchParams.get('q');
-    if (qFromUrl && !params.has('q')) { // check if qFromUrl exists and not already set by this filter change
-        params.set('q', qFromUrl);
+    // Use initialFiltersRef for comparing default price range values
+    if (updatedFilters.priceRange[0] !== initialFiltersRef.current.priceRange[0]) {
+      params.set('minPrice', updatedFilters.priceRange[0].toString());
+    } else {
+      params.delete('minPrice');
     }
-
+    if (updatedFilters.priceRange[1] !== initialFiltersRef.current.priceRange[1]) {
+      params.set('maxPrice', updatedFilters.priceRange[1].toString());
+    } else {
+      params.delete('maxPrice');
+    }
+    
+    // Preserve 'type', 'gender', and 'q' from URL if they exist and were not part of ProductFilters.tsx submission
+    const preservedKeys = ['type', 'gender', 'q'];
+    preservedKeys.forEach(key => {
+      const valueFromUrl = searchParams.get(key);
+      if (valueFromUrl && !params.has(key)) { // Ensure it's not already set by this filter action
+         params.set(key, valueFromUrl);
+      }
+    });
 
     window.history.pushState(null, '', `?${params.toString()}`);
 
@@ -366,3 +372,5 @@ export default function Home() {
     </div>
   );
 }
+
+    
