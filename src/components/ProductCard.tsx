@@ -3,7 +3,7 @@
 
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 // Badge removed as it's not used for image overlay anymore
 import type { Product } from '@/lib/types';
 import { Heart } from 'lucide-react';
@@ -42,7 +42,6 @@ export default function ProductCard({ product }: ProductCardProps) {
             data-ai-hint={`${product.category.toLowerCase()} fashion`}
           />
         </div>
-        {/* Promo badge on image removed to match the target image style */}
       </CardHeader>
       <CardContent className="p-3 flex-grow flex flex-col">
         <div className="flex justify-between items-start mb-2">
@@ -61,7 +60,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         </div>
 
         {/* Price Section */}
-        <div className="mt-auto">
+        <div className="mt-auto"> {/* This ensures price is pushed down if content above varies */}
           {product.promoPrice ? (
             <>
               <div className="inline-flex items-center gap-1 rounded-sm border border-destructive px-1.5 py-0.5 bg-destructive/5">
@@ -80,7 +79,11 @@ export default function ProductCard({ product }: ProductCardProps) {
           )}
         </div>
       </CardContent>
-      {/* CardFooter and its content (like "Lihat Detail" button) are removed to match the new style */}
+      <CardFooter className="p-3 pt-0">
+        <Button variant="outline" className="w-full h-9 text-sm">
+          Lihat Detail
+        </Button>
+      </CardFooter>
     </Card>
   );
 }
