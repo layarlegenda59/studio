@@ -24,11 +24,11 @@ const allSizes = [
   const isBNumber = !isNaN(numB);
 
   if (isANumber && isBNumber) return numA - numB;
-  if (isANumber) return -1; // numbers first
+  if (isANumber) return -1; 
   if (isBNumber) return 1;
-  if (a === "One Size") return 1; // One Size last among strings
+  if (a === "One Size") return 1; 
   if (b === "One Size") return -1;
-  return a.localeCompare(b); // then alphabetical for S, M, L, XL
+  return a.localeCompare(b); 
 });
 
 
@@ -43,13 +43,14 @@ const providedBrandsList = [
 
 const allBrands = Array.from(new Set(providedBrandsList.map(brand => brand.trim()))).filter(Boolean).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
 
+const defaultMaxPriceValue = 2000000;
 
 const priceOptions = [
   { label: "Rp. 0 - Rp. 100.000", value: [0, 100000] },
   { label: "Rp. 100.000 - Rp. 250.000", value: [100000, 250000] },
   { label: "Rp. 250.000 - Rp. 500.000", value: [250000, 500000] },
   { label: "Rp. 500.000 - Rp. 1.000.000", value: [500000, 1000000] },
-  { label: "Diatas Rp. 1.000.000", value: [1000000, 2000000] },
+  { label: "Diatas Rp. 1.000.000", value: [1000000, defaultMaxPriceValue] },
 ];
 
 export interface FilterState {
@@ -64,6 +65,21 @@ interface ProductFiltersProps {
   initialFilters?: FilterState;
 }
 
+const formatNumberWithDots = (value: string | number): string => {
+  const numStr = String(value).replace(/\D/g, '');
+  if (numStr === '') return '';
+  try {
+    return parseInt(numStr, 10).toLocaleString('id-ID');
+  } catch (e) {
+    return '';
+  }
+};
+
+const cleanNumberString = (value: string): string => {
+  return String(value).replace(/\D/g, '');
+};
+
+
 const ProductFilters = forwardRef<
   { setFiltersFromParent: (newFilters: FilterState) => void }, 
   ProductFiltersProps
@@ -72,8 +88,14 @@ const ProductFilters = forwardRef<
   const [selectedCategories, setSelectedCategories] = useState<string[]>(initialFilters?.categories || []);
   const [selectedSizes, setSelectedSizes] = useState<string[]>(initialFilters?.sizes || []);
   const [selectedBrands, setSelectedBrands] = useState<string[]>(initialFilters?.brands || []);
-  const [minPrice, setMinPrice] = useState<string>(initialFilters?.priceRange[0]?.toString() || "0");
-  const [maxPrice, setMaxPrice] = useState<string>(initialFilters?.priceRange[1]?.toString() || "2000000");
+  
+  const [minPrice, setMinPrice] = useState<string>(
+    formatNumberWithDots(initialFilters?.priceRange[0]?.toString() || "0")
+  );
+  const [maxPrice, setMaxPrice] = useState<string>(
+    formatNumberWithDots(initialFilters?.priceRange[1]?.toString() || defaultMaxPriceValue.toString())
+  );
+
   const [brandSearchTerm, setBrandSearchTerm] = useState('');
   const [activePriceRadio, setActivePriceRadio] = useState<string | undefined>(() => {
     if (initialFilters?.priceRange) {
@@ -89,10 +111,10 @@ const ProductFilters = forwardRef<
       setSelectedSizes(newFilters.sizes || []);
       setSelectedBrands(newFilters.brands || []);
       const newMin = newFilters.priceRange?.[0]?.toString() || "0";
-      const newMax = newFilters.priceRange?.[1]?.toString() || "2000000";
-      setMinPrice(newMin);
-      setMaxPrice(newMax);
-      const matchingOption = priceOptions.find(opt => opt.value[0] === (newFilters.priceRange?.[0] ?? 0) && opt.value[1] === (newFilters.priceRange?.[1] ?? 2000000));
+      const newMax = newFilters.priceRange?.[1]?.toString() || defaultMaxPriceValue.toString();
+      setMinPrice(formatNumberWithDots(newMin));
+      setMaxPrice(formatNumberWithDots(newMax));
+      const matchingOption = priceOptions.find(opt => opt.value[0] === (newFilters.priceRange?.[0] ?? 0) && opt.value[1] === (newFilters.priceRange?.[1] ?? defaultMaxPriceValue));
       setActivePriceRadio(matchingOption ? JSON.stringify(matchingOption.value) : undefined);
     }
   }));
@@ -103,10 +125,10 @@ const ProductFilters = forwardRef<
       setSelectedSizes(initialFilters.sizes || []);
       setSelectedBrands(initialFilters.brands || []);
       const initMin = initialFilters.priceRange?.[0]?.toString() || "0";
-      const initMax = initialFilters.priceRange?.[1]?.toString() || "2000000";
-      setMinPrice(initMin);
-      setMaxPrice(initMax);
-      const matchingOption = priceOptions.find(opt => opt.value[0] === (initialFilters.priceRange?.[0] ?? 0) && opt.value[1] === (initialFilters.priceRange?.[1] ?? 2000000));
+      const initMax = initialFilters.priceRange?.[1]?.toString() || defaultMaxPriceValue.toString();
+      setMinPrice(formatNumberWithDots(initMin));
+      setMaxPrice(formatNumberWithDots(initMax));
+      const matchingOption = priceOptions.find(opt => opt.value[0] === (initialFilters.priceRange?.[0] ?? 0) && opt.value[1] === (initialFilters.priceRange?.[1] ?? defaultMaxPriceValue));
       setActivePriceRadio(matchingOption ? JSON.stringify(matchingOption.value) : undefined);
     }
   }, [initialFilters]);
@@ -117,17 +139,29 @@ const ProductFilters = forwardRef<
 
   const handleApplyFilters = () => {
     if (onFilterChange) {
-      const numMinPrice = parseInt(minPrice, 10);
-      const numMaxPrice = parseInt(maxPrice, 10);
+      const cleanedMinPriceStr = cleanNumberString(minPrice);
+      const cleanedMaxPriceStr = cleanNumberString(maxPrice);
 
-      const validMinPrice = isNaN(numMinPrice) ? 0 : numMinPrice;
-      const validMaxPrice = (isNaN(numMaxPrice) || numMaxPrice < validMinPrice) ? 2000000 : numMaxPrice;
+      let numMin = cleanedMinPriceStr === '' ? 0 : parseInt(cleanedMinPriceStr, 10);
+      numMin = isNaN(numMin) ? 0 : numMin;
+
+      let numMax = cleanedMaxPriceStr === '' ? defaultMaxPriceValue : parseInt(cleanedMaxPriceStr, 10);
+      numMax = isNaN(numMax) ? defaultMaxPriceValue : numMax;
       
+      if (numMax < numMin) {
+        if (cleanedMaxPriceStr !== '') { 
+          numMax = numMin;
+        } else { 
+          numMax = (numMin > defaultMaxPriceValue) ? numMin : defaultMaxPriceValue;
+        }
+      }
+      if (numMax < numMin) numMax = numMin;
+
       onFilterChange({
         categories: selectedCategories,
         sizes: selectedSizes,
         brands: selectedBrands,
-        priceRange: [validMinPrice, validMaxPrice],
+        priceRange: [numMin, numMax],
       });
     }
   };
@@ -153,17 +187,19 @@ const ProductFilters = forwardRef<
   const handlePriceRadioChange = (valueStr: string) => {
     setActivePriceRadio(valueStr);
     const [radioMin, radioMax] = JSON.parse(valueStr);
-    setMinPrice(radioMin.toString());
-    setMaxPrice(radioMax.toString());
+    setMinPrice(formatNumberWithDots(radioMin.toString()));
+    setMaxPrice(formatNumberWithDots(radioMax.toString()));
   };
 
   const handleMinPriceInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setMinPrice(e.target.value);
+    const cleanedValue = cleanNumberString(e.target.value);
+    setMinPrice(formatNumberWithDots(cleanedValue));
     setActivePriceRadio(undefined); 
   };
 
   const handleMaxPriceInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setMaxPrice(e.target.value);
+    const cleanedValue = cleanNumberString(e.target.value);
+    setMaxPrice(formatNumberWithDots(cleanedValue));
     setActivePriceRadio(undefined);
   };
 
@@ -257,23 +293,21 @@ const ProductFilters = forwardRef<
           <AccordionContent className="pt-4 space-y-4">
             <div className="flex items-center gap-2">
               <Input 
-                type="number" 
+                type="text" 
                 placeholder="Harga Min." 
                 value={minPrice}
                 onChange={handleMinPriceInputChange}
                 className="h-9 text-sm"
                 aria-label="Harga Minimum"
-                min="0"
               />
               <span className="text-muted-foreground">-</span>
               <Input 
-                type="number" 
+                type="text" 
                 placeholder="Harga Max." 
                 value={maxPrice}
                 onChange={handleMaxPriceInputChange}
                 className="h-9 text-sm"
                 aria-label="Harga Maksimum"
-                min="0"
               />
             </div>
             <RadioGroup value={activePriceRadio} onValueChange={handlePriceRadioChange} className="space-y-2">
@@ -297,5 +331,6 @@ const ProductFilters = forwardRef<
 
 ProductFilters.displayName = "ProductFilters";
 export default ProductFilters;
+    
 
     
