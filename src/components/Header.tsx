@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { Search, User, Menu, ShoppingBag, Heart } from 'lucide-react';
+import { Search, User, Menu, ShoppingCart, Heart } from 'lucide-react'; // Changed ShoppingBag to ShoppingCart
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import {
@@ -324,7 +324,7 @@ export default function Header() {
 
           {/* User Actions - Ordered as: Tas, Wishlist, Masuk/Daftar */}
           <Button variant="ghost" size="icon" aria-label="Shopping Bag" className="h-9 w-9 text-foreground/80 outline-none focus-visible:ring-0 focus-visible:ring-offset-0">
-            <ShoppingBag className="h-4 w-4" />
+            <ShoppingCart className="h-4 w-4" /> {/* Changed from ShoppingBag */}
           </Button>
           <Button variant="ghost" size="icon" aria-label="Wishlist" className="h-9 w-9 text-foreground/80 outline-none focus-visible:ring-0 focus-visible:ring-offset-0">
             <Heart className="h-4 w-4" />
@@ -384,7 +384,7 @@ export default function Header() {
                   <span>Wishlist</span>
                 </Button>
                  <Button variant="ghost" className="w-full justify-start pl-2 space-x-2">
-                  <ShoppingBag className="h-4 w-4" />
+                  <ShoppingCart className="h-4 w-4" /> {/* Changed from ShoppingBag */}
                   <span>Tas Belanja</span>
                 </Button>
                 <Button variant="ghost" className="w-full justify-start pl-2 space-x-2" onClick={() => setIsSheetOpen(false)}>
