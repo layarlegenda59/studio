@@ -14,7 +14,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
           {/* Column 1: About Goodstock-X & Contact */}
           <div>
-            <h5 className="text-xl font-headline font-semibold mb-4">GOODSTOCK-X</h5>
+            <h5 className="text-xl font-headline font-semibold mb-4">Goodstock-X</h5>
             <p className="text-sm text-gray-400 mb-3">
               Sebagai Pusat Fashion Online di Indonesia, kami menciptakan kemungkinan-kemungkinan gaya tanpa batas dengan cara memperluas jangkauan produk, mulai dari produk internasional hingga produk lokal dambaan. Kami menjadikan Anda sebagai pusatnya.
             </p>
@@ -24,7 +24,7 @@ export default function Footer() {
             <p className="text-sm text-gray-400">E-mail: <a href="mailto:customer@goodstockx.com" className="hover:text-white hover:underline">customer@goodstockx.com</a></p>
             <p className="text-sm text-gray-400">WhatsApp: <a href="https://wa.me/6281234567890" target="_blank" rel="noopener noreferrer" className="hover:text-white hover:underline">+62 812 3456 7890</a></p>
             
-            <h6 className="text-md font-headline font-semibold mt-6 mb-3">TEMUKAN KAMI</h6>
+            <h6 className="text-md font-headline font-semibold mt-6 mb-3">Temukan Kami</h6>
             <div className="flex space-x-3">
               <Link href="#" aria-label="Facebook" className="text-gray-400 hover:text-white"><Facebook size={20} /></Link>
               <Link href="#" aria-label="Instagram" className="text-gray-400 hover:text-white"><Instagram size={20} /></Link>
@@ -37,7 +37,7 @@ export default function Footer() {
 
           {/* Column 2: Layanan */}
           <div>
-            <h5 className="text-xl font-headline font-semibold mb-4">LAYANAN</h5>
+            <h5 className="text-xl font-headline font-semibold mb-4">Layanan</h5>
             <ul className="space-y-2 text-sm">
               <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">Bantuan</Link></li>
               <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">Cara Pengembalian</Link></li>
@@ -54,7 +54,7 @@ export default function Footer() {
 
           {/* Column 3: Tentang Kami */}
           <div>
-            <h5 className="text-xl font-headline font-semibold mb-4">TENTANG KAMI</h5>
+            <h5 className="text-xl font-headline font-semibold mb-4">Tentang Kami</h5>
             <ul className="space-y-2 text-sm">
               <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">About Us</Link></li>
               <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">Promosikan Brand Anda</Link></li>
@@ -70,7 +70,7 @@ export default function Footer() {
 
           {/* Column 4: Newsletter */}
           <div>
-            <h5 className="text-xl font-headline font-semibold mb-4">ANDA BARU DI GOODSTOCK-X</h5>
+            <h5 className="text-xl font-headline font-semibold mb-4">Anda Baru di Goodstock-X</h5>
             <p className="text-sm text-gray-400 mb-3">
               Dapatkan berita mode terbaru dan peluncuran produk hanya dengan subscribe newsletter kami.
             </p>
@@ -108,4 +108,3 @@ export default function Footer() {
     </footer>
   );
 }
-
