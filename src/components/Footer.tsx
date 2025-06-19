@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Facebook, Instagram, Twitter, Youtube, Linkedin } from 'lucide-react';
+import { Facebook, Instagram, Twitter, Youtube } from 'lucide-react';
 
 export default function Footer() {
   return (
@@ -30,7 +30,6 @@ export default function Footer() {
               <Link href="#" aria-label="Instagram" className="text-gray-400 hover:text-white"><Instagram size={20} /></Link>
               <Link href="#" aria-label="Twitter" className="text-gray-400 hover:text-white"><Twitter size={20} /></Link>
               <Link href="#" aria-label="YouTube" className="text-gray-400 hover:text-white"><Youtube size={20} /></Link>
-              <Link href="#" aria-label="LinkedIn" className="text-gray-400 hover:text-white"><Linkedin size={20} /></Link>
             </div>
           </div>
 
