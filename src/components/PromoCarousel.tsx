@@ -64,15 +64,7 @@ export default function PromoCarousel({ promotions }: PromoCarouselProps) {
             <CarouselItem key={promo.id}>
               <Card className="overflow-hidden shadow-lg border-none bg-transparent">
                 <CardContent className="relative flex aspect-[16/6] items-center justify-center p-0">
-                  <Image
-                    src={promo.imageUrl}
-                    alt={promo.title}
-                    layout="fill"
-                    objectFit="cover"
-                    objectPosition={promo.objectPosition || '50% 50%'} // Use defined position or default
-                    priority={index === 0}
-                    data-ai-hint="fashion sale banner"
-                  />
+                  {/* Image component removed as per request */}
                   <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center text-center p-6">
                     <h2 className="text-3xl md:text-5xl font-headline font-bold text-white mb-4 shadow-text">
                       {promo.title}
