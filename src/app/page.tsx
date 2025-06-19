@@ -10,7 +10,7 @@ import WhatsAppButton from '@/components/WhatsAppButton';
 import ShippingCalculator from '@/components/ShippingCalculator';
 import WhatsAppOrderForm from '@/components/WhatsAppOrderForm';
 import Footer from '@/components/Footer';
-import ProductFilters, { type FilterState as ProductFilterStateOriginal } from '@/components/ProductFilters';
+import ProductFilters, { type FilterState as ProductFilterStateFromComponent } from '@/components/ProductFilters';
 import { mockProducts, mockPromotions } from '@/lib/mockData';
 import type { Product } from '@/lib/types';
 import { useToast } from "@/hooks/use-toast";
@@ -19,22 +19,19 @@ import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from '@/co
 import { FilterIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-// Update FilterState to include brands and remove others
-interface FilterState extends Omit<ProductFilterStateOriginal, 'types' | 'gender' | 'promoOnly'> {
+// Define FilterState consistent with ProductFilters.tsx
+interface FilterState {
+  categories: string[];
+  sizes: string[];
   brands: string[];
-  types?: string[]; 
-  gender?: string;
-  promoOnly?: boolean;
+  priceRange: [number, number];
 }
 
 const initialFilters: FilterState = {
   categories: [],
   sizes: [],
   brands: [],
-  types: [], 
-  gender: "Unisex", 
-  priceRange: [0, 2000000],
-  promoOnly: false,
+  priceRange: [0, 2000000], // Default max price
 };
 
 export default function Home() {
@@ -50,12 +47,9 @@ export default function Home() {
     const categoryParam = params.get('category');
     if (categoryParam) newFiltersState.categories = categoryParam.split(',');
     
-    const typeParam = params.get('type');
-    if (typeParam) newFiltersState.types = typeParam.split(',');
-
-    const genderParam = params.get('gender');
-    if (genderParam) newFiltersState.gender = genderParam;
-
+    const sizesParam = params.get('sizes');
+    if (sizesParam) newFiltersState.sizes = sizesParam.split(',');
+    
     const brandParam = params.get('brand');
     if (brandParam) newFiltersState.brands = brandParam.split(',');
     
@@ -63,6 +57,10 @@ export default function Home() {
     const maxPriceParam = params.get('maxPrice');
     if (minPriceParam && maxPriceParam) {
       newFiltersState.priceRange = [parseInt(minPriceParam, 10), parseInt(maxPriceParam, 10)];
+    } else if (minPriceParam) {
+      newFiltersState.priceRange = [parseInt(minPriceParam, 10), initialFiltersRef.current.priceRange[1]];
+    } else if (maxPriceParam) {
+      newFiltersState.priceRange = [initialFiltersRef.current.priceRange[0], parseInt(maxPriceParam, 10)];
     }
     
     return newFiltersState;
@@ -78,7 +76,7 @@ export default function Home() {
 
   useEffect(() => {
     const params = new URLSearchParams(searchParams.toString());
-    const filterKeys = ['category', 'type', 'gender', 'brand', 'minPrice', 'maxPrice', 'q', 'sizes', 'promoOnly'];
+    const filterKeys = ['category', 'sizes', 'brand', 'minPrice', 'maxPrice', 'q', 'type', 'gender', 'promoOnly']; // Include 'type' and 'gender' here as they are used in Header links
     let hasActiveFilters = false;
     for (const key of filterKeys) {
       if (params.has(key) && params.get(key) !== '') {
@@ -92,19 +90,22 @@ export default function Home() {
    useEffect(() => {
     const params = new URLSearchParams(searchParams.toString());
     const newFiltersState: FilterState = { 
-      categories: params.get('category')?.split(',') || initialFiltersRef.current.categories,
-      sizes: params.get('sizes')?.split(',') || initialFiltersRef.current.sizes,
-      types: params.get('type')?.split(',') || initialFiltersRef.current.types,
-      gender: params.get('gender') || initialFiltersRef.current.gender,
-      brands: params.get('brand')?.split(',') || initialFiltersRef.current.brands,
+      categories: params.get('category')?.split(',').filter(Boolean) || initialFiltersRef.current.categories,
+      sizes: params.get('sizes')?.split(',').filter(Boolean) || initialFiltersRef.current.sizes,
+      brands: params.get('brand')?.split(',').filter(Boolean) || initialFiltersRef.current.brands,
       priceRange: [
         params.has('minPrice') ? parseInt(params.get('minPrice')!, 10) : initialFiltersRef.current.priceRange[0],
         params.has('maxPrice') ? parseInt(params.get('maxPrice')!, 10) : initialFiltersRef.current.priceRange[1],
       ],
-      promoOnly: params.get('promoOnly') === 'true' || initialFiltersRef.current.promoOnly,
     };
+    
+    // Preserve 'type' and 'gender' from URL for filtering logic, even if not in ProductFilters.tsx UI
+    const typeParam = params.get('type');
+    const genderParam = params.get('gender');
 
-    if (JSON.stringify(newFiltersState) !== JSON.stringify(filters)) {
+    if (JSON.stringify(newFiltersState) !== JSON.stringify(filters) || 
+        (typeParam && !filters.categories.includes(typeParam)) || // crude check for type/gender impacting filters
+        (genderParam && !filters.categories.includes(genderParam))) { // crude check
         setFilters(newFiltersState);
         if (productFiltersRef.current) {
             productFiltersRef.current.setFiltersFromParent(newFiltersState);
@@ -115,72 +116,98 @@ export default function Home() {
 
   useEffect(() => {
     let productsToFilter = [...mockProducts];
+    const params = new URLSearchParams(searchParams.toString());
 
+    // Filter by categories from ProductFilters state
     if (filters.categories.length > 0) {
       productsToFilter = productsToFilter.filter(product => 
         filters.categories.some(cat => product.category === cat)
       );
     }
-    
-    if (filters.types && filters.types.length > 0) {
-      productsToFilter = productsToFilter.filter(product =>
-        product.type && filters.types.some(type => product.type === type)
-      );
-    }
 
+    // Additional filter by 'type' from URL (from Header links)
+    const typeParam = params.get('type');
+    if (typeParam) {
+      const typesFromUrl = typeParam.split(',').filter(Boolean);
+      if (typesFromUrl.length > 0) {
+        productsToFilter = productsToFilter.filter(product =>
+          product.type && typesFromUrl.some(type => product.type === type)
+        );
+      }
+    }
+    
+    // Filter by sizes from ProductFilters state
     if (filters.sizes.length > 0) {
       productsToFilter = productsToFilter.filter(product =>
         product.sizes.some(size => filters.sizes.includes(size))
       );
     }
 
+    // Filter by brands from ProductFilters state
     if (filters.brands.length > 0) {
       productsToFilter = productsToFilter.filter(product =>
-        filters.brands.some(brand => product.brand === brand)
+        product.brand && filters.brands.some(brand => product.brand === brand)
       );
     }
     
-    if (filters.gender && filters.gender !== "Unisex") {
-         productsToFilter = productsToFilter.filter(product => product.gender === filters.gender || product.gender === "Unisex");
+    // Additional filter by 'gender' from URL (from Header links)
+    const genderParam = params.get('gender');
+    if (genderParam && genderParam !== "Unisex") { // Assuming "Unisex" means no gender filter
+         productsToFilter = productsToFilter.filter(product => product.gender === genderParam || product.gender === "Unisex");
     }
 
+    // Filter by priceRange from ProductFilters state
     productsToFilter = productsToFilter.filter(product => {
       const price = product.promoPrice ?? product.originalPrice;
       return price >= filters.priceRange[0] && price <= filters.priceRange[1];
     });
-
-    if (filters.promoOnly) {
-      productsToFilter = productsToFilter.filter(product => product.isPromo);
+    
+    // Search query from URL
+    const queryParam = params.get('q');
+    if (queryParam) {
+      const searchTerm = queryParam.toLowerCase();
+      productsToFilter = productsToFilter.filter(product =>
+        product.name.toLowerCase().includes(searchTerm) ||
+        product.brand.toLowerCase().includes(searchTerm) ||
+        product.category.toLowerCase().includes(searchTerm) ||
+        (product.type && product.type.toLowerCase().includes(searchTerm))
+      );
     }
 
-    setFilteredProducts(productsToFilter);
-  }, [filters]);
 
-  const handleFilterChange = useCallback((newFiltersFromComponent: ProductFilterStateOriginal) => {
-    setFilters(prevFilters => ({
-        ...prevFilters,
+    setFilteredProducts(productsToFilter);
+  }, [filters, searchParams]);
+
+  const handleFilterChange = useCallback((newFiltersFromComponent: ProductFilterStateFromComponent) => {
+    const updatedFilters: FilterState = {
         categories: newFiltersFromComponent.categories,
         sizes: newFiltersFromComponent.sizes,
-        brands: (newFiltersFromComponent as FilterState).brands, 
+        brands: newFiltersFromComponent.brands, 
         priceRange: newFiltersFromComponent.priceRange,
-    }));
+    };
+    setFilters(updatedFilters);
     setIsFilterSheetOpen(false);
 
-    // Update URL query parameters
     const params = new URLSearchParams(searchParams.toString());
-    if (newFiltersFromComponent.categories.length > 0) params.set('category', newFiltersFromComponent.categories.join(',')); else params.delete('category');
-    if (newFiltersFromComponent.sizes.length > 0) params.set('sizes', newFiltersFromComponent.sizes.join(',')); else params.delete('sizes');
-    if ((newFiltersFromComponent as FilterState).brands.length > 0) params.set('brand', (newFiltersFromComponent as FilterState).brands.join(',')); else params.delete('brand');
     
-    const currentPriceRange = (newFiltersFromComponent as FilterState).priceRange || initialFiltersRef.current.priceRange;
-    if (currentPriceRange[0] !== initialFiltersRef.current.priceRange[0]) params.set('minPrice', currentPriceRange[0].toString()); else params.delete('minPrice');
-    if (currentPriceRange[1] !== initialFiltersRef.current.priceRange[1]) params.set('maxPrice', currentPriceRange[1].toString()); else params.delete('maxPrice');
+    if (updatedFilters.categories.length > 0) params.set('category', updatedFilters.categories.join(',')); else params.delete('category');
+    if (updatedFilters.sizes.length > 0) params.set('sizes', updatedFilters.sizes.join(',')); else params.delete('sizes');
+    if (updatedFilters.brands.length > 0) params.set('brand', updatedFilters.brands.join(',')); else params.delete('brand');
     
-    // Preserve other existing params like 'type' and 'gender' from URL if they exist
-    const typeParam = searchParams.get('type');
-    if (typeParam) params.set('type', typeParam);
-    const genderParam = searchParams.get('gender');
-    if (genderParam) params.set('gender', genderParam);
+    if (updatedFilters.priceRange[0] !== initialFiltersRef.current.priceRange[0]) params.set('minPrice', updatedFilters.priceRange[0].toString()); else params.delete('minPrice');
+    if (updatedFilters.priceRange[1] !== initialFiltersRef.current.priceRange[1]) params.set('maxPrice', updatedFilters.priceRange[1].toString()); else params.delete('maxPrice');
+    
+    // Preserve 'type' and 'gender' from URL if they exist and were not part of ProductFilters.tsx submission
+    const typeFromUrl = searchParams.get('type');
+    if (typeFromUrl && !params.has('type')) params.set('type', typeFromUrl);
+
+    const genderFromUrl = searchParams.get('gender');
+    if (genderFromUrl && !params.has('gender')) params.set('gender', genderFromUrl);
+    
+    // Preserve search query
+    const qFromUrl = searchParams.get('q');
+    if (qFromUrl) params.set('q', qFromUrl);
+
 
     window.history.pushState(null, '', `?${params.toString()}`);
 
@@ -298,7 +325,7 @@ export default function Home() {
                             </SheetHeader>
                             <div className="p-4 overflow-y-auto h-[calc(100vh-4rem)]">
                                 <ProductFilters 
-                                    ref={productFiltersRef}
+                                    ref={productFiltersRef} // Make sure this ref is passed if ProductFilters is inside Sheet
                                     onFilterChange={handleFilterChange} 
                                     initialFilters={filters}
                                 />
@@ -342,4 +369,3 @@ export default function Home() {
     </div>
   );
 }
-

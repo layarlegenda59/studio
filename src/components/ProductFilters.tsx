@@ -21,7 +21,7 @@ const priceOptions = [
   { label: "RP 100.000 - RP 250.000", value: [100000, 250000] },
   { label: "RP 250.000 - RP 500.000", value: [250000, 500000] },
   { label: "RP 500.000 - RP 1.000.000", value: [500000, 1000000] },
-  { label: "Diatas RP 1.000.000", value: [1000000, 2000000] }, // Max set to 2M as per previous slider
+  { label: "Diatas RP 1.000.000", value: [1000000, 2000000] },
 ];
 
 export interface FilterState {
@@ -64,7 +64,7 @@ const ProductFilters = forwardRef<
       const newMax = newFilters.priceRange?.[1]?.toString() || "2000000";
       setMinPrice(newMin);
       setMaxPrice(newMax);
-      const matchingOption = priceOptions.find(opt => opt.value[0] === newFilters.priceRange?.[0] && opt.value[1] === newFilters.priceRange?.[1]);
+      const matchingOption = priceOptions.find(opt => opt.value[0] === (newFilters.priceRange?.[0] ?? 0) && opt.value[1] === (newFilters.priceRange?.[1] ?? 2000000));
       setActivePriceRadio(matchingOption ? JSON.stringify(matchingOption.value) : undefined);
     }
   }));
@@ -78,7 +78,7 @@ const ProductFilters = forwardRef<
       const initMax = initialFilters.priceRange?.[1]?.toString() || "2000000";
       setMinPrice(initMin);
       setMaxPrice(initMax);
-      const matchingOption = priceOptions.find(opt => opt.value[0] === initialFilters.priceRange?.[0] && opt.value[1] === initialFilters.priceRange?.[1]);
+      const matchingOption = priceOptions.find(opt => opt.value[0] === (initialFilters.priceRange?.[0] ?? 0) && opt.value[1] === (initialFilters.priceRange?.[1] ?? 2000000));
       setActivePriceRadio(matchingOption ? JSON.stringify(matchingOption.value) : undefined);
     }
   }, [initialFilters]);
@@ -89,13 +89,17 @@ const ProductFilters = forwardRef<
 
   const handleApplyFilters = () => {
     if (onFilterChange) {
-      const numMinPrice = parseInt(minPrice, 10) || 0;
-      const numMaxPrice = parseInt(maxPrice, 10) || 2000000;
+      const numMinPrice = parseInt(minPrice, 10);
+      const numMaxPrice = parseInt(maxPrice, 10);
+
+      const validMinPrice = isNaN(numMinPrice) ? 0 : numMinPrice;
+      const validMaxPrice = isNaN(numMaxPrice) ? 2000000 : numMaxPrice;
+      
       onFilterChange({
         categories: selectedCategories,
         sizes: selectedSizes,
         brands: selectedBrands,
-        priceRange: [numMinPrice, numMaxPrice],
+        priceRange: [validMinPrice, validMaxPrice],
       });
     }
   };
@@ -155,7 +159,7 @@ const ProductFilters = forwardRef<
         </AccordionItem>
 
         <AccordionItem value="brand"> 
-          <AccordionTrigger className="font-headline text-base">Brand</AccordionTrigger>
+          <AccordionTrigger className="font-headline text-base">Merk</AccordionTrigger>
           <AccordionContent className="space-y-3 pt-2">
             <Input 
               type="search"
@@ -231,6 +235,7 @@ const ProductFilters = forwardRef<
                 onChange={handleMinPriceInputChange}
                 className="h-9 text-sm"
                 aria-label="Harga Minimum"
+                min="0"
               />
               <span className="text-muted-foreground">-</span>
               <Input 
@@ -240,6 +245,7 @@ const ProductFilters = forwardRef<
                 onChange={handleMaxPriceInputChange}
                 className="h-9 text-sm"
                 aria-label="Harga Maksimum"
+                min="0"
               />
             </div>
             <RadioGroup value={activePriceRadio} onValueChange={handlePriceRadioChange} className="space-y-2">
