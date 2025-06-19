@@ -4,11 +4,9 @@
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
-// Badge removed as it's not used for image overlay anymore
 import type { Product } from '@/lib/types';
 import { Heart } from 'lucide-react';
 
-// Specific tag icon from the image (simplified)
 const DiscountTagIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-destructive h-3.5 w-3.5">
     <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
@@ -44,7 +42,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         </div>
       </CardHeader>
       <CardContent className="p-3 flex-grow flex flex-col">
-        <div className="flex justify-between items-start mb-2">
+        <div className="flex justify-between items-start mb-1">
           <div className="flex-1 min-w-0 pr-2">
             <p className="text-xs text-foreground truncate" title={product.brand}>{product.brand}</p>
             <h3 
@@ -58,6 +56,14 @@ export default function ProductCard({ product }: ProductCardProps) {
             <Heart className="h-4 w-4" />
           </Button>
         </div>
+
+        {product.sizes && product.sizes.length > 0 && (
+          <div className="mb-2">
+            <p className="text-xs text-muted-foreground">
+              Ukuran: {product.sizes.join(', ')}
+            </p>
+          </div>
+        )}
 
         {/* Price Section */}
         <div className="mt-auto"> {/* This ensures price is pushed down if content above varies */}
