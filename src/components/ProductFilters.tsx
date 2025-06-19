@@ -4,23 +4,30 @@
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { Slider } from "@/components/ui/slider";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Input } from "@/components/ui/input"; // Ditambahkan
-import { ScrollArea } from "@/components/ui/scroll-area"; // Ditambahkan
+import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import React, { useState, useEffect, useImperativeHandle, forwardRef, useMemo } from 'react';
-import { mockProducts } from "@/lib/mockData"; // Ditambahkan untuk mendapatkan daftar brand
+import { mockProducts } from "@/lib/mockData";
 
 const allCategories = ["Sepatu", "Tas", "Pakaian"];
 const allSizes = ["S", "M", "L", "XL", "38", "39", "40", "41", "42", "One Size"];
-
-// Mendapatkan semua brand unik dari mockProducts
 const allBrands = Array.from(new Set(mockProducts.map(p => p.brand))).sort();
+
+const priceOptions = [
+  { label: "RP 0 - RP 100.000", value: [0, 100000] },
+  { label: "RP 100.000 - RP 250.000", value: [100000, 250000] },
+  { label: "RP 250.000 - RP 500.000", value: [250000, 500000] },
+  { label: "RP 500.000 - RP 1.000.000", value: [500000, 1000000] },
+  { label: "Diatas RP 1.000.000", value: [1000000, 2000000] }, // Max set to 2M as per previous slider
+];
 
 export interface FilterState {
   categories: string[];
   sizes: string[];
-  brands: string[]; // Ditambahkan
+  brands: string[];
   priceRange: [number, number];
 }
 
@@ -36,16 +43,29 @@ const ProductFilters = forwardRef<
   
   const [selectedCategories, setSelectedCategories] = useState<string[]>(initialFilters?.categories || []);
   const [selectedSizes, setSelectedSizes] = useState<string[]>(initialFilters?.sizes || []);
-  const [selectedBrands, setSelectedBrands] = useState<string[]>(initialFilters?.brands || []); // Ditambahkan
-  const [priceRange, setPriceRange] = useState<[number, number]>(initialFilters?.priceRange || [0, 2000000]);
-  const [brandSearchTerm, setBrandSearchTerm] = useState(''); // Ditambahkan
+  const [selectedBrands, setSelectedBrands] = useState<string[]>(initialFilters?.brands || []);
+  const [minPrice, setMinPrice] = useState<string>(initialFilters?.priceRange[0]?.toString() || "0");
+  const [maxPrice, setMaxPrice] = useState<string>(initialFilters?.priceRange[1]?.toString() || "2000000");
+  const [brandSearchTerm, setBrandSearchTerm] = useState('');
+  const [activePriceRadio, setActivePriceRadio] = useState<string | undefined>(() => {
+    if (initialFilters?.priceRange) {
+        const matchingOption = priceOptions.find(opt => opt.value[0] === initialFilters.priceRange[0] && opt.value[1] === initialFilters.priceRange[1]);
+        return matchingOption ? JSON.stringify(matchingOption.value) : undefined;
+    }
+    return undefined;
+  });
 
   useImperativeHandle(ref, () => ({
     setFiltersFromParent: (newFilters: FilterState) => {
       setSelectedCategories(newFilters.categories || []);
       setSelectedSizes(newFilters.sizes || []);
-      setSelectedBrands(newFilters.brands || []); // Ditambahkan
-      setPriceRange(newFilters.priceRange || [0, 2000000]);
+      setSelectedBrands(newFilters.brands || []);
+      const newMin = newFilters.priceRange?.[0]?.toString() || "0";
+      const newMax = newFilters.priceRange?.[1]?.toString() || "2000000";
+      setMinPrice(newMin);
+      setMaxPrice(newMax);
+      const matchingOption = priceOptions.find(opt => opt.value[0] === newFilters.priceRange?.[0] && opt.value[1] === newFilters.priceRange?.[1]);
+      setActivePriceRadio(matchingOption ? JSON.stringify(matchingOption.value) : undefined);
     }
   }));
   
@@ -53,8 +73,13 @@ const ProductFilters = forwardRef<
     if (initialFilters) {
       setSelectedCategories(initialFilters.categories || []);
       setSelectedSizes(initialFilters.sizes || []);
-      setSelectedBrands(initialFilters.brands || []); // Ditambahkan
-      setPriceRange(initialFilters.priceRange || [0, 2000000]);
+      setSelectedBrands(initialFilters.brands || []);
+      const initMin = initialFilters.priceRange?.[0]?.toString() || "0";
+      const initMax = initialFilters.priceRange?.[1]?.toString() || "2000000";
+      setMinPrice(initMin);
+      setMaxPrice(initMax);
+      const matchingOption = priceOptions.find(opt => opt.value[0] === initialFilters.priceRange?.[0] && opt.value[1] === initialFilters.priceRange?.[1]);
+      setActivePriceRadio(matchingOption ? JSON.stringify(matchingOption.value) : undefined);
     }
   }, [initialFilters]);
 
@@ -64,11 +89,13 @@ const ProductFilters = forwardRef<
 
   const handleApplyFilters = () => {
     if (onFilterChange) {
+      const numMinPrice = parseInt(minPrice, 10) || 0;
+      const numMaxPrice = parseInt(maxPrice, 10) || 2000000;
       onFilterChange({
         categories: selectedCategories,
         sizes: selectedSizes,
-        brands: selectedBrands, // Ditambahkan
-        priceRange,
+        brands: selectedBrands,
+        priceRange: [numMinPrice, numMaxPrice],
       });
     }
   };
@@ -85,15 +112,32 @@ const ProductFilters = forwardRef<
     );
   };
   
-  const handleBrandChange = (brand: string) => { // Ditambahkan
+  const handleBrandChange = (brand: string) => {
     setSelectedBrands(prev =>
       prev.includes(brand) ? prev.filter(b => b !== brand) : [...prev, brand]
     );
   };
 
+  const handlePriceRadioChange = (valueStr: string) => {
+    setActivePriceRadio(valueStr);
+    const [radioMin, radioMax] = JSON.parse(valueStr);
+    setMinPrice(radioMin.toString());
+    setMaxPrice(radioMax.toString());
+  };
+
+  const handleMinPriceInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setMinPrice(e.target.value);
+    setActivePriceRadio(undefined); 
+  };
+
+  const handleMaxPriceInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setMaxPrice(e.target.value);
+    setActivePriceRadio(undefined);
+  };
+
   return (
     <div className="space-y-6">
-      <Accordion type="multiple" defaultValue={['category', 'brand', 'price', 'size']} className="w-full">
+      <Accordion type="multiple" defaultValue={['category', 'brand', 'size', 'price']} className="w-full">
         <AccordionItem value="category">
           <AccordionTrigger className="font-headline text-base">Kategori</AccordionTrigger>
           <AccordionContent className="space-y-2 pt-2">
@@ -111,7 +155,7 @@ const ProductFilters = forwardRef<
         </AccordionItem>
 
         <AccordionItem value="brand"> 
-          <AccordionTrigger className="font-headline text-base">Merk</AccordionTrigger>
+          <AccordionTrigger className="font-headline text-base">Brand</AccordionTrigger>
           <AccordionContent className="space-y-3 pt-2">
             <Input 
               type="search"
@@ -139,40 +183,73 @@ const ProductFilters = forwardRef<
 
         <AccordionItem value="size">
           <AccordionTrigger className="font-headline text-base">Ukuran</AccordionTrigger>
-          <AccordionContent className="space-y-2 pt-2">
-            <ScrollArea className="h-40">
-              <div className="space-y-2 pr-2">
-                {allSizes.map((size) => (
-                  <div key={size} className="flex items-center space-x-2">
-                    <Checkbox 
-                      id={`size-${size}`}
-                      checked={selectedSizes.includes(size)}
-                      onCheckedChange={() => handleSizeChange(size)}
-                    />
-                    <Label htmlFor={`size-${size}`} className="font-normal">{size}</Label>
+          <AccordionContent className="pt-2">
+            <Tabs defaultValue="eu" className="w-full">
+              <TabsList className="grid w-full grid-cols-4 mb-3">
+                <TabsTrigger value="aus">AUS</TabsTrigger>
+                <TabsTrigger value="eu">EU</TabsTrigger>
+                <TabsTrigger value="uk">UK</TabsTrigger>
+                <TabsTrigger value="us">US</TabsTrigger>
+              </TabsList>
+              <TabsContent value="aus">
+                 <p className="text-xs text-center text-muted-foreground py-2">Pilihan ukuran AUS akan tampil di sini.</p>
+              </TabsContent>
+              <TabsContent value="eu">
+                <ScrollArea className="h-40">
+                  <div className="grid grid-cols-3 gap-2 pr-2">
+                    {allSizes.map((size) => (
+                      <Button
+                        key={size}
+                        variant={selectedSizes.includes(size) ? "default" : "outline"}
+                        onClick={() => handleSizeChange(size)}
+                        className="h-9 text-xs"
+                      >
+                        {size}
+                      </Button>
+                    ))}
                   </div>
-                ))}
-              </div>
-            </ScrollArea>
+                </ScrollArea>
+              </TabsContent>
+               <TabsContent value="uk">
+                 <p className="text-xs text-center text-muted-foreground py-2">Pilihan ukuran UK akan tampil di sini.</p>
+              </TabsContent>
+               <TabsContent value="us">
+                <p className="text-xs text-center text-muted-foreground py-2">Pilihan ukuran US akan tampil di sini.</p>
+              </TabsContent>
+            </Tabs>
           </AccordionContent>
         </AccordionItem>
 
         <AccordionItem value="price">
-          <AccordionTrigger className="font-headline text-base">Rentang Harga</AccordionTrigger>
-          <AccordionContent className="pt-4">
-            <Slider
-              defaultValue={[0, 2000000]}
-              min={0}
-              max={2000000}
-              step={50000}
-              value={priceRange}
-              onValueChange={(value) => setPriceRange(value as [number, number])}
-              className="my-4"
-            />
-            <div className="flex justify-between text-sm text-muted-foreground">
-              <span>Rp{priceRange[0].toLocaleString()}</span>
-              <span>Rp{priceRange[1].toLocaleString()}</span>
+          <AccordionTrigger className="font-headline text-base">Harga</AccordionTrigger>
+          <AccordionContent className="pt-4 space-y-4">
+            <div className="flex items-center gap-2">
+              <Input 
+                type="number" 
+                placeholder="Harga Min." 
+                value={minPrice}
+                onChange={handleMinPriceInputChange}
+                className="h-9 text-sm"
+                aria-label="Harga Minimum"
+              />
+              <span className="text-muted-foreground">-</span>
+              <Input 
+                type="number" 
+                placeholder="Harga Max." 
+                value={maxPrice}
+                onChange={handleMaxPriceInputChange}
+                className="h-9 text-sm"
+                aria-label="Harga Maksimum"
+              />
             </div>
+            <RadioGroup value={activePriceRadio} onValueChange={handlePriceRadioChange} className="space-y-2">
+              {priceOptions.map((option) => (
+                <div key={option.label} className="flex items-center space-x-2">
+                  <RadioGroupItem value={JSON.stringify(option.value)} id={option.label} />
+                  <Label htmlFor={option.label} className="font-normal text-sm">{option.label}</Label>
+                </div>
+              ))}
+            </RadioGroup>
           </AccordionContent>
         </AccordionItem>
       </Accordion>
@@ -186,4 +263,3 @@ const ProductFilters = forwardRef<
 
 ProductFilters.displayName = "ProductFilters";
 export default ProductFilters;
-
