@@ -176,9 +176,16 @@ const mobileNavLinks = navItems.map(item => ({ label: item.label, href: item.hre
 interface HeaderProps {
   wishlistItems: Product[];
   onRemoveFromWishlist: (productId: string) => void;
+  itemsAddedToCartFromWishlist: Set<string>;
+  onToggleCartFromWishlist: (productId: string) => void;
 }
 
-export default function Header({ wishlistItems, onRemoveFromWishlist }: HeaderProps) {
+export default function Header({ 
+  wishlistItems, 
+  onRemoveFromWishlist,
+  itemsAddedToCartFromWishlist,
+  onToggleCartFromWishlist
+}: HeaderProps) {
   const router = useRouter();
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [popoverOpenStates, setPopoverOpenStates] = useState<Record<string, boolean>>({});
@@ -186,8 +193,6 @@ export default function Header({ wishlistItems, onRemoveFromWishlist }: HeaderPr
   let hoverTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
 
   const [isWishlistPopoverOpen, setIsWishlistPopoverOpen] = useState(false);
-  const [itemsAddedToCartFromWishlist, setItemsAddedToCartFromWishlist] = useState<Set<string>>(new Set());
-
 
   const textLogoUrl = "https://ggbivmpazczpgtmnfwfs.supabase.co/storage/v1/object/sign/material/Tulisan%20goodstock-x.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jYjkzYjM4Zi1kOGJhLTRmYTEtYmM0ZC00MWUzOGU4YTZhNzgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYXRlcmlhbC9UdWxpc2FuIGdvb2RzdG9jay14LnBuZyIsImlhdCI6MTc1MDIyMDkwMSwiZXhwIjoxNzgxNzU2OTAxfQ.8YG6sCtxclkFeZuwzQqCFaWzjhQtOYbnJRWt-leGlCE";
   const iconLogoUrl = "https://ggbivmpazczpgtmnfwfs.supabase.co/storage/v1/object/sign/material/Logo%20goodstock-x%20(transparan)%20(1).png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jYjkzYjM4Zi1kOGJhLTRmYTEtYmM0ZC00MWUzOGU4YTZhNzgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYXRlcmlhbC9Mb2dvIGdvb2RzdG9jay14ICh0cmFuc3BhcmFuKSAoMSkucG5nIiwiaWF0IjoxNzUwMzIwODEwLCJleHAiOjE3ODE4NTY4MTB9.14Cw5nlZ5gYYOmWPUIWZU_bJwyvi1ipFzvuZF72y24A";
@@ -217,21 +222,6 @@ export default function Header({ wishlistItems, onRemoveFromWishlist }: HeaderPr
       router.push(`/search?q=${encodeURIComponent(mainSearchQuery.trim())}`);
     }
   };
-
-  const handleToggleCartFromWishlist = (productId: string) => {
-    setItemsAddedToCartFromWishlist(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(productId)) {
-        newSet.delete(productId);
-        // TODO: Add toast "Item removed from cart"
-      } else {
-        newSet.add(productId);
-        // TODO: Add toast "Item added to cart"
-      }
-      return newSet;
-    });
-  };
-
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 shadow-sm">
@@ -389,10 +379,10 @@ export default function Header({ wishlistItems, onRemoveFromWishlist }: HeaderPr
                                 "h-7 w-7 shrink-0",
                                 isItemInCart ? "text-primary" : "text-muted-foreground hover:text-primary"
                               )}
-                              onClick={() => handleToggleCartFromWishlist(item.id)}
+                              onClick={() => onToggleCartFromWishlist(item.id)}
                               aria-label={isItemInCart ? `Hapus ${item.name} dari keranjang` : `Tambah ${item.name} ke keranjang`}
                             >
-                              <ShoppingCart className={cn("h-4 w-4", isItemInCart && "fill-primary")} />
+                              <ShoppingCart className={cn("h-4 w-4", isItemInCart && "fill-current text-primary")} />
                             </Button>
                             <Button
                               variant="ghost"
@@ -487,4 +477,3 @@ export default function Header({ wishlistItems, onRemoveFromWishlist }: HeaderPr
     </header>
   );
 }
-

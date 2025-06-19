@@ -31,6 +31,7 @@ export default function Home() {
   });
   const [filteredProducts, setFilteredProducts] = useState<Product[]>(mockProducts);
   const [wishlistItems, setWishlistItems] = useState<Product[]>([]);
+  const [itemsAddedToCartFromWishlist, setItemsAddedToCartFromWishlist] = useState<Set<string>>(new Set());
   const { toast } = useToast();
 
   useEffect(() => {
@@ -86,6 +87,14 @@ export default function Home() {
   const handleRemoveFromWishlistById = (productId: string) => {
     const itemToRemove = wishlistItems.find(item => item.id === productId);
     setWishlistItems(prevItems => prevItems.filter(item => item.id !== productId));
+    // If item removed from wishlist is also in cart, remove from cart
+    if (itemsAddedToCartFromWishlist.has(productId)) {
+        setItemsAddedToCartFromWishlist(prevCartItems => {
+            const newCartItems = new Set(prevCartItems);
+            newCartItems.delete(productId);
+            return newCartItems;
+        });
+    }
     if (itemToRemove) {
       toast({
         title: "Wishlist Diperbarui",
@@ -94,12 +103,39 @@ export default function Home() {
     }
   };
 
+  const handleToggleCartFromWishlist = (productId: string) => {
+    const product = mockProducts.find(p => p.id === productId);
+    if (!product) return;
+
+    setItemsAddedToCartFromWishlist(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(productId)) {
+        newSet.delete(productId);
+        toast({
+          title: "Keranjang Diperbarui",
+          description: `${product.name} dihapus dari keranjang.`,
+        });
+      } else {
+        newSet.add(productId);
+         toast({
+          title: "Keranjang Diperbarui",
+          description: `${product.name} ditambahkan ke keranjang.`,
+        });
+      }
+      return newSet;
+    });
+  };
+
+  const orderedItemsForWhatsAppForm = mockProducts.filter(product => itemsAddedToCartFromWishlist.has(product.id));
+
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <Header 
         wishlistItems={wishlistItems}
         onRemoveFromWishlist={handleRemoveFromWishlistById}
+        itemsAddedToCartFromWishlist={itemsAddedToCartFromWishlist}
+        onToggleCartFromWishlist={handleToggleCartFromWishlist}
       />
       <main className="flex-grow">
         <PromoCarousel promotions={mockPromotions} />
@@ -121,7 +157,7 @@ export default function Home() {
 
           <section id="whatsapp-order" className="my-16 p-6 bg-secondary/20 rounded-xl shadow-lg">
             <h2 className="text-3xl font-headline mb-8 text-center">Pesan Cepat via WhatsApp</h2>
-            <WhatsAppOrderForm />
+            <WhatsAppOrderForm orderedItems={orderedItemsForWhatsAppForm} />
           </section>
         </div>
       </main>

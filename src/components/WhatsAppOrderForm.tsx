@@ -1,17 +1,24 @@
+
 "use client";
 
 import { useState, type FormEvent } from 'react';
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { useToast } from "@/hooks/use-toast";
+import type { Product } from '@/lib/types';
 
 // Replace with your admin's WhatsApp number
 const ADMIN_WHATSAPP_NUMBER = "+6281234567890"; 
 
-export default function WhatsAppOrderForm() {
+interface WhatsAppOrderFormProps {
+  orderedItems?: Product[];
+}
+
+export default function WhatsAppOrderForm({ orderedItems = [] }: WhatsAppOrderFormProps) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [whatsapp, setWhatsapp] = useState('');
@@ -38,7 +45,15 @@ export default function WhatsAppOrderForm() {
     if (email) messageParts.push(`Email: ${email}`);
     messageParts.push(`No. WhatsApp: ${whatsapp}`);
     messageParts.push(`Alamat: ${address}`);
-    if (notes) messageParts.push(`Catatan: ${notes}`);
+    
+    if (orderedItems.length > 0) {
+      messageParts.push("\nBarang yang dipesan:");
+      orderedItems.forEach(item => {
+        messageParts.push(`- ${item.name}`);
+      });
+    }
+
+    if (notes) messageParts.push(`\nCatatan: ${notes}`);
     
     messageParts.push("\nMohon informasi lanjutannya. Terima kasih!");
 
@@ -85,9 +100,32 @@ export default function WhatsAppOrderForm() {
             <Label htmlFor="address">Alamat Lengkap Pengiriman <span className="text-destructive">*</span></Label>
             <Textarea id="address" placeholder="Jl. Merdeka No. 1, Kota, Provinsi, Kode Pos" value={address} onChange={(e) => setAddress(e.target.value)} required />
           </div>
+          
+          {orderedItems.length > 0 && (
+            <div className="space-y-2">
+              <Label>Barang yang dipesan:</Label>
+              <div className="space-y-2 rounded-md border p-3 max-h-48 overflow-y-auto bg-background/50">
+                {orderedItems.map(item => (
+                  <div key={item.id} className="flex items-center space-x-2">
+                    <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-sm">
+                      <Image 
+                        src={item.imageUrl} 
+                        alt={item.name} 
+                        fill 
+                        sizes="40px" 
+                        className="object-cover" 
+                      />
+                    </div>
+                    <span className="text-sm text-foreground">{item.name}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           <div className="space-y-2">
             <Label htmlFor="notes">Catatan Tambahan (Opsional)</Label>
-            <Textarea id="notes" placeholder="Contoh: Ukuran XL, warna hitam" value={notes} onChange={(e) => setNotes(e.target.value)} />
+            <Textarea id="notes" placeholder="Contoh: Ukuran XL, warna hitam, atau detail produk yang diinginkan" value={notes} onChange={(e) => setNotes(e.target.value)} />
           </div>
         </CardContent>
         <CardFooter>
