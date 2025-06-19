@@ -75,7 +75,7 @@ const navItems: NavItem[] = [
       }
     ],
     image: {
-        src: 'https://ggbivmpazczpgtmnfwfs.supabase.co/storage/v1/object/sign/material/irene-kredenets-dwKiHoqqxk8-unsplash.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jYjkzYjM4Zi1kOGJhLTRmYTEtYmM0ZC00MWUzOGU4YTZhNzgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYXRlcmlhbC9pcmVuZS1rcmVkZW5ldHMtZHdLaUhvcXF4azgtdW5zcGxhc2guanBnIiwiaWF0IjoxNzUwMzEzNzQzLCJleHAiOjE3ODE4NDk3NDN9.HExOYze3LHMJxj89desF1SQYW1IFBJa1k0wdVTVCY00',
+        src: 'https://ggbivmpazczpgtmnfwfs.supabase.co/storage/v1/object/sign/material/hemesh-patil-Kv1GtuqBVIY-unsplash.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jYjkzYjM4Zi1kOGJhLTRmYTEtYmM0ZC00MWUzOGU4YTZhNzgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYXRlcmlhbC9oZW1lc2gtcGF0aWwtS3YxR3R1cUJWSVktdW5zcGxhc2guanBnIiwiaWF0IjoxNzUwMzI2MjU4LCJleHAiOjE3ODE4NjIyNTh9.9WDexcgQMltvcVcfzX-wVqIzr7zjRNymOmJ5_lg7N9k',
         alt: 'Promo Sepatu Terbaru',
         href: '/promo/sepatu',
         dataAiHint: 'shoes model'
@@ -455,3 +455,4 @@ export default function Header({ wishlistItems, onRemoveFromWishlist }: HeaderPr
     </header>
   );
 }
+
