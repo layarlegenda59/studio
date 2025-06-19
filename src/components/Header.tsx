@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { Search, User, Menu, ShoppingCart, Heart } from 'lucide-react';
+import { Search, User, Menu, ShoppingCart, Heart, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import {
@@ -12,8 +12,11 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Input } from '@/components/ui/input';
-import React, { useState, type FormEvent } from 'react';
+import React, { useState, type FormEvent, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import type { Product } from '@/lib/types'; // Import Product type
+import { mockProducts } from '@/lib/mockData'; // Import mockProducts for wishlist example
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 
 interface SubCategoryItem {
@@ -178,8 +181,23 @@ export default function Header() {
   const [mainSearchQuery, setMainSearchQuery] = useState('');
   let hoverTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
 
+  const [wishlistItems, setWishlistItems] = useState<Product[]>([]);
+  const [isWishlistPopoverOpen, setIsWishlistPopoverOpen] = useState(false);
+
   const textLogoUrl = "https://ggbivmpazczpgtmnfwfs.supabase.co/storage/v1/object/sign/material/Tulisan%20goodstock-x.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jYjkzYjM4Zi1kOGJhLTRmYTEtYmM0ZC00MWUzOGU4YTZhNzgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYXRlcmlhbC9UdWxpc2FuIGdvb2RzdG9jay14LnBuZyIsImlhdCI6MTc1MDIyMDkwMSwiZXhwIjoxNzgxNzU2OTAxfQ.8YG6sCtxclkFeZuwzQqCFaWzjhQtOYbnJRWt-leGlCE";
   const iconLogoUrl = "https://ggbivmpazczpgtmnfwfs.supabase.co/storage/v1/object/sign/material/Logo%20goodstock-x%20(transparan)%20(1).png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jYjkzYjM4Zi1kOGJhLTRmYTEtYmM0ZC00MWUzOGU4YTZhNzgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYXRlcmlhbC9Mb2dvIGdvb2RzdG9jay14ICh0cmFuc3BhcmFuKSAoMSkucG5nIiwiaWF0IjoxNzUwMzIwODEwLCJleHAiOjE3ODE4NTY4MTB9.14Cw5nlZ5gYYOmWPUIWZU_bJwyvi1ipFzvuZF72y24A";
+
+  useEffect(() => {
+    // Mock: Populate wishlist with first 2 products from mockData
+    // In a real app, this would come from user data / global state
+    setWishlistItems(mockProducts.slice(0, 2));
+  }, []);
+
+  const handleRemoveFromWishlist = (productId: string) => {
+    // Placeholder function - in a real app, this would update state/backend
+    setWishlistItems(prev => prev.filter(item => item.id !== productId));
+    console.log(`Removed product ${productId} from wishlist`);
+  };
 
 
   const handleMouseEnter = (label: string) => {
@@ -238,7 +256,7 @@ export default function Header() {
                 <PopoverTrigger asChild>
                   <Button
                     variant="ghost"
-                    className={`text-sm font-medium px-3 py-2 rounded-md ${item.isPromo ? 'text-destructive hover:text-destructive/80 font-semibold' : 'text-foreground/70 hover:text-primary-foreground'} transition-colors relative group outline-none focus-visible:ring-0 focus-visible:ring-offset-0`}
+                    className={`text-sm font-medium px-3 py-2 rounded-md ${item.isPromo ? 'text-destructive hover:text-destructive/80 font-semibold' : 'text-foreground/70 hover:text-accent-foreground'} transition-colors relative group outline-none focus-visible:ring-0 focus-visible:ring-offset-0`}
                     onMouseEnter={() => handleMouseEnter(item.label)}
                     onMouseLeave={() => handleMouseLeave(item.label)}
                   >
@@ -300,7 +318,7 @@ export default function Header() {
               <Link
                 key={item.label}
                 href={item.href}
-                className={`text-sm font-medium px-3 py-2 rounded-md ${item.isPromo ? 'text-destructive hover:text-destructive/80 font-semibold' : 'text-foreground/70 hover:text-primary-foreground'} transition-colors relative group outline-none focus-visible:ring-0 focus-visible:ring-offset-0`}
+                className={`text-sm font-medium px-3 py-2 rounded-md ${item.isPromo ? 'text-destructive hover:text-destructive/80 font-semibold' : 'text-foreground/70 hover:text-accent-foreground'} transition-colors relative group outline-none focus-visible:ring-0 focus-visible:ring-offset-0`}
               >
                 <span className="relative z-10">{item.label}</span>
                 <span className={`absolute bottom-0 left-0 h-0.5 ${item.isPromo ? 'bg-destructive' : 'bg-primary'} transition-all duration-300 group-hover:w-full w-0`}></span>
@@ -328,11 +346,58 @@ export default function Header() {
               <ShoppingCart className="h-4 w-4" />
             </Link>
           </Button>
-          <Button variant="ghost" size="icon" aria-label="Wishlist" className="h-9 w-9 text-foreground/80 outline-none focus-visible:ring-0 focus-visible:ring-offset-0">
-            <Heart className="h-4 w-4" />
-          </Button>
+          
+          <Popover open={isWishlistPopoverOpen} onOpenChange={setIsWishlistPopoverOpen}>
+            <PopoverTrigger asChild>
+              <Button variant="ghost" size="icon" aria-label="Wishlist" className="h-9 w-9 text-foreground/80 outline-none focus-visible:ring-0 focus-visible:ring-offset-0">
+                <Heart className="h-4 w-4" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent align="end" sideOffset={5} className="w-80 p-4">
+              <div className="space-y-4">
+                <h4 className="font-medium leading-none text-foreground">Wishlist Saya</h4>
+                <ScrollArea className="h-[300px] w-full">
+                  {wishlistItems.length > 0 ? (
+                    <div className="space-y-3 pr-3">
+                      {wishlistItems.map((item) => (
+                        <div key={item.id} className="flex items-center space-x-3">
+                          <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded">
+                            <Image
+                              src={item.imageUrl}
+                              alt={item.name}
+                              fill
+                              className="object-cover"
+                              sizes="48px"
+                            />
+                          </div>
+                          <div className="flex-grow min-w-0">
+                            <p className="text-sm font-medium text-foreground truncate">{item.name}</p>
+                            <p className="text-xs text-muted-foreground">
+                              {item.promoPrice ? `Rp${item.promoPrice.toLocaleString()}` : `Rp${item.originalPrice.toLocaleString()}`}
+                            </p>
+                          </div>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-7 w-7 text-muted-foreground hover:text-destructive shrink-0"
+                            onClick={() => handleRemoveFromWishlist(item.id)}
+                            aria-label={`Hapus ${item.name} dari wishlist`}
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-sm text-muted-foreground text-center py-4">Wishlist Anda kosong.</p>
+                  )}
+                </ScrollArea>
+              </div>
+            </PopoverContent>
+          </Popover>
+
           <Button variant="ghost" size="sm" className="h-9 px-3 text-foreground/80 outline-none focus-visible:ring-0 focus-visible:ring-offset-0">
-            <User className="h-4 w-4" />
+            <User className="h-4 w-4 mr-1.5" />
             Masuk / Daftar
           </Button>
         </div>
