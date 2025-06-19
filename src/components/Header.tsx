@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { Search, User, Menu, ChevronDown, ShoppingBag } from 'lucide-react';
+import { Search, User, Menu, ShoppingBag } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import {
@@ -174,7 +174,7 @@ export default function Header() {
   let hoverTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
 
   const textLogoUrl = "https://ggbivmpazczpgtmnfwfs.supabase.co/storage/v1/object/sign/material/Tulisan%20goodstock-x.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jYjkzYjM4Zi1kOGJhLTRmYTEtYmM0ZC00MWUzOGU4YTZhNzgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYXRlcmlhbC9UdWxpc2FuIGdvb2RzdG9jay14LnBuZyIsImlhdCI6MTc1MDIyMDkwMSwiZXhwIjoxNzgxNzU2OTAxfQ.8YG6sCtxclkFeZuwzQqCFaWzjhQtOYbnJRWt-leGlCE";
-  const iconLogoUrl = "https://ggbivmpazczpgtmnfwfs.supabase.co/storage/v1/object/sign/material/Logo.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jYjkzYjM4Zi1kOGJhLTRmYTEtYmM0ZC00MWUzOGU4YTZhNzgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYXRlcmlhbC9Mb2dvLmpwZyIsImlhdCI6MTc1MDIyNjU1MiwiZXhwIjoxNzgxNzYyNTUyfQ.ZYeRMgaRp_lrdX1yfxoLrAMM1jUGf9tTzJZsaNrhYm4";
+  const iconLogoUrl = "https://placehold.co/32x32.png"; // Corrected placeholder
 
 
   const handleMouseEnter = (label: string) => {
@@ -207,6 +207,7 @@ export default function Header() {
             height={28}
             priority
             className="h-7 w-7"
+            data-ai-hint="logo monogram"
           />
           <Image
             src={textLogoUrl}
@@ -324,6 +325,7 @@ export default function Header() {
                         width={24}
                         height={24}
                         className="h-6 w-6"
+                        data-ai-hint="logo monogram"
                       />
                     <Image
                       src={textLogoUrl}
@@ -364,6 +366,8 @@ export default function Header() {
     </header>
   );
 }
+    
+
     
 
     
