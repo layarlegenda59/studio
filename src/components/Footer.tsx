@@ -37,7 +37,7 @@ export default function Footer() {
 
           {/* Column 2: Layanan */}
           <div>
-            <h5 className="text-lg font-headline font-semibold mb-4">LAYANAN</h5>
+            <h5 className="text-xl font-headline font-semibold mb-4">LAYANAN</h5>
             <ul className="space-y-2 text-sm">
               <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">Bantuan</Link></li>
               <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">Cara Pengembalian</Link></li>
@@ -54,7 +54,7 @@ export default function Footer() {
 
           {/* Column 3: Tentang Kami */}
           <div>
-            <h5 className="text-lg font-headline font-semibold mb-4">TENTANG KAMI</h5>
+            <h5 className="text-xl font-headline font-semibold mb-4">TENTANG KAMI</h5>
             <ul className="space-y-2 text-sm">
               <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">About Us</Link></li>
               <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">Promosikan Brand Anda</Link></li>
@@ -70,7 +70,7 @@ export default function Footer() {
 
           {/* Column 4: Newsletter */}
           <div>
-            <h5 className="text-lg font-headline font-semibold mb-4">ANDA BARU DI GOODSTOCK-X</h5>
+            <h5 className="text-xl font-headline font-semibold mb-4">ANDA BARU DI GOODSTOCK-X</h5>
             <p className="text-sm text-gray-400 mb-3">
               Dapatkan berita mode terbaru dan peluncuran produk hanya dengan subscribe newsletter kami.
             </p>
@@ -108,3 +108,4 @@ export default function Footer() {
     </footer>
   );
 }
+
