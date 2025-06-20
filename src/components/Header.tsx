@@ -157,7 +157,7 @@ const navItems: NavItem[] = [
   },
   {
     label: 'Promo',
-    href: '/#promo', // Should link to a section or a promo page /?promo=all
+    href: '/#promo', 
     isPromo: true,
   },
 ];
@@ -227,13 +227,16 @@ export default function Header({
             className="h-7 w-7"
             data-ai-hint="logo monogram"
           />
-          <Image
-            src={textLogoUrl}
-            alt="Goodstock-X"
-            width={120}
-            height={28}
-            priority
-          />
+          <div className="w-[100px] sm:w-[120px] h-auto">
+            <Image
+              src={textLogoUrl}
+              alt="Goodstock-X"
+              width={120} 
+              height={28} 
+              priority
+              className="h-auto w-full" 
+            />
+          </div>
         </Link>
 
         <nav className="hidden md:flex items-center space-x-1">
@@ -277,11 +280,10 @@ export default function Header({
                                 </Link>
                               </li>
                             ))}
-                             {/* Add "Lihat Semua [Kategori]" link for each gender group, linking to the main category page for that gender */}
                             {group.title && item.href && item.label !== "Promo" && (
                                 <li key={`view-all-${item.label}-${group.title}`} className="mt-2 pt-2 border-t border-border/50">
                                 <Link
-                                    href={`${item.href}&gender=${group.title}`} // e.g. /?category=Sepatu&gender=Pria
+                                    href={`${item.href}&gender=${group.title}`} 
                                     className="block text-sm text-primary font-semibold hover:underline py-0.5"
                                     onClick={() => closePopover(item.label)}
                                 >
@@ -311,11 +313,10 @@ export default function Header({
                       </div>
                     )}
                   </div>
-                   {/* Add a general "Lihat Semua [Kategori]" link at the bottom if not already covered or for a general view */}
                   {item.href && item.label !== "Promo" && (
                     <div className="col-span-full mt-4 pt-4 border-t border-border/50">
                         <Link
-                        href={item.href} // Main category link e.g. /?category=Sepatu
+                        href={item.href} 
                         className="block text-sm text-primary font-semibold hover:underline py-0.5 text-center"
                         onClick={() => closePopover(item.label)}
                         >
@@ -447,12 +448,15 @@ export default function Header({
                         className="h-6 w-6"
                         data-ai-hint="logo monogram"
                       />
-                    <Image
-                      src={textLogoUrl}
-                      alt="Goodstock-X"
-                      width={100}
-                      height={24}
-                    />
+                    <div className="w-[100px] h-auto">
+                      <Image
+                        src={textLogoUrl}
+                        alt="Goodstock-X"
+                        width={100} 
+                        height={24}
+                        className="h-auto w-full"
+                      />
+                    </div>
                   </Link>
                 </SheetTitle>
               </SheetHeader>
@@ -472,7 +476,7 @@ export default function Header({
                 <Button variant="outline" className="w-full">
                   <Search className="mr-2 h-4 w-4" /> Search
                 </Button>
-                <Button variant="ghost" className="w-full justify-start pl-2 space-x-2" onClick={() => { setIsWishlistPopoverOpen(true); setIsSheetOpen(false); /* Logic to open popover might be needed here */}}>
+                <Button variant="ghost" className="w-full justify-start pl-2 space-x-2" onClick={() => { setIsWishlistPopoverOpen(true); setIsSheetOpen(false); }}>
                   <Heart className="h-4 w-4" />
                   <span>Wishlist</span>
                 </Button>
