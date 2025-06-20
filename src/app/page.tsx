@@ -18,6 +18,7 @@ import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { FilterIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 // Define FilterState consistent with ProductFilters.tsx and internal page state
 interface FilterState {
@@ -288,9 +289,8 @@ export default function Home() {
         <div className="container mx-auto px-4 py-8">
           <div className="flex flex-col lg:flex-row gap-8">
             <aside className={cn(
-              "hidden", // Hidden by default (mobile-first)
-              "lg:w-1/4 xl:w-1/5 space-y-6 sticky top-20 self-start h-[calc(100vh-10rem)] overflow-y-auto pr-4", // Desktop base styles
-              showFilterSidebar && "lg:block" // Show on lg+ screens if showFilterSidebar is true
+              "hidden", 
+              showFilterSidebar && "lg:block lg:w-1/4 xl:w-1/5 space-y-6 sticky top-20 self-start h-[calc(100vh-10rem)] overflow-y-auto pr-4"
             )}>
               <h3 className="text-xl font-headline font-semibold">Filter Produk</h3>
               <ProductFilters 
@@ -301,8 +301,8 @@ export default function Home() {
             </aside>
 
             <div className={cn(
-                "w-full space-y-12", // Full width by default (mobile-first)
-                showFilterSidebar && "lg:w-3/4 xl:w-4/5" // Adjust width on lg+ if sidebar is shown
+                "w-full space-y-12", 
+                showFilterSidebar && "lg:w-3/4 xl:w-4/5" 
               )}>
               <section id="products" className="w-full">
                  <div className="relative flex justify-center items-center mb-6">
@@ -317,17 +317,19 @@ export default function Home() {
                             <span className="sr-only">Buka Filter</span>
                         </Button>
                         </SheetTrigger>
-                        <SheetContent side="right" className="w-[300px] sm:w-[350px] p-0">
-                            <SheetHeader className="p-4 border-b">
+                        <SheetContent side="right" className="w-[300px] sm:w-[350px] p-0 flex flex-col">
+                            <SheetHeader className="p-4 border-b flex-shrink-0">
                                 <SheetTitle>Filter Produk</SheetTitle>
                             </SheetHeader>
-                            <div className="p-4 overflow-y-auto overflow-x-hidden h-[calc(100vh-4rem)]">
-                                <ProductFilters 
-                                    ref={productFiltersRef}
-                                    onFilterChange={handleFilterChange} 
-                                    initialFilters={filters}
-                                />
-                            </div>
+                            <ScrollArea className="flex-grow">
+                                <div className="p-4">
+                                    <ProductFilters 
+                                        ref={productFiltersRef}
+                                        onFilterChange={handleFilterChange} 
+                                        initialFilters={filters}
+                                    />
+                                </div>
+                            </ScrollArea>
                         </SheetContent>
                     </Sheet>
                     </div>
@@ -368,4 +370,3 @@ export default function Home() {
   );
 }
     
-
