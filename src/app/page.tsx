@@ -320,9 +320,11 @@ export default function Home() {
                 showFilterSidebar ? "lg:w-3/4 xl:w-4/5" : "w-full"
               )}>
               <section id="products" className="w-full">
-                 <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-2xl md:text-3xl font-headline text-center w-full">Kamu Mungkin Suka Produk Ini 🥰</h2>
-                    <div className="lg:hidden">
+                 <div className="relative flex justify-center items-center mb-6">
+                    <h2 className="text-2xl md:text-3xl font-headline text-center">
+                        Kamu Mungkin Suka Produk Ini 🥰
+                    </h2>
+                    <div className="lg:hidden absolute right-0 top-1/2 -translate-y-1/2">
                     <Sheet open={isFilterSheetOpen} onOpenChange={setIsFilterSheetOpen}>
                         <SheetTrigger asChild>
                         <Button variant="outline" size="icon">
@@ -334,7 +336,7 @@ export default function Home() {
                             <SheetHeader className="p-4 border-b">
                                 <SheetTitle>Filter Produk</SheetTitle>
                             </SheetHeader>
-                            <div className="p-4 overflow-y-auto h-[calc(100vh-4rem)]">
+                            <div className="p-4 overflow-y-auto overflow-x-hidden h-[calc(100vh-4rem)]">
                                 <ProductFilters 
                                     ref={productFiltersRef}
                                     onFilterChange={handleFilterChange} 
