@@ -99,7 +99,6 @@ export default function Home() {
       ],
     };
     
-    // Deep comparison of filter states
     const filtersAreEqual = 
         JSON.stringify(newRelevantFiltersState.categories.sort()) === JSON.stringify(filters.categories.sort()) &&
         JSON.stringify(newRelevantFiltersState.sizes.sort()) === JSON.stringify(filters.sizes.sort()) &&
@@ -112,21 +111,19 @@ export default function Home() {
             productFiltersRef.current.setFiltersFromParent(newRelevantFiltersState);
         }
     }
-  }, [searchParams, filters]); // Keep `filters` in dependency to allow internal updates to reflect if needed.
+  }, [searchParams, filters]);
 
 
   useEffect(() => {
     let productsToFilter = [...mockProducts];
     const params = new URLSearchParams(searchParams.toString());
 
-    // Filter by categories from ProductFilters state (filters object)
     if (filters.categories.length > 0) {
       productsToFilter = productsToFilter.filter(product => 
         filters.categories.some(cat => product.category === cat)
       );
     }
 
-    // Additional filter by 'type' from URL (searchParams object)
     const typeParam = params.get('type');
     if (typeParam) {
       const typesFromUrl = typeParam.split(',').filter(Boolean);
@@ -137,33 +134,28 @@ export default function Home() {
       }
     }
     
-    // Filter by sizes from ProductFilters state (filters object)
     if (filters.sizes.length > 0) {
       productsToFilter = productsToFilter.filter(product =>
         product.sizes.some(size => filters.sizes.includes(size))
       );
     }
 
-    // Filter by brands from ProductFilters state (filters object)
     if (filters.brands.length > 0) {
       productsToFilter = productsToFilter.filter(product =>
         product.brand && filters.brands.some(brand => product.brand === brand)
       );
     }
     
-    // Additional filter by 'gender' from URL (searchParams object)
     const genderParam = params.get('gender');
-    if (genderParam && genderParam !== "Unisex") { // "Unisex" products should show for Pria or Wanita if gender is specified
+    if (genderParam && genderParam !== "Unisex") { 
          productsToFilter = productsToFilter.filter(product => product.gender === genderParam || product.gender === "Unisex");
     }
 
-    // Filter by priceRange from ProductFilters state (filters object)
     productsToFilter = productsToFilter.filter(product => {
       const price = product.promoPrice ?? product.originalPrice;
       return price >= filters.priceRange[0] && price <= filters.priceRange[1];
     });
     
-    // Search query from URL (searchParams object)
     const queryParam = params.get('q');
     if (queryParam) {
       const searchTerm = queryParam.toLowerCase();
@@ -193,7 +185,6 @@ export default function Home() {
     if (updatedFilters.sizes.length > 0) params.set('sizes', updatedFilters.sizes.join(',')); else params.delete('sizes');
     if (updatedFilters.brands.length > 0) params.set('brand', updatedFilters.brands.join(',')); else params.delete('brand');
     
-    // Use initialFiltersRef for comparing default price range values
     if (updatedFilters.priceRange[0] !== initialFiltersRef.current.priceRange[0]) {
       params.set('minPrice', updatedFilters.priceRange[0].toString());
     } else {
@@ -205,24 +196,17 @@ export default function Home() {
       params.delete('maxPrice');
     }
     
-    // Preserve 'type', 'gender', and 'q' from URL if they exist
     const preservedKeys = ['type', 'gender', 'q'];
     preservedKeys.forEach(key => {
       const valueFromUrl = searchParams.get(key);
       if (valueFromUrl) { 
          params.set(key, valueFromUrl);
-      } else {
-        // If the filter is being cleared by ProductFilters, it might not be in updatedFilters
-        // but we still want to remove it from params if it's not actively being set.
-        // However, handleFilterChange is mainly driven by ProductFilters, which doesn't manage 'type', 'gender', 'q'.
-        // So, we generally preserve them if they are in the URL.
-        // If a specific action *should* clear them, that logic would be separate.
       }
     });
 
     window.history.pushState(null, '', `?${params.toString()}`);
 
-  }, [searchParams, initialFiltersRef]); // initialFiltersRef is stable
+  }, [searchParams, initialFiltersRef]);
 
   const handleToggleWishlist = (product: Product) => {
     setWishlistItems(prevItems => {
@@ -304,8 +288,9 @@ export default function Home() {
         <div className="container mx-auto px-4 py-8">
           <div className="flex flex-col lg:flex-row gap-8">
             <aside className={cn(
-              "lg:w-1/4 xl:w-1/5 space-y-6 sticky top-20 self-start h-[calc(100vh-10rem)] overflow-y-auto pr-4",
-              showFilterSidebar ? "lg:block" : "hidden"
+              "hidden", // Hidden by default (mobile-first)
+              "lg:w-1/4 xl:w-1/5 space-y-6 sticky top-20 self-start h-[calc(100vh-10rem)] overflow-y-auto pr-4", // Desktop base styles
+              showFilterSidebar && "lg:block" // Show on lg+ screens if showFilterSidebar is true
             )}>
               <h3 className="text-xl font-headline font-semibold">Filter Produk</h3>
               <ProductFilters 
@@ -316,8 +301,8 @@ export default function Home() {
             </aside>
 
             <div className={cn(
-                "space-y-12",
-                showFilterSidebar ? "lg:w-3/4 xl:w-4/5" : "w-full"
+                "w-full space-y-12", // Full width by default (mobile-first)
+                showFilterSidebar && "lg:w-3/4 xl:w-4/5" // Adjust width on lg+ if sidebar is shown
               )}>
               <section id="products" className="w-full">
                  <div className="relative flex justify-center items-center mb-6">
@@ -383,3 +368,4 @@ export default function Home() {
   );
 }
     
+
