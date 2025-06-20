@@ -143,67 +143,71 @@ export default function ProductDetailPage() {
         itemsAddedToCartFromWishlist={headerCartItems} // Dummy state
         onToggleCartFromWishlist={handleToggleCartFromHeaderWishlist} // Dummy handler
       />
-      <main className="flex-grow container mx-auto px-4 py-8">
-        <Button variant="outline" onClick={() => router.back()} className="mb-6 group">
-          <ChevronLeft className="mr-2 h-4 w-4 transition-transform group-hover:-translate-x-1" /> Kembali
+      <main className="flex-grow container mx-auto px-4 py-6 sm:py-8">
+        <Button 
+          variant="outline" 
+          onClick={() => router.back()} 
+          className="mb-4 sm:mb-6 group text-xs sm:text-sm h-8 sm:h-auto px-3 sm:px-4"
+        >
+          <ChevronLeft className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4 transition-transform group-hover:-translate-x-1" /> Kembali
         </Button>
-        <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
+        <div className="grid md:grid-cols-2 gap-6 sm:gap-8 lg:gap-12">
           {/* Product Image Section */}
           <div className="aspect-square w-full overflow-hidden rounded-lg shadow-lg bg-secondary/10 flex items-center justify-center">
             <Image
               src={product.imageUrl}
               alt={product.name}
-              width={600} // Adjusted for better fit with object-contain
+              width={600} 
               height={600}
-              className="object-contain w-full h-full max-h-[600px]"
+              className="object-contain w-full h-full max-h-[400px] sm:max-h-[500px] md:max-h-[600px]"
               data-ai-hint={`${product.category.toLowerCase()} fashion detail`}
               priority
             />
           </div>
 
           {/* Product Details Section */}
-          <div className="flex flex-col space-y-5">
+          <div className="flex flex-col space-y-4 sm:space-y-5">
             <div>
-              <p className="text-sm text-muted-foreground mb-1">{product.brand}</p>
-              <h1 className="text-3xl lg:text-4xl font-headline font-bold text-foreground">{product.name}</h1>
-              <p className="text-base text-muted-foreground mt-1">{product.category} {product.gender !== 'Unisex' ? `(${product.gender})` : ''}</p>
+              <p className="text-xs sm:text-sm text-muted-foreground mb-1">{product.brand}</p>
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-headline font-bold text-foreground">{product.name}</h1>
+              <p className="text-sm sm:text-base text-muted-foreground mt-1">{product.category} {product.gender !== 'Unisex' ? `(${product.gender})` : ''}</p>
             </div>
 
             <Separator />
 
             <div>
-              <h2 className="text-lg font-semibold text-foreground mb-2">Harga</h2>
+              <h2 className="text-base sm:text-lg font-semibold text-foreground mb-1 sm:mb-2">Harga</h2>
               {product.promoPrice ? (
-                <div className="flex items-baseline gap-3">
-                  <p className="text-3xl font-bold text-destructive">{formatPrice(product.promoPrice)}</p>
-                  <p className="text-xl text-muted-foreground line-through">{formatPrice(product.originalPrice)}</p>
+                <div className="flex items-baseline gap-2 sm:gap-3">
+                  <p className="text-2xl sm:text-3xl font-bold text-destructive">{formatPrice(product.promoPrice)}</p>
+                  <p className="text-base sm:text-xl text-muted-foreground line-through">{formatPrice(product.originalPrice)}</p>
                   {discountPercentage > 0 && (
-                    <Badge variant="destructive" className="text-sm py-0.5 px-1.5">-{discountPercentage}%</Badge>
+                    <Badge variant="destructive" className="text-xs sm:text-sm py-0.5 px-1.5">-{discountPercentage}%</Badge>
                   )}
                 </div>
               ) : (
-                <p className="text-3xl font-bold text-foreground">{formatPrice(product.originalPrice)}</p>
+                <p className="text-2xl sm:text-3xl font-bold text-foreground">{formatPrice(product.originalPrice)}</p>
               )}
-              {product.isPromo && !product.promoPrice && <Badge className="mt-2">Produk Promo</Badge>}
+              {product.isPromo && !product.promoPrice && <Badge className="mt-2 text-xs sm:text-sm">Produk Promo</Badge>}
             </div>
             
             {product.description && (
               <div>
-                <h2 className="text-lg font-semibold text-foreground mb-2">Deskripsi Produk</h2>
-                <p className="text-muted-foreground leading-relaxed whitespace-pre-line">{product.description}</p>
+                <h2 className="text-base sm:text-lg font-semibold text-foreground mb-1 sm:mb-2">Deskripsi Produk</h2>
+                <p className="text-sm sm:text-base text-muted-foreground leading-relaxed whitespace-pre-line">{product.description}</p>
               </div>
             )}
 
             {product.sizes && product.sizes.length > 0 && (
               <div>
-                <h2 className="text-lg font-semibold text-foreground mb-2.5">Pilih Ukuran</h2>
+                <h2 className="text-base sm:text-lg font-semibold text-foreground mb-2 sm:mb-2.5">Pilih Ukuran</h2>
                 <div className="flex flex-wrap gap-2">
                   {product.sizes.map((size) => (
                     <Button
                       key={size}
                       variant={selectedSize === size ? "default" : "outline"}
                       onClick={() => setSelectedSize(size)}
-                      className={cn("px-4 py-2 rounded-md border-input", selectedSize === size && "ring-2 ring-primary ring-offset-2 ring-offset-background")}
+                      className={cn("px-3 py-1.5 text-xs sm:text-sm sm:px-4 sm:py-2 rounded-md border-input", selectedSize === size && "ring-2 ring-primary ring-offset-2 ring-offset-background")}
                       aria-pressed={selectedSize === size}
                     >
                       {size}
@@ -211,30 +215,30 @@ export default function ProductDetailPage() {
                   ))}
                 </div>
                 {product.sizes.length > 0 && !selectedSize &&
-                  <p className="text-xs text-muted-foreground mt-2">Silakan pilih ukuran.</p>
+                  <p className="text-xs text-muted-foreground mt-1.5 sm:mt-2">Silakan pilih ukuran.</p>
                 }
               </div>
             )}
             
-            <Separator className="my-3"/>
+            <Separator className="my-2 sm:my-3"/>
 
             <div className="flex flex-col sm:flex-row gap-3 pt-1">
               <Button 
                 size="lg" 
-                className="flex-1"
+                className="flex-1 text-sm sm:text-base" // Adjusted text size
                 onClick={handleToggleCart}
                 disabled={product.sizes && product.sizes.length > 0 && !selectedSize && !isProductInCart}
               >
-                <ShoppingCart className="mr-2 h-5 w-5" />
+                <ShoppingCart className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
                 {isProductInCart ? 'Hapus dari Keranjang' : 'Tambah ke Keranjang'}
               </Button>
               <Button 
                 variant="outline" 
                 size="lg" 
-                className="flex-1 sm:flex-none sm:min-w-[200px]"
+                className="flex-1 sm:flex-none sm:min-w-[180px] md:min-w-[200px] text-sm sm:text-base" // Adjusted text size and min-width
                 onClick={handleToggleWishlist}
               >
-                <Heart className={cn("mr-2 h-5 w-5", isProductWishlisted && "fill-destructive text-destructive")} />
+                <Heart className={cn("mr-2 h-4 w-4 sm:h-5 sm:w-5", isProductWishlisted && "fill-destructive text-destructive")} />
                 {isProductWishlisted ? 'Hapus dari Wishlist' : 'Tambah ke Wishlist'}
               </Button>
             </div>
@@ -243,9 +247,9 @@ export default function ProductDetailPage() {
         </div>
         
         {/* You might want a related products section here in the future */}
-        {/* <Separator className="my-12" />
+        {/* <Separator className="my-8 sm:my-12" />
         <div>
-          <h2 className="text-2xl font-headline mb-6 text-center">Produk Terkait</h2>
+          <h2 className="text-xl sm:text-2xl font-headline mb-4 sm:mb-6 text-center">Produk Terkait</h2>
           Placeholder for related products
         </div> */}
 
