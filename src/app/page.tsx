@@ -302,36 +302,37 @@ export default function Home() {
 
             <div className={cn(
                 "w-full space-y-12", 
-                showFilterSidebar && "lg:w-3/4 xl:w-4/5" 
+                (showFilterSidebar && typeof window !== 'undefined' && window.innerWidth >= 1024) && "lg:w-3/4 xl:w-4/5" 
               )}>
               <section id="products" className="w-full">
-                 <div className="relative flex justify-center items-center mb-6">
-                    <h2 className="text-2xl md:text-3xl font-headline text-center">
+                 <div className="flex justify-between items-center mb-6">
+                    <div className="w-10 lg:hidden" aria-hidden="true"></div> {/* Left spacer for mobile */}
+                    <h2 className="flex-1 text-2xl md:text-3xl font-headline text-center">
                         Kamu Mungkin Suka Produk Ini 🥰
                     </h2>
-                    <div className="lg:hidden absolute right-0 top-1/2 -translate-y-1/2">
-                    <Sheet open={isFilterSheetOpen} onOpenChange={setIsFilterSheetOpen}>
-                        <SheetTrigger asChild>
-                        <Button variant="outline" size="icon">
-                            <FilterIcon className="h-5 w-5" />
-                            <span className="sr-only">Buka Filter</span>
-                        </Button>
-                        </SheetTrigger>
-                        <SheetContent side="right" className="w-[300px] sm:w-[350px] p-0 flex flex-col">
-                            <SheetHeader className="p-4 border-b flex-shrink-0">
-                                <SheetTitle>Filter Produk</SheetTitle>
-                            </SheetHeader>
-                            <ScrollArea className="flex-grow">
-                                <div className="p-4">
-                                    <ProductFilters 
-                                        ref={productFiltersRef}
-                                        onFilterChange={handleFilterChange} 
-                                        initialFilters={filters}
-                                    />
-                                </div>
-                            </ScrollArea>
-                        </SheetContent>
-                    </Sheet>
+                    <div className="lg:hidden"> {/* Mobile filter button container */}
+                      <Sheet open={isFilterSheetOpen} onOpenChange={setIsFilterSheetOpen}>
+                          <SheetTrigger asChild>
+                          <Button variant="outline" size="icon">
+                              <FilterIcon className="h-5 w-5" />
+                              <span className="sr-only">Buka Filter</span>
+                          </Button>
+                          </SheetTrigger>
+                          <SheetContent side="right" className="w-[300px] sm:w-[350px] p-0 flex flex-col">
+                              <SheetHeader className="p-4 border-b flex-shrink-0">
+                                  <SheetTitle>Filter Produk</SheetTitle>
+                              </SheetHeader>
+                              <ScrollArea className="flex-grow">
+                                  <div className="p-4">
+                                      <ProductFilters 
+                                          ref={productFiltersRef}
+                                          onFilterChange={handleFilterChange} 
+                                          initialFilters={filters}
+                                      />
+                                  </div>
+                              </ScrollArea>
+                          </SheetContent>
+                      </Sheet>
                     </div>
                 </div>
                 <ProductGrid 
@@ -370,3 +371,4 @@ export default function Home() {
   );
 }
     
+
