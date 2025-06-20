@@ -86,14 +86,14 @@ export default function Footer() {
 
         <div className="border-t border-gray-700 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center text-sm text-gray-400">
-            <p className="mb-4 md:mb-0">Anda punya pertanyaan? Kami siap membantu. <Link href="#" className="hover:text-white hover:underline">Kontak</Link> | <Link href="#" className="hover:text-white hover:underline">Bantuan</Link></p>
-            <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-4">
-              <div className="flex space-x-4">
+            <p className="mb-4 md:mb-0 text-center md:text-left">Anda punya pertanyaan? Kami siap membantu. <Link href="#" className="hover:text-white hover:underline">Kontak</Link> | <Link href="#" className="hover:text-white hover:underline">Bantuan</Link></p>
+            <div className="flex flex-col items-center md:flex-row md:space-x-4">
+              <div className="flex flex-col items-center space-y-2 md:flex-row md:space-x-4 md:space-y-0 mb-3 md:mb-0">
                 <Link href="#" className="hover:text-white hover:underline">Tentang Goodstock-X</Link>
                 <Link href="#" className="hover:text-white hover:underline">Kebijakan Privasi</Link>
                 <Link href="#" className="hover:text-white hover:underline">Persyaratan dan Ketentuan</Link>
               </div>
-              <p>&copy; {new Date().getFullYear()} Goodstock-X. All rights reserved.</p>
+              <p className="text-center md:text-right">&copy; {new Date().getFullYear()} Goodstock-X. All rights reserved.</p>
             </div>
           </div>
         </div>
@@ -101,4 +101,3 @@ export default function Footer() {
     </footer>
   );
 }
-
