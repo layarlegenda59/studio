@@ -48,7 +48,7 @@ export default function ShippingCalculator() {
   return (
     <Card className="w-full max-w-2xl mx-auto shadow-lg">
       <CardHeader>
-        <CardTitle className="font-headline text-xl">Kalkulator Ongkos Kirim</CardTitle>
+        <CardTitle className="font-headline text-xl sm:text-2xl">Kalkulator Ongkos Kirim</CardTitle>
         <CardDescription>Hitung estimasi biaya pengiriman untuk pesanan Anda.</CardDescription>
       </CardHeader>
       <form onSubmit={handleSubmit}>
@@ -78,9 +78,9 @@ export default function ShippingCalculator() {
       </form>
 
       {results.length > 0 && (
-        <div className="p-6 border-t">
+        <div className="p-4 sm:p-6 border-t">
           <div
-            className="flex justify-between items-center cursor-pointer mb-4"
+            className="flex justify-between items-center cursor-pointer mb-3 sm:mb-4"
             onClick={() => setIsResultsOpen(!isResultsOpen)}
             onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setIsResultsOpen(!isResultsOpen); }}
             role="button"
@@ -93,16 +93,16 @@ export default function ShippingCalculator() {
           </div>
           
           {isResultsOpen && (
-            <div id="shipping-results-content" className="space-y-3">
+            <div id="shipping-results-content" className="space-y-2 sm:space-y-3">
               {results.map((result, index) => (
-                <Card key={index} className="bg-background/50">
-                  <CardContent className="p-4">
-                    <div className="flex justify-between items-center">
+                <Card key={index} className="bg-secondary/10">
+                  <CardContent className="p-3 sm:p-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-2">
                       <div>
-                        <p className="font-semibold text-foreground">{result.vendor} - {result.service}</p>
-                        <p className="text-sm text-muted-foreground">Estimasi: {result.estimatedDelivery}</p>
+                        <p className="text-sm sm:text-base font-semibold text-foreground">{result.vendor} - {result.service}</p>
+                        <p className="text-xs sm:text-sm text-muted-foreground">Estimasi: {result.estimatedDelivery}</p>
                       </div>
-                      <p className="font-semibold text-lg text-primary">
+                      <p className="text-base sm:text-lg font-semibold text-primary mt-1 sm:mt-0 self-end sm:self-center">
                         Rp{result.cost.toLocaleString()}
                       </p>
                     </div>
@@ -116,3 +116,4 @@ export default function ShippingCalculator() {
     </Card>
   );
 }
+
