@@ -460,12 +460,12 @@ export default function Header({
                   </Link>
                 </SheetTitle>
               </SheetHeader>
-              <nav className="flex flex-col space-y-4">
+              <nav className="flex flex-col space-y-1">
                 {mobileNavLinks.map((link) => (
                   <Link
                     key={link.href}
                     href={link.href}
-                    className="text-lg font-medium hover:text-primary transition-colors"
+                    className="block py-2 text-base font-medium hover:text-primary transition-colors"
                     onClick={() => setIsSheetOpen(false)}
                   >
                     {link.label}
