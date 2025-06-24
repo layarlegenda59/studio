@@ -1,8 +1,8 @@
 
 "use client";
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { useSearchParams } from 'next/navigation';
+import React, { useState, useEffect, useRef, useCallback, type FormEvent } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 import Header from '@/components/Header';
 import PromoCarousel from '@/components/PromoCarousel';
 import ProductGrid from '@/components/ProductGrid';
@@ -16,7 +16,8 @@ import type { Product } from '@/lib/types';
 import { useToast } from "@/hooks/use-toast";
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from '@/components/ui/sheet';
-import { FilterIcon } from 'lucide-react';
+import { FilterIcon, Search } from 'lucide-react';
+import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
@@ -36,6 +37,7 @@ const initialFilters: FilterState = {
 };
 
 export default function Home() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const { toast } = useToast();
   
@@ -72,8 +74,13 @@ export default function Home() {
   const [itemsAddedToCartFromWishlist, setItemsAddedToCartFromWishlist] = useState<Set<string>>(new Set());
   const [isFilterSheetOpen, setIsFilterSheetOpen] = useState(false);
   const [showFilterSidebar, setShowFilterSidebar] = useState(false);
+  const [mobileSearchQuery, setMobileSearchQuery] = useState('');
   
   const productFiltersRef = useRef<{ setFiltersFromParent: (newFilters: FilterState) => void }>(null);
+
+  useEffect(() => {
+    setMobileSearchQuery(searchParams.get('q') || '');
+  }, [searchParams]);
 
   useEffect(() => {
     const params = new URLSearchParams(searchParams.toString());
@@ -205,9 +212,20 @@ export default function Home() {
       }
     });
 
-    window.history.pushState(null, '', `?${params.toString()}`);
+    router.replace(`?${params.toString()}`, { scroll: false });
 
-  }, [searchParams, initialFiltersRef]);
+  }, [searchParams, router]);
+
+  const handleMobileSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const params = new URLSearchParams(searchParams.toString());
+    if (mobileSearchQuery.trim()) {
+        params.set('q', mobileSearchQuery.trim());
+    } else {
+        params.delete('q');
+    }
+    router.replace(`?${params.toString()}`, { scroll: false });
+  };
 
   const handleToggleWishlist = (product: Product) => {
     setWishlistItems(prevItems => {
@@ -305,34 +323,50 @@ export default function Home() {
                 (showFilterSidebar && typeof window !== 'undefined' && window.innerWidth >= 1024) && "lg:w-3/4 xl:w-4/5"
               )}>
               <section id="products" className="w-full">
-                 <div className="flex justify-between items-center mb-6">
-                    <div className="w-10 lg:hidden" aria-hidden="true"></div> {/* Left spacer for mobile */}
-                    <h2 className="flex-1 text-2xl md:text-3xl font-headline text-center">
-                        Kamu Mungkin Suka Produk Ini 🥰
-                    </h2>
-                    <div className="lg:hidden"> {/* Mobile filter button container */}
-                      <Sheet open={isFilterSheetOpen} onOpenChange={setIsFilterSheetOpen}>
-                          <SheetTrigger asChild>
-                          <Button variant="outline" size="icon">
-                              <FilterIcon className="h-5 w-5" />
-                              <span className="sr-only">Buka Filter</span>
-                          </Button>
-                          </SheetTrigger>
-                          <SheetContent side="right" className="w-[300px] sm:w-[350px] p-0 flex flex-col">
-                              <SheetHeader className="p-4 border-b flex-shrink-0">
-                                  <SheetTitle>Filter Produk</SheetTitle>
-                              </SheetHeader>
-                              <ScrollArea className="flex-grow">
-                                  <div className="p-4">
-                                      <ProductFilters 
-                                          ref={productFiltersRef}
-                                          onFilterChange={handleFilterChange} 
-                                          initialFilters={filters}
-                                      />
-                                  </div>
-                              </ScrollArea>
-                          </SheetContent>
-                      </Sheet>
+                 <div className="mb-6">
+                    {/* Desktop Header */}
+                    <div className="hidden md:flex justify-center items-center">
+                        <h2 className="text-2xl md:text-3xl font-headline text-center">
+                            Kamu Mungkin Suka Produk Ini 🥰
+                        </h2>
+                    </div>
+
+                    {/* Mobile Header */}
+                    <div className="md:hidden flex gap-2 items-center">
+                        <form onSubmit={handleMobileSearchSubmit} className="relative flex-1">
+                            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground z-10" />
+                            <Input
+                                type="search"
+                                placeholder="Cari di Goodstock..."
+                                className="h-10 w-full pl-9 pr-4 rounded-full"
+                                value={mobileSearchQuery}
+                                onChange={(e) => setMobileSearchQuery(e.target.value)}
+                            />
+                        </form>
+                        <div>
+                            <Sheet open={isFilterSheetOpen} onOpenChange={setIsFilterSheetOpen}>
+                                <SheetTrigger asChild>
+                                    <Button variant="outline" size="icon" className="rounded-full">
+                                        <FilterIcon className="h-5 w-5" />
+                                        <span className="sr-only">Buka Filter</span>
+                                    </Button>
+                                </SheetTrigger>
+                                <SheetContent side="right" className="w-[300px] sm:w-[350px] p-0 flex flex-col">
+                                    <SheetHeader className="p-4 border-b flex-shrink-0">
+                                        <SheetTitle>Filter Produk</SheetTitle>
+                                    </SheetHeader>
+                                    <ScrollArea className="flex-grow">
+                                        <div className="p-4">
+                                            <ProductFilters 
+                                                ref={productFiltersRef}
+                                                onFilterChange={handleFilterChange} 
+                                                initialFilters={filters}
+                                            />
+                                        </div>
+                                    </ScrollArea>
+                                </SheetContent>
+                            </Sheet>
+                        </div>
                     </div>
                 </div>
                 <ProductGrid 
@@ -368,4 +402,6 @@ export default function Home() {
     </div>
   );
 }
+    
+
     
