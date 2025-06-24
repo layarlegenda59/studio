@@ -8,25 +8,21 @@ interface ProductGridProps {
   products: Product[];
   onToggleWishlist: (product: Product) => void;
   wishlistItems: Product[];
-  onToggleCart: (product: Product) => void;
-  itemsAddedToCartFromWishlist: Set<string>;
 }
 
-export default function ProductGrid({ products, onToggleWishlist, wishlistItems, onToggleCart, itemsAddedToCartFromWishlist }: ProductGridProps) {
+export default function ProductGrid({ products, onToggleWishlist, wishlistItems }: ProductGridProps) {
   if (!products || products.length === 0) {
     return <p className="text-center text-muted-foreground py-8">Tidak ada produk yang ditemukan.</p>;
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+    <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-2 gap-y-4">
       {products.map((product) => (
         <ProductCard 
           key={product.id} 
           product={product} 
           onToggleWishlist={onToggleWishlist}
           wishlisted={wishlistItems.some(item => item.id === product.id)}
-          onToggleCart={onToggleCart}
-          isAddedToCart={itemsAddedToCartFromWishlist.has(product.id)}
         />
       ))}
     </div>

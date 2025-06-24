@@ -289,7 +289,7 @@ export default function Home() {
         <div className="container mx-auto px-4 py-8">
           <div className="flex flex-col lg:flex-row gap-8">
             <aside className={cn(
-              "hidden", 
+              "hidden",
               showFilterSidebar && "lg:block lg:w-1/4 xl:w-1/5 space-y-6 sticky top-20 self-start h-[calc(100vh-10rem)] overflow-y-auto pr-4"
             )}>
               <h3 className="text-xl font-headline font-semibold">Filter Produk</h3>
@@ -301,8 +301,8 @@ export default function Home() {
             </aside>
 
             <div className={cn(
-                "w-full space-y-12", 
-                (showFilterSidebar && typeof window !== 'undefined' && window.innerWidth >= 1024) && "lg:w-3/4 xl:w-4/5" 
+                "w-full space-y-12",
+                (showFilterSidebar && typeof window !== 'undefined' && window.innerWidth >= 1024) && "lg:w-3/4 xl:w-4/5"
               )}>
               <section id="products" className="w-full">
                  <div className="flex justify-between items-center mb-6">
@@ -339,8 +339,6 @@ export default function Home() {
                   products={filteredProducts} 
                   onToggleWishlist={handleToggleWishlist}
                   wishlistItems={wishlistItems}
-                  onToggleCart={handleToggleCartFromWishlist} 
-                  itemsAddedToCartFromWishlist={itemsAddedToCartFromWishlist}
                 />
               </section>
 
@@ -371,4 +369,3 @@ export default function Home() {
   );
 }
     
-
