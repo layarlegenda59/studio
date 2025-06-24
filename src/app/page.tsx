@@ -453,7 +453,7 @@ export default function Home() {
                         <MobileSearch />
                       </div>
 
-                      <div className="flex items-center space-x-2 overflow-x-auto pb-2 -mx-4 px-4 no-scrollbar">
+                      <div className="flex items-center space-x-4 overflow-x-auto pb-2 -mx-4 px-4 no-scrollbar">
                         {mobileNavLinks.map((link) => {
                           const isActive =
                             (link.label === 'Semua' && !activeGender && !activeType) ||
@@ -461,15 +461,22 @@ export default function Home() {
                             (link.param === 'type' && link.value === activeType);
                           
                           return (
-                            <Button
+                            <button
                               key={link.label}
-                              variant={isActive ? "default" : "outline"}
-                              size="sm"
-                              className="rounded-full h-8 px-4 text-xs whitespace-nowrap"
                               onClick={() => handleMobileNavClick(link.param as 'gender' | 'type', link.value)}
+                              className={cn(
+                                "relative group whitespace-nowrap py-2 text-sm font-medium transition-colors hover:text-primary",
+                                isActive ? "text-primary" : "text-muted-foreground"
+                              )}
                             >
                               {link.label}
-                            </Button>
+                              <span
+                                className={cn(
+                                  "absolute bottom-0 left-0 block h-0.5 bg-primary transition-all duration-300",
+                                  isActive ? "w-full" : "w-0 group-hover:w-full"
+                                )}
+                              />
+                            </button>
                           );
                         })}
                       </div>
