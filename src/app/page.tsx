@@ -472,8 +472,10 @@ export default function Home() {
                               {link.label}
                               <span
                                 className={cn(
-                                  "absolute bottom-0 left-0 block h-0.5 w-full origin-left bg-primary transition-transform duration-200 ease-out",
-                                  isActive ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                                  "absolute bottom-0 left-0 block h-0.5 w-full origin-left bg-primary transition-transform ease-out",
+                                  isActive
+                                    ? "scale-x-100 duration-200"
+                                    : "scale-x-0 duration-0 group-hover:scale-x-100 group-hover:duration-200"
                                 )}
                               />
                             </button>
