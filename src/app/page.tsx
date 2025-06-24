@@ -15,7 +15,7 @@ import { mockProducts, mockPromotions } from '@/lib/mockData';
 import type { Product } from '@/lib/types';
 import { useToast } from "@/hooks/use-toast";
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetDescription, SheetFooter } from '@/components/ui/sheet';
 import { ListFilter, ArrowUpDown, Ruler, Tag } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
@@ -23,6 +23,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import MobileSearch from '@/components/MobileSearch';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 
 // Define FilterState consistent with ProductFilters.tsx and internal page state
@@ -39,6 +40,24 @@ const initialFilters: FilterState = {
   brands: [],
   priceRange: [0, 2000000], // Default max price
 };
+
+const allSizes = [
+  "S", "M", "L", "XL",
+  "35", "36", "37", "37.5", "38", "38.5", "39", "40", "41", "42", "43", "44", "45", "46.5", "47",
+  "One Size"
+].sort((a, b) => {
+  const numA = parseFloat(a);
+  const numB = parseFloat(b);
+  const isANumber = !isNaN(numA);
+  const isBNumber = !isNaN(numB);
+
+  if (isANumber && isBNumber) return numA - numB;
+  if (isANumber) return -1; 
+  if (isBNumber) return 1;
+  if (a === "One Size") return 1; 
+  if (b === "One Size") return -1;
+  return a.localeCompare(b); 
+});
 
 export default function Home() {
   const router = useRouter();
@@ -78,6 +97,8 @@ export default function Home() {
   const [itemsAddedToCartFromWishlist, setItemsAddedToCartFromWishlist] = useState<Set<string>>(new Set());
   const [isFilterSheetOpen, setIsFilterSheetOpen] = useState(false);
   const [isSortSheetOpen, setIsSortSheetOpen] = useState(false);
+  const [isSizeSheetOpen, setIsSizeSheetOpen] = useState(false);
+  const [tempSelectedSizes, setTempSelectedSizes] = useState<string[]>([]);
   const [showFilterSidebar, setShowFilterSidebar] = useState(false);
   
   const productFiltersRef = useRef<{ setFiltersFromParent: (newFilters: FilterState) => void }>(null);
@@ -209,7 +230,7 @@ export default function Home() {
     setFilteredProducts(productsToFilter);
   }, [filters, searchParams]);
 
-  const handleFilterChange = useCallback((newFiltersFromComponent: ProductFilterStateFromComponent) => {
+  const handleFilterChange = useCallback((newFiltersFromComponent: ProductFilterStateFromComponent | FilterState) => {
     const updatedFilters: FilterState = {
         categories: newFiltersFromComponent.categories,
         sizes: newFiltersFromComponent.sizes,
@@ -263,6 +284,23 @@ export default function Home() {
         params.set('promo', 'true');
     }
     router.replace(`?${params.toString()}`, { scroll: false });
+  };
+  
+  const handleApplySizeFilter = () => {
+    const newFiltersState: FilterState = {
+        categories: filters.categories,
+        sizes: tempSelectedSizes,
+        brands: filters.brands,
+        priceRange: filters.priceRange,
+    };
+    handleFilterChange(newFiltersState);
+    setIsSizeSheetOpen(false);
+  };
+
+  const handleTempSizeChange = (size: string) => {
+    setTempSelectedSizes(prev =>
+        prev.includes(size) ? prev.filter(s => s !== size) : [...prev, size]
+    );
   };
 
 
@@ -436,10 +474,65 @@ export default function Home() {
                            </SheetContent>
                         </Sheet>
                         
-                        <Button variant="outline" size="sm" className="rounded-full text-xs h-8 px-2 justify-center" onClick={() => setIsFilterSheetOpen(true)}>
-                            <Ruler className="mr-1 h-4 w-4" />
-                            Ukuran
-                        </Button>
+                        <Sheet open={isSizeSheetOpen} onOpenChange={(isOpen) => {
+                            if (isOpen) {
+                                setTempSelectedSizes(filters.sizes);
+                            }
+                            setIsSizeSheetOpen(isOpen);
+                        }}>
+                           <SheetTrigger asChild>
+                             <Button variant="outline" size="sm" className="rounded-full text-xs h-8 px-2 justify-center">
+                                <Ruler className="mr-1 h-4 w-4" />
+                                Ukuran
+                            </Button>
+                           </SheetTrigger>
+                           <SheetContent side="bottom" className="rounded-t-lg flex flex-col h-[60vh]">
+                                <SheetHeader className="text-left mb-2 flex-shrink-0">
+                                    <SheetTitle>Pilih Ukuran</SheetTitle>
+                                    <SheetDescription>
+                                        Pilih satu atau lebih ukuran untuk memfilter produk.
+                                    </SheetDescription>
+                                </SheetHeader>
+                                <div className="flex-grow overflow-y-auto pr-2">
+                                    <Tabs defaultValue="eu" className="w-full">
+                                        <TabsList className="grid w-full grid-cols-4 mb-3 sticky top-0 bg-background z-10">
+                                            <TabsTrigger value="aus">AUS</TabsTrigger>
+                                            <TabsTrigger value="eu">EU</TabsTrigger>
+                                            <TabsTrigger value="uk">UK</TabsTrigger>
+                                            <TabsTrigger value="us">US</TabsTrigger>
+                                        </TabsList>
+                                        <TabsContent value="aus">
+                                            <p className="text-xs text-center text-muted-foreground py-2">Pilihan ukuran AUS akan tampil di sini.</p>
+                                        </TabsContent>
+                                        <TabsContent value="eu">
+                                            <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                                                {allSizes.map((size) => (
+                                                    <Button
+                                                        key={size}
+                                                        variant={tempSelectedSizes.includes(size) ? "default" : "outline"}
+                                                        onClick={() => handleTempSizeChange(size)}
+                                                        className="h-9 text-xs"
+                                                    >
+                                                        {size}
+                                                    </Button>
+                                                ))}
+                                            </div>
+                                        </TabsContent>
+                                        <TabsContent value="uk">
+                                            <p className="text-xs text-center text-muted-foreground py-2">Pilihan ukuran UK akan tampil di sini.</p>
+                                        </TabsContent>
+                                        <TabsContent value="us">
+                                            <p className="text-xs text-center text-muted-foreground py-2">Pilihan ukuran US akan tampil di sini.</p>
+                                        </TabsContent>
+                                    </Tabs>
+                                </div>
+                                <SheetFooter className="flex-shrink-0 border-t pt-4 mt-4">
+                                    <Button onClick={handleApplySizeFilter} className="w-full">
+                                        Terapkan Filter
+                                    </Button>
+                                </SheetFooter>
+                           </SheetContent>
+                        </Sheet>
 
                         <Button 
                             variant={isPromoActive ? "default" : "outline"}
@@ -486,8 +579,3 @@ export default function Home() {
     </div>
   );
 }
-    
-
-    
-
-    
