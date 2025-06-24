@@ -1,4 +1,3 @@
-
 "use client";
 
 import Image from 'next/image';
@@ -32,7 +31,7 @@ export default function ProductCard({ product, onToggleWishlist, wishlisted }: P
   };
 
   return (
-    <Card className="group w-full overflow-hidden rounded-none shadow-none border-0 flex flex-col h-full bg-transparent">
+    <Card className="group w-full overflow-hidden rounded-lg shadow-sm border flex flex-col h-full bg-background transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
         <Link href={`/products/${product.id}`} className="flex flex-col h-full cursor-pointer">
             <div className="relative">
                 <div className="aspect-[2/3] w-full overflow-hidden bg-secondary/20">
@@ -45,6 +44,7 @@ export default function ProductCard({ product, onToggleWishlist, wishlisted }: P
                         data-ai-hint={`${product.category.toLowerCase()} fashion`}
                     />
                 </div>
+                {/* Discount badges remain as they were, per user request. */}
                 {discountPercentage > 0 && (
                     <div className="absolute bottom-0 left-0 bg-black text-white text-[10px] font-bold px-2 py-0.5">
                         {discountPercentage}% OFF
@@ -55,39 +55,35 @@ export default function ProductCard({ product, onToggleWishlist, wishlisted }: P
                         ⚡️ Terbaru
                     </div>
                 )}
+                 <Button
+                    variant="secondary"
+                    size="icon"
+                    className="absolute top-2 right-2 h-8 w-8 rounded-full bg-background/70 text-foreground/80 backdrop-blur-sm transition-opacity duration-300 md:opacity-0 group-hover:opacity-100 hover:bg-background"
+                    onClick={handleWishlistClick}
+                    aria-label={wishlisted ? `Hapus ${product.name} dari wishlist` : `Tambah ${product.name} ke wishlist`}
+                >
+                    <Heart className={cn("h-4 w-4", wishlisted && "fill-destructive text-destructive")} />
+                </Button>
             </div>
-            <CardContent className="p-2 flex-grow flex flex-col bg-background">
-                <div className="flex-grow">
-                  <div className="flex justify-between items-start">
-                      <div className="flex-1 min-w-0 pr-2">
-                          <p className="text-sm font-bold uppercase truncate">{product.brand}</p>
-                          <h3 className="text-xs text-muted-foreground truncate mt-0.5" title={product.name}>
-                              {product.name}
-                          </h3>
-                      </div>
-                      <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-7 w-7 shrink-0 -mr-2 text-muted-foreground hover:text-destructive"
-                          onClick={handleWishlistClick}
-                          aria-label={wishlisted ? `Hapus ${product.name} dari wishlist` : `Tambah ${product.name} ke wishlist`}
-                      >
-                          <Heart className={cn("h-5 w-5", wishlisted && "fill-destructive text-destructive")} />
-                      </Button>
-                  </div>
-                  <div className="mt-1">
+            <CardContent className="p-3 flex-grow flex flex-col bg-background">
+                <div className="flex-grow mb-3">
+                    <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{product.brand}</p>
+                    <h3 className="text-sm font-medium text-foreground truncate mt-0.5" title={product.name}>
+                        {product.name}
+                    </h3>
+                  <div className="mt-2">
                       {product.promoPrice ? (
                           <div className="flex items-baseline gap-1.5">
-                              <p className="text-sm font-bold text-destructive">{formatPrice(product.promoPrice)}</p>
-                              <p className="text-[10px] text-muted-foreground line-through">{formatPrice(product.originalPrice)}</p>
+                              <p className="text-base font-bold text-destructive">{formatPrice(product.promoPrice)}</p>
+                              <p className="text-xs text-muted-foreground line-through">{formatPrice(product.originalPrice)}</p>
                           </div>
                       ) : (
-                          <p className="text-sm font-bold text-foreground">{formatPrice(product.originalPrice)}</p>
+                          <p className="text-base font-bold text-foreground">{formatPrice(product.originalPrice)}</p>
                       )}
                   </div>
                 </div>
-                <div className="pt-2 mt-auto">
-                    <Button variant="outline" size="sm" className="w-full h-8 text-xs pointer-events-none">
+                <div className="mt-auto">
+                    <Button variant="outline" size="sm" className="w-full h-9 text-xs transition-colors duration-200 group-hover:bg-primary group-hover:text-primary-foreground pointer-events-none">
                         Lihat Detail
                     </Button>
                 </div>
