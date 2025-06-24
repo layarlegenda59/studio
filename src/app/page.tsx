@@ -465,18 +465,17 @@ export default function Home() {
                               key={link.label}
                               onClick={() => handleMobileNavClick(link.param as 'gender' | 'type', link.value)}
                               className={cn(
-                                "relative group whitespace-nowrap py-2 text-sm font-medium transition-colors hover:text-primary",
-                                isActive ? "text-primary" : "text-muted-foreground"
+                                "relative group py-2 text-sm font-medium text-center",
+                                isActive ? "text-primary" : "text-muted-foreground hover:text-primary"
                               )}
                             >
                               {link.label}
                                <span
                                 className={cn(
-                                  "absolute bottom-0 left-0 block h-0.5 w-full origin-left bg-primary", // No base transition
+                                  "absolute bottom-0 left-0 block h-0.5 w-full origin-left bg-primary",
                                   isActive
-                                    ? "scale-x-100 transition-transform duration-200 ease-out" // Animate in if active
-                                    : "scale-x-0", // Snap off if inactive
-                                  // Animate in on hover only if not active
+                                    ? "scale-x-100 transition-transform duration-200 ease-out"
+                                    : "scale-x-0",
                                   !isActive && "group-hover:scale-x-100 group-hover:transition-transform group-hover:duration-200"
                                 )}
                               />
