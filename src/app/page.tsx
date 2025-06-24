@@ -389,7 +389,9 @@ export default function Home() {
         onToggleCartFromWishlist={handleToggleCartFromWishlistById} 
       />
       <main className="flex-grow">
-        <PromoCarousel promotions={mockPromotions} />
+        <div className="hidden md:block">
+          <PromoCarousel promotions={mockPromotions} />
+        </div>
         
         <div className="container mx-auto px-4 py-8">
           <div className="flex flex-col lg:flex-row gap-8">
