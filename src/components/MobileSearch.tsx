@@ -41,7 +41,7 @@ export default function MobileSearch() {
         type="submit"
         size="icon"
         variant="ghost"
-        className="absolute right-1 top-1/2 h-8 w-8 -translate-y-1/2 rounded-full text-muted-foreground hover:text-foreground focus-visible:ring-0 focus-visible:ring-offset-0"
+        className="absolute right-1 top-1/2 h-8 w-8 -translate-y-1/2 rounded-full text-muted-foreground hover:text-foreground hover:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
         aria-label="Cari"
       >
         <Search className="h-4 w-4" />
