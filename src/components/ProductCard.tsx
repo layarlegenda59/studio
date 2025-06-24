@@ -1,3 +1,4 @@
+
 "use client";
 
 import Image from 'next/image';
@@ -5,7 +6,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import type { Product } from '@/lib/types';
-import { Heart } from 'lucide-react';
+import { Heart, Tag } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import React from 'react';
 
@@ -46,8 +47,9 @@ export default function ProductCard({ product, onToggleWishlist, wishlisted }: P
                 </div>
                 {/* Discount badges remain as they were, per user request. */}
                 {discountPercentage > 0 && (
-                    <div className="absolute bottom-0 left-0 bg-black text-white text-[10px] font-bold px-2 py-0.5">
-                        {discountPercentage}% OFF
+                    <div className="absolute bottom-0 left-0 bg-black text-white text-[10px] font-bold px-2 py-0.5 flex items-center gap-1">
+                        <Tag className="h-3 w-3" />
+                        <span>{discountPercentage}% OFF</span>
                     </div>
                 )}
                  {product.isPromo && !discountPercentage && (
