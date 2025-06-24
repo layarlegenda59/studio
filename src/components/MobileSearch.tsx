@@ -1,9 +1,11 @@
+
 "use client";
 
 import React, { useState, useEffect, type FormEvent } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Input } from '@/components/ui/input';
 import { Search } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 export default function MobileSearch() {
   const router = useRouter();
@@ -28,14 +30,22 @@ export default function MobileSearch() {
 
   return (
     <form onSubmit={handleSubmit} className="relative flex-1 min-w-0">
-      <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground z-10" />
       <Input
         type="search"
         placeholder="Cari di Goodstock..."
-        className="h-10 w-full pl-9 pr-4 rounded-full"
+        className="h-10 w-full rounded-full pl-4 pr-11"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
       />
+      <Button
+        type="submit"
+        size="icon"
+        variant="ghost"
+        className="absolute right-1 top-1/2 h-8 w-8 -translate-y-1/2 rounded-full text-muted-foreground hover:text-foreground"
+        aria-label="Cari"
+      >
+        <Search className="h-4 w-4" />
+      </Button>
     </form>
   );
 }
