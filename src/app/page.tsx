@@ -321,12 +321,12 @@ export default function Home() {
                       <div className="flex gap-2 items-center">
                         <MobileSearch />
                       </div>
-                      <div className="flex flex-wrap items-center gap-2">
+                       <div className="grid grid-cols-4 items-center gap-2">
                         <Sheet open={isFilterSheetOpen} onOpenChange={setIsFilterSheetOpen}>
                           <SheetTrigger asChild>
-                            <Button variant="outline" size="sm" className="rounded-full">
-                              <ListFilter className="mr-1.5 h-4 w-4" />
-                              Semua Filter
+                            <Button variant="outline" size="sm" className="rounded-full text-xs h-8 px-2 justify-center">
+                              <ListFilter className="mr-1 h-4 w-4" />
+                              Filter
                             </Button>
                           </SheetTrigger>
                           <SheetContent side="right" className="w-[300px] sm:w-[350px] p-0 flex flex-col">
@@ -344,16 +344,16 @@ export default function Home() {
                             </ScrollArea>
                           </SheetContent>
                         </Sheet>
-                        <Button variant="outline" size="sm" className="rounded-full">
-                            <ArrowUpDown className="mr-1.5 h-4 w-4" />
+                        <Button variant="outline" size="sm" className="rounded-full text-xs h-8 px-2 justify-center">
+                            <ArrowUpDown className="mr-1 h-4 w-4" />
                             Urutkan
                         </Button>
-                        <Button variant="outline" size="sm" className="rounded-full">
-                            <Ruler className="mr-1.5 h-4 w-4" />
+                        <Button variant="outline" size="sm" className="rounded-full text-xs h-8 px-2 justify-center">
+                            <Ruler className="mr-1 h-4 w-4" />
                             Ukuran
                         </Button>
-                        <Button variant="outline" size="sm" className="rounded-full">
-                            <Tag className="mr-1.5 h-4 w-4" />
+                        <Button variant="outline" size="sm" className="rounded-full text-xs h-8 px-2 justify-center">
+                            <Tag className="mr-1 h-4 w-4" />
                             Promo
                         </Button>
                       </div>
@@ -395,5 +395,3 @@ export default function Home() {
     
 
     
-
-
