@@ -20,6 +20,7 @@ import { FilterIcon, Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import MobileSearch from '@/components/MobileSearch';
 
 // Define FilterState consistent with ProductFilters.tsx and internal page state
 interface FilterState {
@@ -74,13 +75,8 @@ export default function Home() {
   const [itemsAddedToCartFromWishlist, setItemsAddedToCartFromWishlist] = useState<Set<string>>(new Set());
   const [isFilterSheetOpen, setIsFilterSheetOpen] = useState(false);
   const [showFilterSidebar, setShowFilterSidebar] = useState(false);
-  const [mobileSearchQuery, setMobileSearchQuery] = useState('');
   
   const productFiltersRef = useRef<{ setFiltersFromParent: (newFilters: FilterState) => void }>(null);
-
-  useEffect(() => {
-    setMobileSearchQuery(searchParams.get('q') || '');
-  }, [searchParams]);
 
   useEffect(() => {
     const params = new URLSearchParams(searchParams.toString());
@@ -216,17 +212,6 @@ export default function Home() {
 
   }, [searchParams, router]);
 
-  const handleMobileSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const params = new URLSearchParams(searchParams.toString());
-    if (mobileSearchQuery.trim()) {
-        params.set('q', mobileSearchQuery.trim());
-    } else {
-        params.delete('q');
-    }
-    router.replace(`?${params.toString()}`, { scroll: false });
-  };
-
   const handleToggleWishlist = (product: Product) => {
     setWishlistItems(prevItems => {
       const isWishlisted = prevItems.find(item => item.id === product.id);
@@ -333,17 +318,8 @@ export default function Home() {
 
                     {/* Mobile Header */}
                     <div className="md:hidden flex gap-2 items-center">
-                        <form onSubmit={handleMobileSearchSubmit} className="relative flex-1">
-                            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground z-10" />
-                            <Input
-                                type="search"
-                                placeholder="Cari di Goodstock..."
-                                className="h-10 w-full pl-9 pr-4 rounded-full"
-                                value={mobileSearchQuery}
-                                onChange={(e) => setMobileSearchQuery(e.target.value)}
-                            />
-                        </form>
-                        <div>
+                        <MobileSearch />
+                        <div className="flex-shrink-0">
                             <Sheet open={isFilterSheetOpen} onOpenChange={setIsFilterSheetOpen}>
                                 <SheetTrigger asChild>
                                     <Button variant="outline" size="icon" className="rounded-full">
