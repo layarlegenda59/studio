@@ -16,7 +16,7 @@ import type { Product } from '@/lib/types';
 import { useToast } from "@/hooks/use-toast";
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from '@/components/ui/sheet';
-import { FilterIcon, Search } from 'lucide-react';
+import { ListFilter, ArrowUpDown, Ruler, Tag } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -317,32 +317,46 @@ export default function Home() {
                     </div>
 
                     {/* Mobile Header */}
-                    <div className="md:hidden flex gap-2 items-center">
+                    <div className="md:hidden space-y-4">
+                      <div className="flex gap-2 items-center">
                         <MobileSearch />
-                        <div className="flex-shrink-0">
-                            <Sheet open={isFilterSheetOpen} onOpenChange={setIsFilterSheetOpen}>
-                                <SheetTrigger asChild>
-                                    <Button variant="outline" size="icon" className="rounded-full">
-                                        <FilterIcon className="h-5 w-5" />
-                                        <span className="sr-only">Buka Filter</span>
-                                    </Button>
-                                </SheetTrigger>
-                                <SheetContent side="right" className="w-[300px] sm:w-[350px] p-0 flex flex-col">
-                                    <SheetHeader className="p-4 border-b flex-shrink-0">
-                                        <SheetTitle>Filter Produk</SheetTitle>
-                                    </SheetHeader>
-                                    <ScrollArea className="flex-grow">
-                                        <div className="p-4">
-                                            <ProductFilters 
-                                                ref={productFiltersRef}
-                                                onFilterChange={handleFilterChange} 
-                                                initialFilters={filters}
-                                            />
-                                        </div>
-                                    </ScrollArea>
-                                </SheetContent>
-                            </Sheet>
-                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 overflow-x-auto pb-2 -mx-4 px-4">
+                        <Sheet open={isFilterSheetOpen} onOpenChange={setIsFilterSheetOpen}>
+                          <SheetTrigger asChild>
+                            <Button variant="outline" size="sm" className="whitespace-nowrap rounded-full">
+                              <ListFilter className="mr-1.5 h-4 w-4" />
+                              Semua Filter
+                            </Button>
+                          </SheetTrigger>
+                          <SheetContent side="right" className="w-[300px] sm:w-[350px] p-0 flex flex-col">
+                            <SheetHeader className="p-4 border-b flex-shrink-0">
+                                <SheetTitle>Filter Produk</SheetTitle>
+                            </SheetHeader>
+                            <ScrollArea className="flex-grow">
+                                <div className="p-4">
+                                    <ProductFilters 
+                                        ref={productFiltersRef}
+                                        onFilterChange={handleFilterChange} 
+                                        initialFilters={filters}
+                                    />
+                                </div>
+                            </ScrollArea>
+                          </SheetContent>
+                        </Sheet>
+                        <Button variant="outline" size="sm" className="whitespace-nowrap rounded-full">
+                            <ArrowUpDown className="mr-1.5 h-4 w-4" />
+                            Urutkan
+                        </Button>
+                        <Button variant="outline" size="sm" className="whitespace-nowrap rounded-full">
+                            <Ruler className="mr-1.5 h-4 w-4" />
+                            Ukuran
+                        </Button>
+                        <Button variant="outline" size="sm" className="whitespace-nowrap rounded-full">
+                            <Tag className="mr-1.5 h-4 w-4" />
+                            Promo
+                        </Button>
+                      </div>
                     </div>
                 </div>
                 <ProductGrid 
@@ -381,3 +395,4 @@ export default function Home() {
     
 
     
+
