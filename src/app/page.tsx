@@ -470,12 +470,14 @@ export default function Home() {
                               )}
                             >
                               {link.label}
-                              <span
+                               <span
                                 className={cn(
-                                  "absolute bottom-0 left-0 block h-0.5 w-full origin-left bg-primary transition-transform ease-out",
+                                  "absolute bottom-0 left-0 block h-0.5 w-full origin-left bg-primary", // No base transition
                                   isActive
-                                    ? "scale-x-100 duration-200"
-                                    : "scale-x-0 duration-0 group-hover:scale-x-100 group-hover:duration-200"
+                                    ? "scale-x-100 transition-transform duration-200 ease-out" // Animate in if active
+                                    : "scale-x-0", // Snap off if inactive
+                                  // Animate in on hover only if not active
+                                  !isActive && "group-hover:scale-x-100 group-hover:transition-transform group-hover:duration-200"
                                 )}
                               />
                             </button>
