@@ -321,10 +321,10 @@ export default function Home() {
                       <div className="flex gap-2 items-center">
                         <MobileSearch />
                       </div>
-                      <div className="flex items-center gap-2 overflow-x-auto pb-2 -mx-4 px-4">
+                      <div className="flex flex-wrap items-center gap-2">
                         <Sheet open={isFilterSheetOpen} onOpenChange={setIsFilterSheetOpen}>
                           <SheetTrigger asChild>
-                            <Button variant="outline" size="sm" className="whitespace-nowrap rounded-full">
+                            <Button variant="outline" size="sm" className="rounded-full">
                               <ListFilter className="mr-1.5 h-4 w-4" />
                               Semua Filter
                             </Button>
@@ -344,15 +344,15 @@ export default function Home() {
                             </ScrollArea>
                           </SheetContent>
                         </Sheet>
-                        <Button variant="outline" size="sm" className="whitespace-nowrap rounded-full">
+                        <Button variant="outline" size="sm" className="rounded-full">
                             <ArrowUpDown className="mr-1.5 h-4 w-4" />
                             Urutkan
                         </Button>
-                        <Button variant="outline" size="sm" className="whitespace-nowrap rounded-full">
+                        <Button variant="outline" size="sm" className="rounded-full">
                             <Ruler className="mr-1.5 h-4 w-4" />
                             Ukuran
                         </Button>
-                        <Button variant="outline" size="sm" className="whitespace-nowrap rounded-full">
+                        <Button variant="outline" size="sm" className="rounded-full">
                             <Tag className="mr-1.5 h-4 w-4" />
                             Promo
                         </Button>
@@ -395,4 +395,5 @@ export default function Home() {
     
 
     
+
 
