@@ -15,12 +15,15 @@ import { mockProducts, mockPromotions } from '@/lib/mockData';
 import type { Product } from '@/lib/types';
 import { useToast } from "@/hooks/use-toast";
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import { ListFilter, ArrowUpDown, Ruler, Tag } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import MobileSearch from '@/components/MobileSearch';
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
+
 
 // Define FilterState consistent with ProductFilters.tsx and internal page state
 interface FilterState {
@@ -74,13 +77,14 @@ export default function Home() {
   const [wishlistItems, setWishlistItems] = useState<Product[]>([]);
   const [itemsAddedToCartFromWishlist, setItemsAddedToCartFromWishlist] = useState<Set<string>>(new Set());
   const [isFilterSheetOpen, setIsFilterSheetOpen] = useState(false);
+  const [isSortSheetOpen, setIsSortSheetOpen] = useState(false);
   const [showFilterSidebar, setShowFilterSidebar] = useState(false);
   
   const productFiltersRef = useRef<{ setFiltersFromParent: (newFilters: FilterState) => void }>(null);
 
   useEffect(() => {
     const params = new URLSearchParams(searchParams.toString());
-    const filterKeys = ['category', 'sizes', 'brand', 'minPrice', 'maxPrice', 'q', 'type', 'gender'];
+    const filterKeys = ['category', 'sizes', 'brand', 'minPrice', 'maxPrice', 'q', 'type', 'gender', 'promo', 'sort'];
     let hasActiveFilters = false;
     for (const key of filterKeys) {
       if (params.has(key) && params.get(key) !== '') {
@@ -122,12 +126,14 @@ export default function Home() {
     let productsToFilter = [...mockProducts];
     const params = new URLSearchParams(searchParams.toString());
 
+    // Category Filter
     if (filters.categories.length > 0) {
       productsToFilter = productsToFilter.filter(product => 
         filters.categories.some(cat => product.category === cat)
       );
     }
 
+    // Type Filter
     const typeParam = params.get('type');
     if (typeParam) {
       const typesFromUrl = typeParam.split(',').filter(Boolean);
@@ -138,28 +144,33 @@ export default function Home() {
       }
     }
     
+    // Size Filter
     if (filters.sizes.length > 0) {
       productsToFilter = productsToFilter.filter(product =>
         product.sizes.some(size => filters.sizes.includes(size))
       );
     }
 
+    // Brand Filter
     if (filters.brands.length > 0) {
       productsToFilter = productsToFilter.filter(product =>
         product.brand && filters.brands.some(brand => product.brand === brand)
       );
     }
     
+    // Gender Filter
     const genderParam = params.get('gender');
     if (genderParam && genderParam !== "Unisex") { 
          productsToFilter = productsToFilter.filter(product => product.gender === genderParam || product.gender === "Unisex");
     }
 
+    // Price Range Filter
     productsToFilter = productsToFilter.filter(product => {
       const price = product.promoPrice ?? product.originalPrice;
       return price >= filters.priceRange[0] && price <= filters.priceRange[1];
     });
     
+    // Search Query Filter
     const queryParam = params.get('q');
     if (queryParam) {
       const searchTerm = queryParam.toLowerCase();
@@ -170,6 +181,31 @@ export default function Home() {
         (product.type && product.type.toLowerCase().includes(searchTerm))
       );
     }
+
+    // Promo Filter
+    if (params.get('promo') === 'true') {
+      productsToFilter = productsToFilter.filter(p => p.isPromo);
+    }
+    
+    // Sorting
+    const sortOrder = params.get('sort') || 'popular';
+    switch (sortOrder) {
+      case 'price-asc':
+        productsToFilter.sort((a, b) => (a.promoPrice ?? a.originalPrice) - (b.promoPrice ?? b.originalPrice));
+        break;
+      case 'price-desc':
+        productsToFilter.sort((a, b) => (b.promoPrice ?? b.originalPrice) - (a.promoPrice ?? a.originalPrice));
+        break;
+      case 'newest':
+         // Using ID as a proxy for recency, assuming higher ID is newer
+        productsToFilter.sort((a, b) => parseInt(b.id.replace('prod', '')) - parseInt(a.id.replace('prod', '')));
+        break;
+      case 'popular':
+      default:
+        productsToFilter.sort((a, b) => b.salesCount - a.salesCount);
+        break;
+    }
+
     setFilteredProducts(productsToFilter);
   }, [filters, searchParams]);
 
@@ -200,7 +236,7 @@ export default function Home() {
       params.delete('maxPrice');
     }
     
-    const preservedKeys = ['type', 'gender', 'q'];
+    const preservedKeys = ['type', 'gender', 'q', 'sort', 'promo'];
     preservedKeys.forEach(key => {
       const valueFromUrl = searchParams.get(key);
       if (valueFromUrl) { 
@@ -211,6 +247,24 @@ export default function Home() {
     router.replace(`?${params.toString()}`, { scroll: false });
 
   }, [searchParams, router]);
+
+  const handleSortChange = (sortValue: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('sort', sortValue);
+    router.replace(`?${params.toString()}`, { scroll: false });
+    setIsSortSheetOpen(false);
+  };
+
+  const handleTogglePromo = () => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (params.get('promo')) {
+        params.delete('promo');
+    } else {
+        params.set('promo', 'true');
+    }
+    router.replace(`?${params.toString()}`, { scroll: false });
+  };
+
 
   const handleToggleWishlist = (product: Product) => {
     setWishlistItems(prevItems => {
@@ -278,6 +332,16 @@ export default function Home() {
 
   const orderedItemsForWhatsAppForm = mockProducts.filter(product => itemsAddedToCartFromWishlist.has(product.id));
 
+  const sortOptions = [
+    { value: 'popular', label: 'Paling Populer' },
+    { value: 'newest', label: 'Terbaru' },
+    { value: 'price-asc', label: 'Harga Terendah' },
+    { value: 'price-desc', label: 'Harga Tertinggi' },
+  ];
+
+  const currentSortOrder = searchParams.get('sort') || 'popular';
+  const isPromoActive = searchParams.get('promo') === 'true';
+
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <Header 
@@ -344,15 +408,45 @@ export default function Home() {
                             </ScrollArea>
                           </SheetContent>
                         </Sheet>
-                        <Button variant="outline" size="sm" className="rounded-full text-xs h-8 px-2 justify-center">
-                            <ArrowUpDown className="mr-1 h-4 w-4" />
-                            Urutkan
-                        </Button>
-                        <Button variant="outline" size="sm" className="rounded-full text-xs h-8 px-2 justify-center">
+                        
+                        <Sheet open={isSortSheetOpen} onOpenChange={setIsSortSheetOpen}>
+                           <SheetTrigger asChild>
+                             <Button variant="outline" size="sm" className="rounded-full text-xs h-8 px-2 justify-center">
+                                <ArrowUpDown className="mr-1 h-4 w-4" />
+                                Urutkan
+                            </Button>
+                           </SheetTrigger>
+                           <SheetContent side="bottom" className="rounded-t-lg">
+                                <SheetHeader className="text-left mb-4">
+                                    <SheetTitle>Urutkan Berdasarkan</SheetTitle>
+                                    <SheetDescription>
+                                        Pilih urutan produk yang ingin ditampilkan.
+                                    </SheetDescription>
+                                </SheetHeader>
+                                <RadioGroup defaultValue={currentSortOrder} onValueChange={handleSortChange}>
+                                    <div className="space-y-2">
+                                    {sortOptions.map(option => (
+                                        <Label key={option.value} htmlFor={option.value} className="flex items-center justify-between p-3 rounded-md border has-[:checked]:bg-secondary has-[:checked]:border-primary transition-colors">
+                                            {option.label}
+                                            <RadioGroupItem value={option.value} id={option.value} />
+                                        </Label>
+                                    ))}
+                                    </div>
+                                </RadioGroup>
+                           </SheetContent>
+                        </Sheet>
+                        
+                        <Button variant="outline" size="sm" className="rounded-full text-xs h-8 px-2 justify-center" onClick={() => setIsFilterSheetOpen(true)}>
                             <Ruler className="mr-1 h-4 w-4" />
                             Ukuran
                         </Button>
-                        <Button variant="outline" size="sm" className="rounded-full text-xs h-8 px-2 justify-center">
+
+                        <Button 
+                            variant={isPromoActive ? "default" : "outline"}
+                            size="sm" 
+                            className="rounded-full text-xs h-8 px-2 justify-center" 
+                            onClick={handleTogglePromo}
+                        >
                             <Tag className="mr-1 h-4 w-4" />
                             Promo
                         </Button>
@@ -392,6 +486,8 @@ export default function Home() {
     </div>
   );
 }
+    
+
     
 
     
