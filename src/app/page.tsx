@@ -453,7 +453,7 @@ export default function Home() {
                         <MobileSearch />
                       </div>
 
-                      <div className="flex items-center space-x-4 overflow-x-auto pb-2 -mx-4 px-4 no-scrollbar">
+                      <div className="grid grid-cols-5 items-center">
                         {mobileNavLinks.map((link) => {
                           const isActive =
                             (link.label === 'Semua' && !activeGender && !activeType) ||
