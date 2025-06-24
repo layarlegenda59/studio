@@ -285,20 +285,19 @@ export default function Home() {
   };
 
   const handleMobileNavClick = (param: 'gender' | 'type', value: string) => {
-    const params = new URLSearchParams(searchParams.toString());
-    
-    if (param === 'gender' && value === '') {
-      params.delete('gender');
-      params.delete('type');
-    } else {
-      if (param === 'gender') {
-        params.set('gender', value);
-        params.delete('type');
-      } else if (param === 'type') {
-        params.set('type', value);
-        params.delete('gender');
-      }
+    const params = new URLSearchParams(); // Start fresh
+
+    // Preserve sort order if it exists
+    const sort = searchParams.get('sort');
+    if (sort) {
+      params.set('sort', sort);
     }
+    
+    // For "Semua", value is '', so this condition is false and nothing is added.
+    if (value) { 
+      params.set(param, value);
+    }
+    
     router.replace(`?${params.toString()}`, { scroll: false });
   };
 
