@@ -59,6 +59,14 @@ const allSizes = [
   return a.localeCompare(b); 
 });
 
+const mobileNavLinks = [
+  { label: 'Semua', param: 'gender', value: '' }, // Special case for clearing
+  { label: 'Pria', param: 'gender', value: 'Pria' },
+  { label: 'Wanita', param: 'gender', value: 'Wanita' },
+  { label: 'Anak', param: 'gender', value: 'Anak' },
+  { label: 'Sports', param: 'type', value: 'Olahraga' },
+];
+
 export default function Home() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -276,6 +284,24 @@ export default function Home() {
     setIsSortSheetOpen(false);
   };
 
+  const handleMobileNavClick = (param: 'gender' | 'type', value: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    
+    if (param === 'gender' && value === '') {
+      params.delete('gender');
+      params.delete('type');
+    } else {
+      if (param === 'gender') {
+        params.set('gender', value);
+        params.delete('type');
+      } else if (param === 'type') {
+        params.set('type', value);
+        params.delete('gender');
+      }
+    }
+    router.replace(`?${params.toString()}`, { scroll: false });
+  };
+
   const handleTogglePromo = () => {
     const params = new URLSearchParams(searchParams.toString());
     if (params.get('promo')) {
@@ -379,6 +405,8 @@ export default function Home() {
 
   const currentSortOrder = searchParams.get('sort') || 'popular';
   const isPromoActive = searchParams.get('promo') === 'true';
+  const activeGender = searchParams.get('gender');
+  const activeType = searchParams.get('type');
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
@@ -425,6 +453,28 @@ export default function Home() {
                       <div className="flex gap-2 items-center">
                         <MobileSearch />
                       </div>
+
+                      <div className="flex items-center space-x-2 overflow-x-auto pb-2 -mx-4 px-4 no-scrollbar">
+                        {mobileNavLinks.map((link) => {
+                          const isActive =
+                            (link.label === 'Semua' && !activeGender && !activeType) ||
+                            (link.param === 'gender' && link.value === activeGender) ||
+                            (link.param === 'type' && link.value === activeType);
+                          
+                          return (
+                            <Button
+                              key={link.label}
+                              variant={isActive ? "default" : "outline"}
+                              size="sm"
+                              className="rounded-full h-8 px-4 text-xs whitespace-nowrap"
+                              onClick={() => handleMobileNavClick(link.param as 'gender' | 'type', link.value)}
+                            >
+                              {link.label}
+                            </Button>
+                          );
+                        })}
+                      </div>
+
                        <div className="grid grid-cols-4 items-center gap-2">
                         <Sheet open={isFilterSheetOpen} onOpenChange={setIsFilterSheetOpen}>
                           <SheetTrigger asChild>
@@ -577,7 +627,15 @@ export default function Home() {
         .shadow-text {
           text-shadow: 0px 1px 3px rgba(0,0,0,0.5);
         }
+        .no-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+        .no-scrollbar {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
       `}</style>
     </div>
   );
 }
+
