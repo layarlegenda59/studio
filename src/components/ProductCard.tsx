@@ -57,32 +57,39 @@ export default function ProductCard({ product, onToggleWishlist, wishlisted }: P
                 )}
             </div>
             <CardContent className="p-2 flex-grow flex flex-col bg-background">
-                <div className="flex justify-between items-start">
-                    <div className="flex-1 min-w-0 pr-2">
-                        <p className="text-sm font-bold uppercase truncate">{product.brand}</p>
-                        <h3 className="text-xs text-muted-foreground truncate mt-0.5" title={product.name}>
-                            {product.name}
-                        </h3>
-                    </div>
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-7 w-7 shrink-0 -mr-2 text-muted-foreground hover:text-destructive"
-                        onClick={handleWishlistClick}
-                        aria-label={wishlisted ? `Hapus ${product.name} dari wishlist` : `Tambah ${product.name} ke wishlist`}
-                    >
-                        <Heart className={cn("h-5 w-5", wishlisted && "fill-destructive text-destructive")} />
-                    </Button>
+                <div className="flex-grow">
+                  <div className="flex justify-between items-start">
+                      <div className="flex-1 min-w-0 pr-2">
+                          <p className="text-sm font-bold uppercase truncate">{product.brand}</p>
+                          <h3 className="text-xs text-muted-foreground truncate mt-0.5" title={product.name}>
+                              {product.name}
+                          </h3>
+                      </div>
+                      <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-7 w-7 shrink-0 -mr-2 text-muted-foreground hover:text-destructive"
+                          onClick={handleWishlistClick}
+                          aria-label={wishlisted ? `Hapus ${product.name} dari wishlist` : `Tambah ${product.name} ke wishlist`}
+                      >
+                          <Heart className={cn("h-5 w-5", wishlisted && "fill-destructive text-destructive")} />
+                      </Button>
+                  </div>
+                  <div className="mt-1">
+                      {product.promoPrice ? (
+                          <div className="flex items-baseline gap-1.5">
+                              <p className="text-sm font-bold text-destructive">{formatPrice(product.promoPrice)}</p>
+                              <p className="text-[10px] text-muted-foreground line-through">{formatPrice(product.originalPrice)}</p>
+                          </div>
+                      ) : (
+                          <p className="text-sm font-bold text-foreground">{formatPrice(product.originalPrice)}</p>
+                      )}
+                  </div>
                 </div>
-                <div className="mt-auto pt-1">
-                    {product.promoPrice ? (
-                        <div className="flex items-baseline gap-1.5">
-                             <p className="text-sm font-bold text-destructive">{formatPrice(product.promoPrice)}</p>
-                             <p className="text-[10px] text-muted-foreground line-through">{formatPrice(product.originalPrice)}</p>
-                        </div>
-                    ) : (
-                        <p className="text-sm font-bold text-foreground">{formatPrice(product.originalPrice)}</p>
-                    )}
+                <div className="pt-2 mt-auto">
+                    <Button variant="outline" size="sm" className="w-full h-8 text-xs pointer-events-none">
+                        Lihat Detail
+                    </Button>
                 </div>
             </CardContent>
         </Link>
