@@ -1,5 +1,5 @@
 
-import type { AdminDashboardData, AdminOrder, AdminSalesDataPoint, Product } from './types';
+import type { AdminDashboardData, AdminOrder, AdminSalesDataPoint } from './types';
 
 export const mockAdminDashboardData: AdminDashboardData = {
   summaryStats: {
@@ -34,69 +34,4 @@ export const mockSalesData: AdminSalesDataPoint[] = [
   { name: 'Minggu 5', sales: 6000000 },
   { name: 'Minggu 6', sales: 3500000 },
   { name: 'Minggu 7', sales: 7000000 },
-];
-
-export const mockAdminProducts: Product[] = [
-  {
-    id: 'prod1',
-    name: 'Sneakers Klasik Pria',
-    brand: 'Nike',
-    category: 'Sepatu',
-    type: 'Sneakers',
-    imageUrl: 'https://images.unsplash.com/photo-1605348532760-6753d2c43329?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxN3x8c25lYWtlcnxlbnwwfHx8fDE3NTAyMTc5MTF8MA&ixlib=rb-4.1.0&q=80&w=1080',
-    originalPrice: 500000,
-    promoPrice: 399000,
-    sizes: ['39', '40', '41', '42', '43'],
-    salesCount: 120,
-    gender: 'Pria',
-    isPromo: true,
-    description: "Sneakers klasik yang nyaman untuk kegiatan sehari-hari. Dibuat dengan material berkualitas tinggi.",
-    stock: 50,
-  },
-  {
-    id: 'prod2',
-    name: 'Tas Selempang Wanita Elegan',
-    brand: 'ModeElegance',
-    category: 'Tas',
-    type: 'Selempang',
-    imageUrl: 'https://images.unsplash.com/photo-1554745028-65db781f9fa7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHx0YXMlMjB3YW5pdGF8ZW58MHx8fHwxNzUwMjE3OTUzfDA&ixlib=rb-4.1.0&q=80&w=1080',
-    originalPrice: 750000,
-    sizes: ['One Size'],
-    salesCount: 85,
-    gender: 'Wanita',
-    isPromo: false,
-    description: "Tas selempang elegan untuk wanita modern. Cocok untuk acara formal maupun kasual.",
-    stock: 30,
-  },
-  {
-    id: 'prod3',
-    name: 'Kemeja Flanel Kotak-kotak',
-    brand: 'PlaidPerfect',
-    category: 'Pakaian',
-    type: 'Kemeja',
-    imageUrl: 'https://images.unsplash.com/photo-1613447895642-b36fc3186cb2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxrZW1lamElMjB8ZW58MHx8fHwxNzUwMjE4MDU1fDA&ixlib=rb-4.1.0&q=80&w=1080',
-    originalPrice: 350000,
-    sizes: ['S', 'M', 'L', 'XL'],
-    salesCount: 200,
-    gender: 'Unisex',
-    isPromo: false,
-    description: "Kemeja flanel unisex dengan motif kotak-kotak yang trendi. Nyaman dipakai sepanjang hari.",
-    stock: 75,
-  },
-  {
-    id: 'prod6',
-    name: 'Jaket Bomber Pria Keren',
-    brand: 'StreetStyle',
-    category: 'Pakaian',
-    type: 'Jaket',
-    imageUrl: 'https://images.unsplash.com/photo-1629353689974-af4d5c70440f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxib21iZXIlMjBqYWNrZXR8ZW58MHx8fHwxNzUwMjE4MTc4fDA&ixlib=rb-4.1.0&q=80&w=1080',
-    originalPrice: 900000,
-    promoPrice: 750000,
-    sizes: ['M', 'L', 'XL', 'XXL'],
-    salesCount: 110,
-    gender: 'Pria',
-    isPromo: true,
-    description: "Jaket bomber pria dengan desain modern dan bahan berkualitas. Menambah gaya penampilan Anda.",
-    stock: 5, 
-  },
 ];

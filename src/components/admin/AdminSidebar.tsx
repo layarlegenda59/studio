@@ -28,7 +28,8 @@ const textLogoUrl = "https://ggbivmpazczpgtmnfwfs.supabase.co/storage/v1/object/
 const mainNavItems = [
   { href: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { 
-    label: 'Manajemen Produk', 
+    label: 'Manajemen Produk',
+    basePath: '/admin/produk', 
     icon: Package,
     subItems: [
       { href: '/admin/produk', label: 'Daftar Produk' },
@@ -37,7 +38,8 @@ const mainNavItems = [
     ]
   },
   { 
-    label: 'Konten & Promo', 
+    label: 'Konten & Promo',
+    basePath: '/admin/promo',
     icon: Percent,
     subItems: [
       { href: '/admin/promo/banner', label: 'Banner Homepage' },
@@ -59,6 +61,10 @@ const secondaryNavItems = [
 export default function AdminSidebar() {
   const pathname = usePathname();
 
+  const isSubItemActive = (basePath: string) => {
+    return pathname.startsWith(basePath);
+  }
+
   return (
     <Sidebar collapsible="icon" className="border-r hidden md:flex" variant="sidebar">
       <SidebarHeader className="p-4 flex items-center justify-between">
@@ -79,10 +85,8 @@ export default function AdminSidebar() {
               {item.subItems ? (
                 <>
                   <SidebarMenuButton 
-                    isActive={item.subItems.some(sub => pathname.startsWith(sub.href))}
+                    isActive={item.basePath ? isSubItemActive(item.basePath) : false}
                     className="justify-between"
-                    // This is a trick to make the button a non-clickable header for submenus
-                    // We'll handle actual navigation with sub-items
                     asChild={false} 
                     onClick={(e) => e.preventDefault()} 
                   >
@@ -96,7 +100,7 @@ export default function AdminSidebar() {
                       <SidebarMenuSubItem key={subItem.href}>
                         <SidebarMenuSubButton
                           asChild
-                          isActive={pathname === subItem.href || (pathname.startsWith(subItem.href) && subItem.href !== '/admin/produk')}
+                          isActive={pathname === subItem.href}
                         >
                           <Link href={subItem.href}>
                             {subItem.label}
@@ -107,7 +111,7 @@ export default function AdminSidebar() {
                   </SidebarMenuSub>
                 </>
               ) : (
-                <SidebarMenuButton asChild isActive={pathname === item.href || (pathname.startsWith(item.href) && item.href !== '/admin/dashboard' && item.href.length > '/admin/dashboard'.length )}>
+                <SidebarMenuButton asChild isActive={pathname === item.href}>
                   <Link href={item.href}>
                     <item.icon className="h-4 w-4" />
                     <span className="group-data-[collapsible=icon]:hidden">{item.label}</span>
