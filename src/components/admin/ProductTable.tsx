@@ -23,7 +23,6 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import type { Product } from "@/lib/types";
 import { MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
@@ -130,16 +129,13 @@ export default function ProductTable({ products }: ProductTableProps) {
                             Edit
                          </Link>
                       </DropdownMenuItem>
-                       <AlertDialogTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          className="w-full justify-start text-sm text-destructive hover:text-destructive hover:bg-destructive/10 px-2 py-1.5 relative flex cursor-default select-none items-center rounded-sm outline-none transition-colors"
-                          onClick={() => setProductToDelete(product)}
-                        >
-                          <Trash2 className="mr-2 h-4 w-4" />
-                          Hapus
-                        </Button>
-                      </AlertDialogTrigger>
+                      <DropdownMenuItem
+                        onSelect={() => setProductToDelete(product)}
+                        className="text-destructive focus:text-destructive focus:bg-destructive/10"
+                      >
+                        <Trash2 className="mr-2 h-4 w-4" />
+                        <span>Hapus</span>
+                      </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TableCell>
