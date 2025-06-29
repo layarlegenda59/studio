@@ -39,7 +39,7 @@ export default function AdminPromoDiskonPage() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [discountToEdit, setDiscountToEdit] = useState<AdminDiscount | null>(null);
   const [discountToDelete, setDiscountToDelete] = useState<AdminDiscount | null>(null);
-  const [formData, setFormData] = useState(initialDiscountState);
+  const [formData, setFormData] = useState<Partial<AdminDiscount>>(initialDiscountState);
 
   useEffect(() => {
     setDiscounts(mockDiscounts);
@@ -74,7 +74,7 @@ export default function AdminPromoDiskonPage() {
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    if (!formData.code.trim()) {
+    if (!formData.code?.trim()) {
       toast({ title: "Error", description: "Kode diskon tidak boleh kosong.", variant: "destructive" });
       return;
     }
@@ -82,10 +82,10 @@ export default function AdminPromoDiskonPage() {
     if (discountToEdit) {
       const index = mockDiscounts.findIndex(d => d.id === discountToEdit.id);
       if (index !== -1) {
-        mockDiscounts[index] = { ...discountToEdit, ...formData };
+        mockDiscounts[index] = formData as AdminDiscount;
       }
     } else {
-      const newDiscount: AdminDiscount = { id: `disc-${Date.now()}`, ...formData };
+      const newDiscount: AdminDiscount = { id: `disc-${Date.now()}`, ...formData } as AdminDiscount;
       mockDiscounts.push(newDiscount);
     }
 
@@ -195,15 +195,15 @@ export default function AdminPromoDiskonPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
                <div className="space-y-2">
                   <Label htmlFor="code">Kode Diskon</Label>
-                  <Input id="code" value={formData.code} onChange={handleInputChange} />
+                  <Input id="code" value={formData.code || ''} onChange={handleInputChange} />
                </div>
                <div className="space-y-2">
                   <Label htmlFor="description">Deskripsi</Label>
-                  <Input id="description" value={formData.description} onChange={handleInputChange} />
+                  <Input id="description" value={formData.description || ''} onChange={handleInputChange} />
                </div>
                <div className="space-y-2">
                   <Label htmlFor="type">Tipe Diskon</Label>
-                   <Select onValueChange={(val) => handleSelectChange('type', val)} defaultValue={formData.type}>
+                   <Select onValueChange={(val) => handleSelectChange('type', val)} value={formData.type}>
                       <SelectTrigger><SelectValue /></SelectTrigger>
                       <SelectContent>
                         <SelectItem value="percentage">Persentase</SelectItem>
@@ -213,7 +213,7 @@ export default function AdminPromoDiskonPage() {
                </div>
                <div className="space-y-2">
                   <Label htmlFor="value">Nilai</Label>
-                  <Input id="value" type="number" value={formData.value} onChange={handleInputChange} />
+                  <Input id="value" type="number" value={formData.value || 0} onChange={handleInputChange} />
                </div>
                 <div className="space-y-2">
                     <Label htmlFor="startDate">Tanggal Mulai</Label>
@@ -245,7 +245,7 @@ export default function AdminPromoDiskonPage() {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="status">Status</Label>
-                   <Select onValueChange={(val) => handleSelectChange('status', val)} defaultValue={formData.status}>
+                   <Select onValueChange={(val) => handleSelectChange('status', val)} value={formData.status}>
                       <SelectTrigger><SelectValue /></SelectTrigger>
                       <SelectContent>
                         <SelectItem value="Aktif">Aktif</SelectItem>
@@ -256,7 +256,7 @@ export default function AdminPromoDiskonPage() {
                </div>
                 <div className="space-y-2">
                   <Label htmlFor="minPurchase">Min. Pembelian (Opsional)</Label>
-                  <Input id="minPurchase" type="number" value={formData.minPurchase} onChange={handleInputChange} />
+                  <Input id="minPurchase" type="number" value={formData.minPurchase || 0} onChange={handleInputChange} />
                </div>
             </div>
             <DialogFooter>
