@@ -49,7 +49,6 @@ export default function Footer() {
             <div>
               <h5 className="text-xl font-headline font-semibold mb-4">Layanan</h5>
               <ul className="space-y-2 text-sm">
-                <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">Bantuan</Link></li>
                 <li>
                   <Dialog open={isTutorialOpen} onOpenChange={setIsTutorialOpen}>
                     <DialogTrigger asChild>
@@ -112,9 +111,7 @@ export default function Footer() {
                     </DialogContent>
                   </Dialog>
                 </li>
-                <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">Cara Pengembalian</Link></li>
                 <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">Product Index</Link></li>
-                <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">Promo Partner Kami</Link></li>
                 <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">Konfirmasi Transfer</Link></li>
                 <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">Hubungi Kami</Link></li>
                 <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">Status Order</Link></li>
