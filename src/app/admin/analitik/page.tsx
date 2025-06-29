@@ -90,7 +90,7 @@ export default function AdminAnalitikPage() {
           <CardContent className="h-[350px] w-full p-0">
             <ChartContainer config={topProductsChartConfig}>
                 <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={mockTopProducts} layout="vertical" margin={{ left: 20, right: 40, top: 5, bottom: 5 }}>
+                    <BarChart data={mockTopProducts} layout="vertical" margin={{ left: 20, right: 30, top: 5, bottom: 5 }}>
                         <CartesianGrid strokeDasharray="3 3" horizontal={false} />
                         <YAxis 
                             dataKey="rankLabel"
@@ -98,7 +98,6 @@ export default function AdminAnalitikPage() {
                             tickLine={false}
                             axisLine={false}
                             tick={{ fontSize: 14, fill: 'hsl(var(--muted-foreground))' }}
-                            width={40}
                         />
                         <XAxis type="number" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
                         <Tooltip
