@@ -1,3 +1,4 @@
+
 "use client"
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -63,7 +64,7 @@ export default function AdminAnalitikPage() {
             <CardTitle>5 Produk Terlaris</CardTitle>
             <CardDescription>Berdasarkan jumlah unit terjual sepanjang waktu.</CardDescription>
           </CardHeader>
-          <CardContent className="h-[350px] w-full p-2">
+          <CardContent className="h-[350px] w-full p-0">
             <ChartContainer config={topProductsChartConfig}>
                 <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={mockTopProducts} layout="vertical" margin={{ left: 120, right: 30, top: 5, bottom: 5 }}>
