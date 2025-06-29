@@ -1,11 +1,10 @@
-
 'use client';
 
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
-import { Sheet, SheetContent } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Home, LogOut, Package, Percent, LineChart, CreditCard, MessageCircle, Settings, LayoutDashboard, Users, Palette, ShoppingBag, ChevronDown } from 'lucide-react';
@@ -169,13 +168,15 @@ export default function AdminSidebar({ isMobileOpen, setMobileOpen }: AdminSideb
   const MobileSidebar = () => (
     <Sheet open={isMobileOpen} onOpenChange={setMobileOpen}>
       <SheetContent side="left" className="w-64 p-0">
-         <div className="flex h-14 items-center border-b px-6">
-            <Link href="/admin/dashboard" className="flex items-center gap-2 font-semibold" onClick={() => setMobileOpen(false)}>
-              <Image src={iconLogoUrl} alt="Logo" width={24} height={24} />
-              <span>Goodstock-X</span>
-            </Link>
-         </div>
-         <SidebarNavigation onLinkClick={() => setMobileOpen(false)} />
+        <SheetHeader className="flex h-14 flex-row items-center border-b px-6 text-left">
+          <SheetTitle asChild>
+              <Link href="/admin/dashboard" className="flex items-center gap-2 font-semibold" onClick={() => setMobileOpen(false)}>
+                <Image src={iconLogoUrl} alt="Logo" width={24} height={24} />
+                <span>Goodstock-X</span>
+              </Link>
+          </SheetTitle>
+        </SheetHeader>
+        <SidebarNavigation onLinkClick={() => setMobileOpen(false)} />
       </SheetContent>
     </Sheet>
   );
