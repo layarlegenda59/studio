@@ -30,7 +30,23 @@ import type { Product } from "@/lib/types";
 import { mockProducts } from "@/lib/mockData";
 import Link from 'next/link';
 
-const allSizes = Array.from(new Set(mockProducts.flatMap(p => p.sizes))).sort();
+const allSizes = [
+  "S", "M", "L", "XL",
+  "35", "36", "37", "37.5", "38", "38.5", "39", "40", "41", "42", "43", "44", "45", "46.5", "47",
+  "One Size"
+].sort((a, b) => {
+  const numA = parseFloat(a);
+  const numB = parseFloat(b);
+  const isANumber = !isNaN(numA);
+  const isBNumber = !isNaN(numB);
+
+  if (isANumber && isBNumber) return numA - numB;
+  if (isANumber) return -1; 
+  if (isBNumber) return 1;
+  if (a === "One Size") return 1; 
+  if (b === "One Size") return -1;
+  return a.localeCompare(b); 
+});
 const allCategories = Array.from(new Set(mockProducts.map(p => p.category)));
 const allGenders = Array.from(new Set(mockProducts.map(p => p.gender)));
 
