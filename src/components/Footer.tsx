@@ -19,6 +19,7 @@ import {
 export default function Footer() {
   const [isTutorialOpen, setIsTutorialOpen] = useState(false);
   const whatsappUrl = "https://wa.me/6281278262893?text=Halo%20Admin%20Goodstock-X%2C%20saya%20ingin%20bertanya...";
+  const influencerWhatsappUrl = "https://wa.me/6281278262893?text=Halo%20Admin%20Goodstock-X%2C%20saya%20tertarik%20untuk%20bergabung%20dengan%20Influencer%20Program.%20Mohon%20informasinya%2C%20terima%20kasih.";
 
   return (
     <>
@@ -127,7 +128,7 @@ export default function Footer() {
                 <li><Link href="/about" className="text-gray-400 hover:text-white hover:underline">About Us</Link></li>
                 <li><Link href="/terms-and-conditions" className="text-gray-400 hover:text-white hover:underline">Persyaratan & Ketentuan</Link></li>
                 <li><Link href="/privacy-policy" className="text-gray-400 hover:text-white hover:underline">Kebijakan Privasi</Link></li>
-                <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">Influencer Program</Link></li>
+                <li><a href={influencerWhatsappUrl} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white hover:underline">Influencer Program</a></li>
                 <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">Goodstock-X THREAD</Link></li>
               </ul>
             </div>
