@@ -31,6 +31,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import {
   AlertDialog,
@@ -51,7 +52,7 @@ import { useToast } from '@/hooks/use-toast';
 import { mockTransactions } from "@/lib/adminMockData";
 import type { AdminTransaction, AdminTransactionType } from "@/lib/types";
 import { cn } from '@/lib/utils';
-import { DollarSign, TrendingDown, TrendingUp, PlusCircle, FileText, MoreHorizontal, Edit, Trash2, CalendarIcon } from 'lucide-react';
+import { DollarSign, TrendingDown, TrendingUp, PlusCircle, FileText, MoreHorizontal, Edit, Trash2, CalendarIcon, ChevronDown } from 'lucide-react';
 
 const transactionCategories = {
   Pendapatan: ['Penjualan Produk', 'Pendapatan Lainnya'],
@@ -172,54 +173,82 @@ export default function AdminKeuanganPage() {
     setTransactionToDelete(null);
   };
 
-  const handleExportPDF = () => {
+  const handleExportPDF = (reportType: 'monthly' | 'yearly' | 'all') => {
     const doc = new jsPDF();
     const logoUrl = "https://ggbivmpazczpgtmnfwfs.supabase.co/storage/v1/object/sign/material/Logo%20goodstock-x%20(transparan)%20(1).png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jYjkzYjM4Zi1kOGJhLTRmYTEtYmM0ZC00MWUzOGU4YTZhNzgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYXRlcmlhbC9Mb2dvIGdvb2RzdG9jay14ICh0cmFuc3BhcmFuKSAoMSkucG5nIiwiaWF0IjoxNzUwMzIwODEwLCJleHAiOjE3ODE4NTY4MTB9.14Cw5nlZ5gYYOmWPUIWZU_bJwyvi1ipFzvuZF72y24A";
+    
+    const now = new Date();
+    let transactionsToExport: AdminTransaction[];
+    let reportPeriodTitle: string;
+    let pdfFileName: string;
+
+    switch (reportType) {
+      case 'monthly':
+        transactionsToExport = transactions.filter(t => {
+          const tDate = new Date(t.date);
+          return tDate.getMonth() === now.getMonth() && tDate.getFullYear() === now.getFullYear();
+        });
+        reportPeriodTitle = `Laporan Bulan ${format(now, 'MMMM yyyy', { locale: localeID })}`;
+        pdfFileName = `Laporan_Keuangan_Bulanan_${format(now, 'yyyy-MM')}.pdf`;
+        break;
+      case 'yearly':
+        transactionsToExport = transactions.filter(t => new Date(t.date).getFullYear() === now.getFullYear());
+        reportPeriodTitle = `Laporan Tahun ${now.getFullYear()}`;
+        pdfFileName = `Laporan_Keuangan_Tahunan_${now.getFullYear()}.pdf`;
+        break;
+      case 'all':
+      default:
+        transactionsToExport = [...transactions];
+        reportPeriodTitle = 'Laporan Semua Transaksi';
+        pdfFileName = `Laporan_Keuangan_Semua_${format(new Date(), 'yyyyMMdd')}.pdf`;
+        break;
+    }
+
+    if (transactionsToExport.length === 0) {
+      toast({
+        title: "Tidak Ada Data",
+        description: `Tidak ada transaksi untuk periode yang dipilih.`,
+        variant: "destructive",
+      });
+      return;
+    }
 
     const generatePdfWithContent = (logoImgData: HTMLImageElement | null) => {
-        const tableTitle = `Riwayat Transaksi (${activeTab.charAt(0).toUpperCase() + activeTab.slice(1)})`;
         const hasLogo = !!logoImgData;
         const titleX = hasLogo ? 30 : 14;
         const titleY = 22;
 
-        // Header section
         if (hasLogo) {
             doc.addImage(logoImgData!, 'PNG', 14, 16, 12, 12);
         }
         doc.setFontSize(hasLogo ? 16 : 18);
         doc.text('Laporan Keuangan - Goodstock-X', titleX, titleY);
-
         doc.setFontSize(11);
-        doc.setTextColor(100); // Muted text color
+        doc.setTextColor(100);
         doc.text(`Diekspor pada: ${format(new Date(), 'dd MMMM yyyy', { locale: localeID })}`, titleX, titleY + 7);
 
-        // Summary Section
-        doc.setFontSize(12);
         autoTable(doc, {
-            startY: titleY + 20, // Start below header
-            head: [['Ringkasan Keuangan', '']],
+            startY: titleY + 20,
+            head: [['Ringkasan Keuangan (Keseluruhan)', '']],
             body: [
                 ['Total Pendapatan', formatCurrency(totalRevenue)],
                 ['Total Pengeluaran', formatCurrency(totalExpenses)],
                 ['Laba Bersih', formatCurrency(netProfit)],
             ],
             theme: 'grid',
-            headStyles: { fontStyle: 'bold', fillColor: [226, 232, 240], textColor: [45, 55, 72] }, // slate-200 bg, slate-700 text
-            columnStyles: {
-                1: { halign: 'right' }
-            }
+            headStyles: { fontStyle: 'bold', fillColor: [226, 232, 240], textColor: [45, 55, 72] },
+            columnStyles: { 1: { halign: 'right' } }
         });
 
         const finalY = (doc as any).lastAutoTable.finalY || 60;
 
-        // Transaction Table
         autoTable(doc, {
           startY: finalY + 15,
           head: [
-            [{ content: tableTitle, colSpan: 5, styles: { halign: 'left', fontStyle: 'bold', fillColor: [255, 255, 255], textColor: [0,0,0] } }],
+            [{ content: reportPeriodTitle, colSpan: 4, styles: { halign: 'left', fontStyle: 'bold', fillColor: [255, 255, 255], textColor: [0,0,0] } }],
             ['Tanggal', 'Deskripsi', 'Kategori', 'Jumlah (Rp)']
           ],
-          body: filteredTransactions.map(t => [
+          body: transactionsToExport.map(t => [
             format(new Date(t.date), 'dd/MM/yy'),
             t.description,
             t.category,
@@ -228,7 +257,7 @@ export default function AdminKeuanganPage() {
           headStyles: { fillColor: [31, 41, 55] },
           didParseCell: function (data) {
             if (data.section === 'body' && data.column.index === 3) {
-                 const transaction = filteredTransactions[data.row.index];
+                 const transaction = transactionsToExport[data.row.index];
                  if (transaction.type === 'Pendapatan') {
                      data.cell.styles.textColor = [22, 163, 74];
                  } else {
@@ -239,16 +268,14 @@ export default function AdminKeuanganPage() {
           }
         });
 
-        doc.save(`Laporan_Keuangan_GoodstockX_${format(new Date(), 'yyyyMMdd')}.pdf`);
+        doc.save(pdfFileName);
     };
 
     try {
         const img = new Image();
         img.crossOrigin = "anonymous";
         img.src = logoUrl;
-        img.onload = () => {
-            generatePdfWithContent(img);
-        };
+        img.onload = () => generatePdfWithContent(img);
         img.onerror = () => {
             console.error("Gagal memuat gambar logo untuk PDF.");
             generatePdfWithContent(null);
@@ -258,6 +285,7 @@ export default function AdminKeuanganPage() {
         generatePdfWithContent(null);
     }
   };
+
 
   const selectedTransactionType = form.watch('type');
 
@@ -310,9 +338,19 @@ export default function AdminKeuanganPage() {
                     <CardDescription>Input manual untuk transaksi dan ekspor laporan.</CardDescription>
                   </div>
                   <div className="flex gap-2">
-                    <Button variant="outline" onClick={handleExportPDF}>
-                        <FileText className="mr-2 h-4 w-4" /> Ekspor PDF
-                    </Button>
+                     <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="outline">
+                          <FileText className="mr-2 h-4 w-4" /> Ekspor PDF <ChevronDown className="ml-2 h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem onSelect={() => handleExportPDF('monthly')}>Laporan Bulan Ini</DropdownMenuItem>
+                        <DropdownMenuItem onSelect={() => handleExportPDF('yearly')}>Laporan Tahun Ini</DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem onSelect={() => handleExportPDF('all')}>Semua Transaksi</DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                     <Button onClick={() => handleOpenForm(null)}>
                         <PlusCircle className="mr-2 h-4 w-4" /> Tambah Transaksi
                     </Button>
