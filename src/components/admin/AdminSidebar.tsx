@@ -87,8 +87,6 @@ export default function AdminSidebar() {
                   <SidebarMenuButton 
                     isActive={item.basePath ? isSubItemActive(item.basePath) : false}
                     className="justify-between"
-                    asChild={false} 
-                    onClick={(e) => e.preventDefault()} 
                   >
                     <div className="flex items-center gap-2">
                       <item.icon className="h-4 w-4" />
