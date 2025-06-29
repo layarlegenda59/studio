@@ -22,7 +22,9 @@ import { format } from 'date-fns';
 import { id as localeID } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
 
-const initialDiscountState: Omit<AdminDiscount, 'id'> = {
+type FormDataType = Omit<AdminDiscount, 'id'>;
+
+const initialDiscountState: FormDataType = {
   code: '',
   description: '',
   type: 'percentage',
@@ -39,7 +41,7 @@ export default function AdminPromoDiskonPage() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [discountToEdit, setDiscountToEdit] = useState<AdminDiscount | null>(null);
   const [discountToDelete, setDiscountToDelete] = useState<AdminDiscount | null>(null);
-  const [formData, setFormData] = useState<Partial<AdminDiscount>>({ ...initialDiscountState });
+  const [formData, setFormData] = useState<FormDataType>({ ...initialDiscountState });
 
   useEffect(() => {
     setDiscounts([...mockDiscounts]);
@@ -56,22 +58,14 @@ export default function AdminPromoDiskonPage() {
     setDiscountToEdit(null);
     setFormData({ ...initialDiscountState });
   };
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { id, value } = e.target;
-    const numericValue = id === 'value' || id === 'minPurchase' ? Number(value) || 0 : value;
-    setFormData(prev => ({ ...prev, [id]: numericValue }));
-  };
   
-  const handleDateChange = (id: 'startDate' | 'endDate', date: Date | undefined) => {
-    if (date) {
-      setFormData(prev => ({ ...prev, [id]: date }));
-    }
+  const handleFormChange = (id: keyof FormDataType, value: any) => {
+    setFormData(prev => ({ ...prev, [id]: value }));
   };
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    if (!formData.code?.trim()) {
+    if (!formData.code.trim()) {
       toast({ title: "Error", description: "Kode diskon tidak boleh kosong.", variant: "destructive" });
       return;
     }
@@ -79,11 +73,11 @@ export default function AdminPromoDiskonPage() {
     if (discountToEdit) {
       const index = mockDiscounts.findIndex(d => d.id === discountToEdit.id);
       if (index !== -1) {
-        mockDiscounts[index] = formData as AdminDiscount;
+        mockDiscounts[index] = { id: discountToEdit.id, ...formData };
       }
     } else {
-      const newDiscount: AdminDiscount = { id: `disc-${Date.now()}`, ...formData } as AdminDiscount;
-      mockDiscounts.push(newDiscount);
+      const newDiscount: AdminDiscount = { id: `disc-${Date.now()}`, ...formData };
+      mockDiscounts.unshift(newDiscount);
     }
 
     setDiscounts([...mockDiscounts]);
@@ -192,18 +186,16 @@ export default function AdminPromoDiskonPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
                <div className="space-y-2">
                   <Label htmlFor="code">Kode Diskon</Label>
-                  <Input id="code" value={formData.code || ''} onChange={handleInputChange} />
+                  <Input id="code" value={formData.code} onChange={(e) => handleFormChange('code', e.target.value)} />
                </div>
                <div className="space-y-2">
                   <Label htmlFor="description">Deskripsi</Label>
-                  <Input id="description" value={formData.description || ''} onChange={handleInputChange} />
+                  <Input id="description" value={formData.description} onChange={(e) => handleFormChange('description', e.target.value)} />
                </div>
                <div className="space-y-2">
                   <Label htmlFor="type">Tipe Diskon</Label>
                    <Select 
-                      onValueChange={(value: 'percentage' | 'fixed') => {
-                        setFormData(prev => ({ ...prev, type: value }));
-                      }} 
+                      onValueChange={(value: 'percentage' | 'fixed') => handleFormChange('type', value)} 
                       value={formData.type}
                     >
                       <SelectTrigger><SelectValue placeholder="Pilih tipe diskon" /></SelectTrigger>
@@ -215,7 +207,7 @@ export default function AdminPromoDiskonPage() {
                </div>
                <div className="space-y-2">
                   <Label htmlFor="value">Nilai</Label>
-                  <Input id="value" type="number" value={formData.value || 0} onChange={handleInputChange} />
+                  <Input id="value" type="number" value={formData.value} onChange={(e) => handleFormChange('value', Number(e.target.value) || 0)} />
                </div>
                 <div className="space-y-2">
                     <Label htmlFor="startDate">Tanggal Mulai</Label>
@@ -227,7 +219,7 @@ export default function AdminPromoDiskonPage() {
                         </Button>
                         </PopoverTrigger>
                         <PopoverContent className="w-auto p-0">
-                        <Calendar mode="single" selected={formData.startDate} onSelect={(date) => handleDateChange('startDate', date)} initialFocus />
+                        <Calendar mode="single" selected={formData.startDate} onSelect={(date) => handleFormChange('startDate', date)} initialFocus />
                         </PopoverContent>
                     </Popover>
                 </div>
@@ -241,16 +233,14 @@ export default function AdminPromoDiskonPage() {
                         </Button>
                         </PopoverTrigger>
                         <PopoverContent className="w-auto p-0">
-                        <Calendar mode="single" selected={formData.endDate} onSelect={(date) => handleDateChange('endDate', date)} initialFocus />
+                        <Calendar mode="single" selected={formData.endDate} onSelect={(date) => handleFormChange('endDate', date)} initialFocus />
                         </PopoverContent>
                     </Popover>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="status">Status</Label>
                    <Select 
-                      onValueChange={(value: "Aktif" | "Tidak Aktif" | "Terjadwal") => {
-                          setFormData(prev => ({...prev, status: value}));
-                      }}
+                      onValueChange={(value: "Aktif" | "Tidak Aktif" | "Terjadwal") => handleFormChange('status', value)}
                       value={formData.status}
                     >
                       <SelectTrigger><SelectValue placeholder="Pilih status" /></SelectTrigger>
@@ -263,7 +253,7 @@ export default function AdminPromoDiskonPage() {
                </div>
                 <div className="space-y-2">
                   <Label htmlFor="minPurchase">Min. Pembelian (Opsional)</Label>
-                  <Input id="minPurchase" type="number" value={formData.minPurchase || 0} onChange={handleInputChange} />
+                  <Input id="minPurchase" type="number" value={formData.minPurchase || 0} onChange={(e) => handleFormChange('minPurchase', Number(e.target.value) || 0)} />
                </div>
             </div>
             <DialogFooter>
