@@ -94,3 +94,28 @@ export interface AdminDashboardData {
   // recentOrders: AdminOrder[]; // Will be handled by a separate mock/fetch
   // salesData: AdminSalesDataPoint[]; // Will be handled by a separate mock/fetch
 }
+
+// Admin Analytics Types
+export interface ProductPerformance {
+  name: string;
+  sales: number;
+  views: number;
+}
+
+export interface SearchKeyword {
+  keyword: string;
+  count: number;
+}
+
+export interface VisitorStats {
+  total: number;
+  new: number;
+  returning: number;
+  conversionRate: number;
+}
+
+export interface AdminAnalyticsData {
+  visitorStats: VisitorStats;
+  topProducts: ProductPerformance[];
+  searchKeywords: SearchKeyword[];
+}

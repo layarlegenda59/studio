@@ -1,5 +1,5 @@
 
-import type { AdminDashboardData, AdminOrder, AdminSalesDataPoint, AdminCategory, AdminDiscount } from './types';
+import type { AdminDashboardData, AdminOrder, AdminSalesDataPoint, AdminCategory, AdminDiscount, ProductPerformance, SearchKeyword, VisitorStats } from './types';
 import { mockProducts } from './mockData';
 
 export const mockAdminDashboardData: AdminDashboardData = {
@@ -96,4 +96,25 @@ export let mockDiscounts: AdminDiscount[] = [
   },
 ];
 
-    
+// Mock data for Analytics Page
+export const mockTopProducts: ProductPerformance[] = [...mockProducts]
+  .sort((a, b) => b.salesCount - a.salesCount)
+  .slice(0, 5)
+  .map(p => ({ name: p.name, sales: p.salesCount, views: p.salesCount * (Math.floor(Math.random() * 5) + 3) }));
+
+export const mockSearchKeywords: SearchKeyword[] = [
+  { keyword: 'sneakers pria', count: 542 },
+  { keyword: 'tas wanita', count: 480 },
+  { keyword: 'nike', count: 350 },
+  { keyword: 'kemeja flanel', count: 210 },
+  { keyword: 'sepatu lari', count: 188 },
+  { keyword: 'hoodie', count: 154 },
+  { keyword: 'promo', count: 120 },
+];
+
+export const mockVisitorStats: VisitorStats = {
+  total: 12450,
+  new: 3120,
+  returning: 9330,
+  conversionRate: 2.5,
+};
