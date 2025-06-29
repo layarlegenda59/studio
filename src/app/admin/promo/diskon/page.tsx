@@ -61,10 +61,6 @@ export default function AdminPromoDiskonPage() {
     const { id, value } = e.target;
     setFormData(prev => ({ ...prev, [id]: id === 'value' || id === 'minPurchase' ? Number(value) : value }));
   };
-
-  const handleSelectChange = (id: keyof AdminDiscount, value: string) => {
-    setFormData(prev => ({ ...prev, [id]: value }));
-  };
   
   const handleDateChange = (id: 'startDate' | 'endDate', date: Date | undefined) => {
     if (date) {
@@ -184,7 +180,7 @@ export default function AdminPromoDiskonPage() {
       </div>
       
       <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
-        <DialogContent onEscapeKeyDown={handleCloseForm} className="sm:max-w-2xl">
+        <DialogContent onEscapeKeyDown={handleCloseForm} onPointerDownOutside={handleCloseForm} className="sm:max-w-2xl">
           <form onSubmit={handleSubmit}>
             <DialogHeader>
               <DialogTitle>{discountToEdit ? 'Edit Diskon' : 'Buat Diskon Baru'}</DialogTitle>
@@ -203,8 +199,11 @@ export default function AdminPromoDiskonPage() {
                </div>
                <div className="space-y-2">
                   <Label htmlFor="type">Tipe Diskon</Label>
-                   <Select onValueChange={(val) => handleSelectChange('type', val)} value={formData.type}>
-                      <SelectTrigger><SelectValue /></SelectTrigger>
+                   <Select 
+                      onValueChange={(value) => setFormData(prev => ({ ...prev, type: value as AdminDiscount['type'] }))} 
+                      value={formData.type}
+                    >
+                      <SelectTrigger><SelectValue placeholder="Pilih tipe diskon" /></SelectTrigger>
                       <SelectContent>
                         <SelectItem value="percentage">Persentase</SelectItem>
                         <SelectItem value="fixed">Potongan Tetap</SelectItem>
@@ -245,8 +244,11 @@ export default function AdminPromoDiskonPage() {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="status">Status</Label>
-                   <Select onValueChange={(val) => handleSelectChange('status', val)} value={formData.status}>
-                      <SelectTrigger><SelectValue /></SelectTrigger>
+                   <Select 
+                      onValueChange={(value) => setFormData(prev => ({ ...prev, status: value as AdminDiscount['status'] }))} 
+                      value={formData.status}
+                    >
+                      <SelectTrigger><SelectValue placeholder="Pilih status" /></SelectTrigger>
                       <SelectContent>
                         <SelectItem value="Aktif">Aktif</SelectItem>
                         <SelectItem value="Tidak Aktif">Tidak Aktif</SelectItem>
