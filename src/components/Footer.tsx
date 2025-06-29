@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, type FormEvent } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
@@ -15,11 +15,33 @@ import {
   DialogDescription,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Footer() {
   const [isTutorialOpen, setIsTutorialOpen] = useState(false);
+  const [email, setEmail] = useState('');
+  const { toast } = useToast();
+
   const whatsappUrl = "https://wa.me/6281278262893?text=Halo%20Admin%20Goodstock-X%2C%20saya%20ingin%20bertanya...";
   const influencerWhatsappUrl = "https://wa.me/6281278262893?text=Halo%20Admin%20Goodstock-X%2C%20saya%20tertarik%20untuk%20bergabung%20dengan%20Influencer%20Program.%20Mohon%20informasinya%2C%20terima%20kasih.";
+
+  const handleNewsletterSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    if (email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      console.log(`Subscribing ${email}`);
+      toast({
+        title: "Berhasil Berlangganan!",
+        description: "Terima kasih telah bergabung dengan newsletter kami.",
+      });
+      setEmail('');
+    } else {
+      toast({
+        title: "Email Tidak Valid",
+        description: "Mohon masukkan alamat email yang valid.",
+        variant: "destructive",
+      });
+    }
+  };
 
   return (
     <>
@@ -139,11 +161,14 @@ export default function Footer() {
               <p className="text-sm text-gray-400 mb-3">
                 Dapatkan berita mode terbaru dan peluncuran produk hanya dengan subscribe newsletter kami.
               </p>
-              <form className="space-y-3 mb-6">
+              <form onSubmit={handleNewsletterSubmit} className="space-y-3 mb-6">
                 <Input 
                   type="email" 
                   placeholder="Alamat email Kamu" 
                   className="bg-background text-foreground placeholder:text-muted-foreground border-gray-600 focus:border-primary"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
                 />
                 <div className="flex space-x-2">
                   <Button type="submit" variant="outline" className="w-full border-gray-500 text-gray-300 hover:bg-primary hover:text-primary-foreground hover:border-primary">WANITA</Button>
