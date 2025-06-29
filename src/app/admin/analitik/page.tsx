@@ -1,4 +1,3 @@
-
 "use client"
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -67,12 +66,11 @@ export default function AdminAnalitikPage() {
           <CardContent className="h-[350px] w-full p-2">
             <ChartContainer config={topProductsChartConfig}>
                 <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={mockTopProducts} layout="vertical" margin={{ left: 10, right: 30, top: 5, bottom: 5 }}>
+                    <BarChart data={mockTopProducts} layout="vertical" margin={{ left: 120, right: 30, top: 5, bottom: 5 }}>
                         <CartesianGrid strokeDasharray="3 3" horizontal={false} />
                         <YAxis 
                             dataKey="name" 
                             type="category" 
-                            width={150}
                             tickLine={false}
                             axisLine={false}
                             tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
