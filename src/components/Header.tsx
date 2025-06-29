@@ -229,7 +229,7 @@ export default function Header({
           </Link>
           <Link href="#" className="flex items-center gap-1.5 hover:text-primary transition-colors">
             <Tag className="h-3.5 w-3.5" />
-            <span>Dapatkan Diskon 25% I S&K Berlaku</span>
+            <span>Dapatkan Diskon 25% | S&K Berlaku</span>
           </Link>
         </div>
       </div>
