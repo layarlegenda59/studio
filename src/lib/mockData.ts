@@ -35,6 +35,7 @@ export const mockProducts: Product[] = [
     gender: 'Pria',
     isPromo: true,
     description: "Sneakers klasik yang nyaman untuk kegiatan sehari-hari. Dibuat dengan material berkualitas tinggi.",
+    stock: 50,
   },
   {
     id: 'prod2',
@@ -49,6 +50,7 @@ export const mockProducts: Product[] = [
     gender: 'Wanita',
     isPromo: false,
     description: "Tas selempang elegan untuk wanita modern. Cocok untuk acara formal maupun kasual.",
+    stock: 25,
   },
   {
     id: 'prod3',
@@ -63,6 +65,7 @@ export const mockProducts: Product[] = [
     gender: 'Unisex',
     isPromo: false,
     description: "Kemeja flanel unisex dengan motif kotak-kotak yang trendi. Nyaman dipakai sepanjang hari.",
+    stock: 80,
   },
   {
     id: 'prod4',
@@ -78,6 +81,7 @@ export const mockProducts: Product[] = [
     gender: 'Wanita',
     isPromo: true,
     description: "Sepatu lari ringan yang dirancang khusus untuk wanita. Memberikan kenyamanan maksimal saat berolahraga.",
+    stock: 5,
   },
   {
     id: 'prod5',
@@ -92,6 +96,7 @@ export const mockProducts: Product[] = [
     gender: 'Unisex',
     isPromo: false,
     description: "Ransel laptop tahan air dengan banyak kompartemen. Ideal untuk petualangan dan kegiatan outdoor.",
+    stock: 15,
   },
   {
     id: 'prod6',
@@ -107,6 +112,7 @@ export const mockProducts: Product[] = [
     gender: 'Pria',
     isPromo: true,
     description: "Jaket bomber pria dengan desain modern dan bahan berkualitas. Menambah gaya penampilan Anda.",
+    stock: 8,
   },
   {
     id: 'prod7',
@@ -121,6 +127,7 @@ export const mockProducts: Product[] = [
     gender: 'Pria',
     isPromo: false,
     description: "Sepatu formal pria dari kulit asli, cocok untuk acara resmi dan bisnis.",
+    stock: 12,
   },
   {
     id: 'prod8',
@@ -136,6 +143,7 @@ export const mockProducts: Product[] = [
     gender: 'Wanita',
     isPromo: true,
     description: "Boots wanita stylish untuk tampilan kasual maupun semi-formal.",
+    stock: 18,
   },
   {
     id: 'prod9',
@@ -150,6 +158,7 @@ export const mockProducts: Product[] = [
     gender: 'Pria',
     isPromo: false,
     description: "Dompet kulit pria klasik dengan banyak slot kartu.",
+    stock: 0,
   },
   {
     id: 'prod10',
@@ -164,6 +173,7 @@ export const mockProducts: Product[] = [
     gender: 'Unisex',
     isPromo: false,
     description: "Kaos polos unisex berbahan katun combed yang nyaman.",
+    stock: 150,
   },
   {
     id: 'prod11',
@@ -171,13 +181,14 @@ export const mockProducts: Product[] = [
     brand: 'CozyComfort',
     category: 'Pakaian',
     type: 'Hoodies',
-    imageUrl: 'https://images.unsplash.com/photo-1674695670808-0480f62cc7d7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHx3b21lbiUyMGhvb2RpZSUyMG92ZXJzaXplZHxlbnwwfHx8fDE3NTAzNTQwODV8MA&ixlib=rb-4.1.0&q=80&w=1080',
+    imageUrl: 'https://images.unsplash.com/photo-1674695670808-0480f62cc7d7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHx3b21lbiUyMGhvb2RpZSUyMG92ZXJzaXplZHxlbnwwfHx8fDE3NTAzNTQwODV8MA&ixlib-rb-4.1.0&q=80&w=1080',
     originalPrice: 450000,
     sizes: ['M', 'L', 'XL'],
     salesCount: 90,
     gender: 'Wanita',
     isPromo: false,
     description: "Hoodie wanita model oversized yang hangat dan stylish.",
+    stock: 3,
   }
 ];
 
@@ -191,4 +202,5 @@ export const mockShippingCosts: ShippingCost[] = [
     { vendor: 'SiCepat', service: 'BEST', cost: 25000, estimatedDelivery: '1-2 hari' },
     { vendor: 'Lion Parcel', service: 'REGPACK', cost: 17000, estimatedDelivery: '3-5 hari' },
 ];
+
 
