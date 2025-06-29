@@ -61,7 +61,7 @@ export default function AboutUsPage() {
             <h2 className="text-3xl font-headline font-semibold text-primary">Kisah Kami</h2>
             <Separator className="w-24 h-1 mx-auto my-4 bg-primary"/>
             <p className="text-lg text-muted-foreground leading-relaxed">
-              Goodstock-X lahir dari hasrat mendalam terhadap fashion dan keyakinan bahwa setiap orang berhak memiliki akses ke produk-produk berkualitas dari seluruh dunia. Kami memulai perjalanan ini untuk menjembatani kesenjangan antara merek internasional ternama dan para pecinta fashion di Indonesia. Kami bukan sekadar toko; kami adalah kurator gaya hidup, yang dengan cermat memilih setiap item untuk memastikan Anda mendapatkan yang terbaik.
+              Goodstock-X lahir dari hasrat mendalam terhadap fashion dan keyakinan bahwa setiap orang berhak memiliki akses ke produk-produk berkualitas dari seluruh dunia. Kami memulai perjalanan ini untuk menjembatani kesenjangan antara merek internasional ternama dan para pecinta fashion di Indonesia. Kami bukan sekadar toko, kami adalah kurator gaya hidup, yang dengan cermat memilih setiap item untuk memastikan Anda mendapatkan yang terbaik.
             </p>
           </section>
 
