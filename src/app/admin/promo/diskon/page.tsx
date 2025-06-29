@@ -1,16 +1,47 @@
 
 "use client";
 
-import React, { useState, useEffect, type FormEvent } from 'react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import React, { useState, useEffect } from 'react';
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { PlusCircle, Pencil, Trash2, CalendarIcon } from 'lucide-react';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { mockDiscounts } from '@/lib/adminMockData';
 import type { AdminDiscount } from '@/lib/types';
@@ -21,11 +52,23 @@ import { Calendar } from "@/components/ui/calendar";
 import { format } from 'date-fns';
 import { id as localeID } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { ScrollArea } from '@/components/ui/scroll-area';
 
-// Use a specific type for the form data, omitting the 'id'
-type FormDataType = Omit<AdminDiscount, 'id'>;
+const discountFormSchema = z.object({
+  code: z.string().min(1, "Kode diskon tidak boleh kosong."),
+  description: z.string().optional(),
+  type: z.enum(['percentage', 'fixed']),
+  value: z.coerce.number().min(0, "Nilai tidak boleh negatif."),
+  status: z.enum(['Aktif', 'Tidak Aktif', 'Terjadwal']),
+  startDate: z.date({ required_error: "Tanggal mulai harus diisi." }),
+  endDate: z.date({ required_error: "Tanggal berakhir harus diisi." }),
+  minPurchase: z.coerce.number().optional(),
+});
 
-const initialDiscountState: FormDataType = {
+type DiscountFormValues = z.infer<typeof discountFormSchema>;
+
+const initialDiscountState: Omit<AdminDiscount, 'id'> = {
   code: '',
   description: '',
   type: 'percentage',
@@ -36,76 +79,74 @@ const initialDiscountState: FormDataType = {
   minPurchase: 0,
 };
 
-
 export default function AdminPromoDiskonPage() {
   const { toast } = useToast();
   const [discounts, setDiscounts] = useState<AdminDiscount[]>([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [discountToEdit, setDiscountToEdit] = useState<AdminDiscount | null>(null);
   const [discountToDelete, setDiscountToDelete] = useState<AdminDiscount | null>(null);
-  
-  // A single state object to hold all form data
-  const [formData, setFormData] = useState<FormDataType>({ ...initialDiscountState });
+
+  const form = useForm<DiscountFormValues>({
+    resolver: zodResolver(discountFormSchema),
+    defaultValues: {
+      ...initialDiscountState,
+      minPurchase: 0,
+    },
+  });
 
   useEffect(() => {
-    // Load initial table data from mock source
     setDiscounts([...mockDiscounts]);
   }, []);
 
   const handleOpenForm = (discount: AdminDiscount | null) => {
     setDiscountToEdit(discount);
-    // When opening the form, set the formData state from the selected discount or reset to initial values
-    setFormData(discount ? { ...discount } : { ...initialDiscountState });
+    if (discount) {
+      form.reset({
+        ...discount,
+        minPurchase: discount.minPurchase || undefined,
+      });
+    } else {
+      form.reset({
+        ...initialDiscountState,
+        minPurchase: undefined,
+      });
+    }
     setIsFormOpen(true);
   };
 
   const handleCloseForm = () => {
     setIsFormOpen(false);
     setDiscountToEdit(null);
-    // Reset form data on close to avoid stale data
-    setFormData({ ...initialDiscountState });
+    form.reset();
   };
-  
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    if (!formData.code.trim()) {
-      toast({ title: "Error", description: "Kode diskon tidak boleh kosong.", variant: "destructive" });
-      return;
-    }
 
+  function onSubmit(data: DiscountFormValues) {
     if (discountToEdit) {
-      // Find the discount in the mock data source and update it
       const index = mockDiscounts.findIndex(d => d.id === discountToEdit.id);
       if (index !== -1) {
-        // Replace the old data with the new data from the form
-        mockDiscounts[index] = { id: discountToEdit.id, ...formData };
+        mockDiscounts[index] = { ...discountToEdit, ...data, minPurchase: data.minPurchase || 0 };
       }
     } else {
-      // Create a new discount and add it to the mock data source
-      const newDiscount: AdminDiscount = { id: `disc-${Date.now()}`, ...formData };
+      const newDiscount: AdminDiscount = { id: `disc-${Date.now()}`, ...data, minPurchase: data.minPurchase || 0 };
       mockDiscounts.unshift(newDiscount);
     }
 
-    // Update the local state to re-render the table
     setDiscounts([...mockDiscounts]);
-    toast({ title: "Sukses", description: `Diskon "${formData.code}" berhasil disimpan.` });
+    toast({ title: "Sukses", description: `Diskon "${data.code}" berhasil disimpan.` });
     handleCloseForm();
-  };
+  }
 
   const handleDelete = () => {
     if (!discountToDelete) return;
     const indexToDelete = mockDiscounts.findIndex(d => d.id === discountToDelete.id);
     if (indexToDelete > -1) {
-      // Remove the discount from the mock data source
       mockDiscounts.splice(indexToDelete, 1);
     }
-    // Update local state to re-render the table
     setDiscounts([...mockDiscounts]);
     toast({ title: "Sukses", description: `Diskon "${discountToDelete.code}" telah dihapus.` });
     setDiscountToDelete(null);
   };
-  
-  // Helper functions for display formatting
+
   const getStatusBadgeVariant = (status: AdminDiscount['status']) => {
     switch (status) {
       case 'Aktif': return 'default';
@@ -184,98 +225,158 @@ export default function AdminPromoDiskonPage() {
         </div>
       </div>
       
-      {/* Add/Edit Dialog */}
       <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
-        <DialogContent onEscapeKeyDown={handleCloseForm} onPointerDownOutside={handleCloseForm} className="sm:max-w-2xl">
-          <form onSubmit={handleSubmit}>
-            <DialogHeader>
-              <DialogTitle>{discountToEdit ? 'Edit Diskon' : 'Buat Diskon Baru'}</DialogTitle>
-              <DialogDescription>
-                Isi detail diskon di bawah ini.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4 max-h-[70vh] overflow-y-auto pr-4">
-               <div className="space-y-2">
-                  <Label htmlFor="code">Kode Diskon</Label>
-                  <Input id="code" value={formData.code} onChange={(e) => setFormData(prev => ({ ...prev, code: e.target.value }))} />
-               </div>
-               <div className="space-y-2">
-                  <Label htmlFor="description">Deskripsi</Label>
-                  <Input id="description" value={formData.description} onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))} />
-               </div>
-               <div className="space-y-2">
-                  <Label htmlFor="type">Tipe Diskon</Label>
-                   <Select 
-                      onValueChange={(value: 'percentage' | 'fixed') => setFormData(prev => ({ ...prev, type: value }))} 
-                      value={formData.type}
-                    >
-                      <SelectTrigger><SelectValue placeholder="Pilih tipe diskon" /></SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="percentage">Persentase</SelectItem>
-                        <SelectItem value="fixed">Potongan Tetap</SelectItem>
-                      </SelectContent>
-                  </Select>
-               </div>
-               <div className="space-y-2">
-                  <Label htmlFor="value">Nilai</Label>
-                  <Input id="value" type="number" value={formData.value} onChange={(e) => setFormData(prev => ({ ...prev, value: Number(e.target.value) || 0 }))} />
-               </div>
-                <div className="space-y-2">
-                    <Label htmlFor="startDate">Tanggal Mulai</Label>
-                    <Popover>
-                        <PopoverTrigger asChild>
-                        <Button variant={"outline"} className={cn("w-full justify-start text-left font-normal", !formData.startDate && "text-muted-foreground")}>
-                            <CalendarIcon className="mr-2 h-4 w-4" />
-                            {formData.startDate ? format(formData.startDate, "dd MMMM yyyy", { locale: localeID }) : <span>Pilih tanggal</span>}
-                        </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0">
-                        <Calendar mode="single" selected={formData.startDate} onSelect={(date) => date && setFormData(prev => ({...prev, startDate: date}))} initialFocus />
-                        </PopoverContent>
-                    </Popover>
+        <DialogContent onEscapeKeyDown={handleCloseForm} className="sm:max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>{discountToEdit ? 'Edit Diskon' : 'Buat Diskon Baru'}</DialogTitle>
+            <DialogDescription>Isi detail diskon di bawah ini.</DialogDescription>
+          </DialogHeader>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)}>
+              <ScrollArea className="max-h-[70vh] pr-6">
+                <div className="space-y-4 py-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="code"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Kode Diskon</FormLabel>
+                          <FormControl><Input {...field} /></FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="description"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Deskripsi</FormLabel>
+                          <FormControl><Input {...field} /></FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="type"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Tipe Diskon</FormLabel>
+                           <Select onValueChange={field.onChange} value={field.value}>
+                            <FormControl>
+                              <SelectTrigger><SelectValue placeholder="Pilih tipe diskon" /></SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="percentage">Persentase</SelectItem>
+                              <SelectItem value="fixed">Potongan Tetap</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                     <FormField
+                      control={form.control}
+                      name="value"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Nilai</FormLabel>
+                          <FormControl><Input type="number" {...field} /></FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="startDate"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-col">
+                          <FormLabel>Tanggal Mulai</FormLabel>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <FormControl>
+                                <Button variant={"outline"} className={cn("w-full justify-start text-left font-normal", !field.value && "text-muted-foreground")}>
+                                  <CalendarIcon className="mr-2 h-4 w-4" />
+                                  {field.value ? format(field.value, "dd MMMM yyyy", { locale: localeID }) : <span>Pilih tanggal</span>}
+                                </Button>
+                              </FormControl>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0">
+                              <Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus />
+                            </PopoverContent>
+                          </Popover>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="endDate"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-col">
+                          <FormLabel>Tanggal Berakhir</FormLabel>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <FormControl>
+                                <Button variant={"outline"} className={cn("w-full justify-start text-left font-normal", !field.value && "text-muted-foreground")}>
+                                  <CalendarIcon className="mr-2 h-4 w-4" />
+                                  {field.value ? format(field.value, "dd MMMM yyyy", { locale: localeID }) : <span>Pilih tanggal</span>}
+                                </Button>
+                              </FormControl>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0">
+                              <Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus />
+                            </PopoverContent>
+                          </Popover>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="status"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Status</FormLabel>
+                          <Select onValueChange={field.onChange} value={field.value}>
+                            <FormControl>
+                              <SelectTrigger><SelectValue placeholder="Pilih status" /></SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="Aktif">Aktif</SelectItem>
+                              <SelectItem value="Tidak Aktif">Tidak Aktif</SelectItem>
+                              <SelectItem value="Terjadwal">Terjadwal</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="minPurchase"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Min. Pembelian (Opsional)</FormLabel>
+                          <FormControl><Input type="number" {...field} /></FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
                 </div>
-                <div className="space-y-2">
-                    <Label htmlFor="endDate">Tanggal Berakhir</Label>
-                     <Popover>
-                        <PopoverTrigger asChild>
-                        <Button variant={"outline"} className={cn("w-full justify-start text-left font-normal", !formData.endDate && "text-muted-foreground")}>
-                            <CalendarIcon className="mr-2 h-4 w-4" />
-                            {formData.endDate ? format(formData.endDate, "dd MMMM yyyy", { locale: localeID }) : <span>Pilih tanggal</span>}
-                        </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0">
-                        <Calendar mode="single" selected={formData.endDate} onSelect={(date) => date && setFormData(prev => ({...prev, endDate: date}))} initialFocus />
-                        </PopoverContent>
-                    </Popover>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="status">Status</Label>
-                   <Select 
-                      onValueChange={(value: "Aktif" | "Tidak Aktif" | "Terjadwal") => setFormData(prev => ({...prev, status: value}))}
-                      value={formData.status}
-                    >
-                      <SelectTrigger><SelectValue placeholder="Pilih status" /></SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Aktif">Aktif</SelectItem>
-                        <SelectItem value="Tidak Aktif">Tidak Aktif</SelectItem>
-                        <SelectItem value="Terjadwal">Terjadwal</SelectItem>
-                      </SelectContent>
-                  </Select>
-               </div>
-                <div className="space-y-2">
-                  <Label htmlFor="minPurchase">Min. Pembelian (Opsional)</Label>
-                  <Input id="minPurchase" type="number" value={formData.minPurchase || 0} onChange={(e) => setFormData(prev => ({ ...prev, minPurchase: Number(e.target.value) || 0 }))} />
-               </div>
-            </div>
-            <DialogFooter>
-              <Button type="button" variant="outline" onClick={handleCloseForm}>Batal</Button>
-              <Button type="submit">Simpan</Button>
-            </DialogFooter>
-          </form>
+              </ScrollArea>
+              <DialogFooter className="pt-4 border-t">
+                <Button type="button" variant="outline" onClick={handleCloseForm}>Batal</Button>
+                <Button type="submit">Simpan</Button>
+              </DialogFooter>
+            </form>
+          </Form>
         </DialogContent>
       </Dialog>
       
-       {/* Delete Confirmation Dialog */}
        <AlertDialog open={!!discountToDelete} onOpenChange={(open) => !open && setDiscountToDelete(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -295,3 +396,5 @@ export default function AdminPromoDiskonPage() {
     </>
   );
 }
+
+    
