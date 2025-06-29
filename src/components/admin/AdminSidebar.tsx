@@ -94,7 +94,7 @@ const SidebarNavigation = ({ onLinkClick }: { onLinkClick?: () => void }) => {
                     {mainNavItems.map((item) => (
                         item.subItems ? (
                             <AccordionItem value={item.basePath!} key={item.label} className="border-b-0">
-                                <AccordionTrigger className={cn("hover:no-underline rounded-md px-3 py-2 text-sm font-medium hover:bg-accent", pathname.startsWith(item.basePath!) && "bg-accent text-accent-foreground")}>
+                                <AccordionTrigger className={cn("hover:no-underline rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground", pathname.startsWith(item.basePath!) && "bg-accent text-accent-foreground")}>
                                     <div className="flex items-center">
                                         <item.icon className="mr-2 h-4 w-4" />
                                         {item.label}
