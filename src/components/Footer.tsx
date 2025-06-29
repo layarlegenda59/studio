@@ -112,7 +112,7 @@ export default function Footer() {
                   </Dialog>
                 </li>
                 <li><Link href="/product-index" className="text-gray-400 hover:text-white hover:underline">Product Index</Link></li>
-                <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">Konfirmasi Transfer</Link></li>
+                <li><Link href="/konfirmasi-transfer" className="text-gray-400 hover:text-white hover:underline">Konfirmasi Transfer</Link></li>
                 <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">Hubungi Kami</Link></li>
                 <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">Status Order</Link></li>
                 <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">Brand di Goodstock-X</Link></li>
