@@ -31,12 +31,19 @@ const orderFormSchema = z.object({
   customerName: z.string().min(1, "Nama pelanggan harus diisi."),
   productName: z.string().min(1, "Nama produk harus diisi."),
   productDetails: z.string().optional(),
-  totalAmount: z.coerce.number().min(0, "Jumlah harus diisi."),
+  totalAmount: z.coerce.number().min(1, "Jumlah harus diisi dan lebih dari 0."),
   waNumber: z.string().min(10, "Nomor WhatsApp tidak valid."),
   status: z.enum(['Belum Dikirim', 'Sudah Dikirim', 'Batal']),
 });
 
 type OrderFormValues = z.infer<typeof orderFormSchema>;
+
+const formatCurrency = (value: string | number) => {
+  if (value === null || value === undefined) return '';
+  const numStr = String(value).replace(/\D/g, '');
+  if (numStr === '') return '';
+  return new Intl.NumberFormat('id-ID').format(Number(numStr));
+};
 
 export default function AdminPesananWAPage() {
   const { toast } = useToast();
@@ -208,14 +215,37 @@ export default function AdminPesananWAPage() {
                 <FormField control={form.control} name="productDetails" render={({ field }) => (
                   <FormItem><FormLabel>Detail Produk (Opsional)</FormLabel><FormControl><Input placeholder="cth: Size XL, Warna Hitam" {...field} /></FormControl><FormMessage /></FormItem>
                 )}/>
-                 <FormField control={form.control} name="totalAmount" render={({ field }) => (
-                  <FormItem><FormLabel>Jumlah Total (Rp)</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>
-                )}/>
+                 <FormField
+                  control={form.control}
+                  name="totalAmount"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Jumlah Total (Rp)</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="500.000"
+                          type="text"
+                          inputMode="numeric"
+                          value={field.value ? formatCurrency(field.value) : ''}
+                          onChange={(e) => {
+                            const cleanedValue = e.target.value.replace(/\D/g, '');
+                            field.onChange(Number(cleanedValue));
+                          }}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
                  <FormField control={form.control} name="status" render={({ field }) => (
                   <FormItem>
                     <FormLabel>Status Awal</FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl><SelectTrigger><SelectValue /></SelectTrigger></FormControl>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                      </FormControl>
                       <SelectContent>
                         <SelectItem value="Belum Dikirim">Belum Dikirim</SelectItem>
                         <SelectItem value="Sudah Dikirim">Sudah Dikirim</SelectItem>
@@ -236,5 +266,3 @@ export default function AdminPesananWAPage() {
     </>
   );
 }
-
-    
