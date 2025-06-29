@@ -124,7 +124,6 @@ export default function Footer() {
               <h5 className="text-xl font-headline font-semibold mb-4">Tentang Kami</h5>
               <ul className="space-y-2 text-sm">
                 <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">About Us</Link></li>
-                <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">Promosikan Brand Anda</Link></li>
                 <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">Persyaratan & Ketentuan</Link></li>
                 <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">Kebijakan Privasi</Link></li>
                 <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">Influencer Program</Link></li>
