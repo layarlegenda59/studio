@@ -27,7 +27,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import type { Product } from "@/lib/types";
-import { mockProducts } from "@/lib/mockData"; // To get categories, brands, etc.
+import { mockProducts } from "@/lib/mockData";
 import Link from 'next/link';
 
 const allSizes = Array.from(new Set(mockProducts.flatMap(p => p.sizes))).sort();
@@ -82,17 +82,34 @@ export default function ProductForm({ product }: ProductFormProps) {
   });
 
   function onSubmit(data: ProductFormValues) {
-    // In a real app, you'd send this data to your API
-    console.log(data);
+    // In a real app, you'd send this to an API. Here, we mutate the mock data.
+    if (product) {
+      // Editing an existing product
+      const productIndex = mockProducts.findIndex(p => p.id === product.id);
+      if (productIndex !== -1) {
+        mockProducts[productIndex] = {
+          ...mockProducts[productIndex], // Keep old fields like salesCount, id
+          ...data,
+        };
+      }
+    } else {
+      // Adding a new product
+      const newProduct: Product = {
+        id: `prod${Date.now()}`,
+        salesCount: 0, // Default for new products
+        ...data,
+      };
+      mockProducts.unshift(newProduct); // Add to the top of the list
+    }
     
     toast({
       title: `Produk ${product ? 'Diperbarui' : 'Ditambahkan'}`,
       description: `Produk "${data.name}" telah berhasil disimpan.`,
     });
 
-    // Redirect back to the product list
+    // Redirect back to the product list and refresh the data
     router.push('/admin/produk');
-    router.refresh(); // Refresh server components
+    router.refresh();
   }
 
   return (

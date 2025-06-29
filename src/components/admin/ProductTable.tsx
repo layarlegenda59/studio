@@ -4,6 +4,7 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import {
   Table,
   TableBody,
@@ -34,6 +35,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useToast } from '@/hooks/use-toast';
+import { mockProducts } from '@/lib/mockData';
 
 interface ProductTableProps {
   products: Product[];
@@ -41,13 +43,17 @@ interface ProductTableProps {
 
 export default function ProductTable({ products }: ProductTableProps) {
   const { toast } = useToast();
+  const router = useRouter();
   const [productToDelete, setProductToDelete] = useState<Product | null>(null);
 
   const handleDelete = () => {
     if (!productToDelete) return;
 
-    // In a real app, you would make an API call to delete the product
-    console.log(`Deleting product: ${productToDelete.name}`);
+    // Mutate the mock data source
+    const indexToDelete = mockProducts.findIndex(p => p.id === productToDelete.id);
+    if (indexToDelete > -1) {
+        mockProducts.splice(indexToDelete, 1);
+    }
     
     toast({
       title: "Produk Dihapus",
@@ -55,6 +61,7 @@ export default function ProductTable({ products }: ProductTableProps) {
     });
 
     setProductToDelete(null); // Close dialog
+    router.refresh(); // Refresh the page to show the updated list
   };
   
   const formatPrice = (price?: number) => {
