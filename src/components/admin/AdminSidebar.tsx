@@ -1,4 +1,3 @@
-
 'use client';
 
 import Link from 'next/link';
@@ -65,9 +64,7 @@ const SidebarNavigation = ({ onLinkClick }: { onLinkClick?: () => void }) => {
     useEffect(() => {
         if (isMounted) {
             const activeSubMenu = mainNavItems.find(item => item.basePath && pathname.startsWith(item.basePath));
-            if (activeSubMenu?.basePath) {
-                setOpenSubMenus(prev => [...new Set([...prev, activeSubMenu.basePath!])]);
-            }
+            setOpenSubMenus(activeSubMenu ? [activeSubMenu.basePath!] : []);
         }
     }, [pathname, isMounted]);
 
@@ -95,11 +92,11 @@ const SidebarNavigation = ({ onLinkClick }: { onLinkClick?: () => void }) => {
         <div className="flex flex-col h-full">
             <ScrollArea className="flex-grow px-2 py-4">
                 <nav className="grid items-start gap-1">
-                    <Accordion type="multiple" value={openSubMenus} onValueChange={setOpenSubMenus} className="w-full">
+                    <Accordion type="multiple" value={isMounted ? openSubMenus : []} onValueChange={setOpenSubMenus} className="w-full">
                     {mainNavItems.map((item) => (
                         item.subItems ? (
                             <AccordionItem value={item.basePath!} key={item.label} className="border-b-0">
-                                <AccordionTrigger className={cn("hover:no-underline rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground", pathname.startsWith(item.basePath!) && "bg-accent text-accent-foreground text-accent-foreground")}>
+                                <AccordionTrigger className={cn("hover:no-underline rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground", pathname.startsWith(item.basePath!) && "bg-accent text-accent-foreground")}>
                                     <div className="flex items-center">
                                         <item.icon className="mr-2 h-4 w-4" />
                                         {item.label}
