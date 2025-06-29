@@ -22,6 +22,7 @@ import { format } from 'date-fns';
 import { id as localeID } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
 
+// Use a specific type for the form data, omitting the 'id'
 type FormDataType = Omit<AdminDiscount, 'id'>;
 
 const initialDiscountState: FormDataType = {
@@ -35,20 +36,25 @@ const initialDiscountState: FormDataType = {
   minPurchase: 0,
 };
 
+
 export default function AdminPromoDiskonPage() {
   const { toast } = useToast();
   const [discounts, setDiscounts] = useState<AdminDiscount[]>([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [discountToEdit, setDiscountToEdit] = useState<AdminDiscount | null>(null);
   const [discountToDelete, setDiscountToDelete] = useState<AdminDiscount | null>(null);
+  
+  // A single state object to hold all form data
   const [formData, setFormData] = useState<FormDataType>({ ...initialDiscountState });
 
   useEffect(() => {
+    // Load initial table data from mock source
     setDiscounts([...mockDiscounts]);
   }, []);
 
   const handleOpenForm = (discount: AdminDiscount | null) => {
     setDiscountToEdit(discount);
+    // When opening the form, set the formData state from the selected discount or reset to initial values
     setFormData(discount ? { ...discount } : { ...initialDiscountState });
     setIsFormOpen(true);
   };
@@ -56,13 +62,10 @@ export default function AdminPromoDiskonPage() {
   const handleCloseForm = () => {
     setIsFormOpen(false);
     setDiscountToEdit(null);
+    // Reset form data on close to avoid stale data
     setFormData({ ...initialDiscountState });
   };
   
-  const handleFormChange = (id: keyof FormDataType, value: any) => {
-    setFormData(prev => ({ ...prev, [id]: value }));
-  };
-
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (!formData.code.trim()) {
@@ -71,15 +74,19 @@ export default function AdminPromoDiskonPage() {
     }
 
     if (discountToEdit) {
+      // Find the discount in the mock data source and update it
       const index = mockDiscounts.findIndex(d => d.id === discountToEdit.id);
       if (index !== -1) {
+        // Replace the old data with the new data from the form
         mockDiscounts[index] = { id: discountToEdit.id, ...formData };
       }
     } else {
+      // Create a new discount and add it to the mock data source
       const newDiscount: AdminDiscount = { id: `disc-${Date.now()}`, ...formData };
       mockDiscounts.unshift(newDiscount);
     }
 
+    // Update the local state to re-render the table
     setDiscounts([...mockDiscounts]);
     toast({ title: "Sukses", description: `Diskon "${formData.code}" berhasil disimpan.` });
     handleCloseForm();
@@ -89,13 +96,16 @@ export default function AdminPromoDiskonPage() {
     if (!discountToDelete) return;
     const indexToDelete = mockDiscounts.findIndex(d => d.id === discountToDelete.id);
     if (indexToDelete > -1) {
+      // Remove the discount from the mock data source
       mockDiscounts.splice(indexToDelete, 1);
     }
+    // Update local state to re-render the table
     setDiscounts([...mockDiscounts]);
     toast({ title: "Sukses", description: `Diskon "${discountToDelete.code}" telah dihapus.` });
     setDiscountToDelete(null);
   };
   
+  // Helper functions for display formatting
   const getStatusBadgeVariant = (status: AdminDiscount['status']) => {
     switch (status) {
       case 'Aktif': return 'default';
@@ -174,6 +184,7 @@ export default function AdminPromoDiskonPage() {
         </div>
       </div>
       
+      {/* Add/Edit Dialog */}
       <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
         <DialogContent onEscapeKeyDown={handleCloseForm} onPointerDownOutside={handleCloseForm} className="sm:max-w-2xl">
           <form onSubmit={handleSubmit}>
@@ -183,19 +194,19 @@ export default function AdminPromoDiskonPage() {
                 Isi detail diskon di bawah ini.
               </DialogDescription>
             </DialogHeader>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4 max-h-[70vh] overflow-y-auto pr-4">
                <div className="space-y-2">
                   <Label htmlFor="code">Kode Diskon</Label>
-                  <Input id="code" value={formData.code} onChange={(e) => handleFormChange('code', e.target.value)} />
+                  <Input id="code" value={formData.code} onChange={(e) => setFormData(prev => ({ ...prev, code: e.target.value }))} />
                </div>
                <div className="space-y-2">
                   <Label htmlFor="description">Deskripsi</Label>
-                  <Input id="description" value={formData.description} onChange={(e) => handleFormChange('description', e.target.value)} />
+                  <Input id="description" value={formData.description} onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))} />
                </div>
                <div className="space-y-2">
                   <Label htmlFor="type">Tipe Diskon</Label>
                    <Select 
-                      onValueChange={(value: 'percentage' | 'fixed') => handleFormChange('type', value)} 
+                      onValueChange={(value: 'percentage' | 'fixed') => setFormData(prev => ({ ...prev, type: value }))} 
                       value={formData.type}
                     >
                       <SelectTrigger><SelectValue placeholder="Pilih tipe diskon" /></SelectTrigger>
@@ -207,7 +218,7 @@ export default function AdminPromoDiskonPage() {
                </div>
                <div className="space-y-2">
                   <Label htmlFor="value">Nilai</Label>
-                  <Input id="value" type="number" value={formData.value} onChange={(e) => handleFormChange('value', Number(e.target.value) || 0)} />
+                  <Input id="value" type="number" value={formData.value} onChange={(e) => setFormData(prev => ({ ...prev, value: Number(e.target.value) || 0 }))} />
                </div>
                 <div className="space-y-2">
                     <Label htmlFor="startDate">Tanggal Mulai</Label>
@@ -219,7 +230,7 @@ export default function AdminPromoDiskonPage() {
                         </Button>
                         </PopoverTrigger>
                         <PopoverContent className="w-auto p-0">
-                        <Calendar mode="single" selected={formData.startDate} onSelect={(date) => handleFormChange('startDate', date)} initialFocus />
+                        <Calendar mode="single" selected={formData.startDate} onSelect={(date) => date && setFormData(prev => ({...prev, startDate: date}))} initialFocus />
                         </PopoverContent>
                     </Popover>
                 </div>
@@ -233,14 +244,14 @@ export default function AdminPromoDiskonPage() {
                         </Button>
                         </PopoverTrigger>
                         <PopoverContent className="w-auto p-0">
-                        <Calendar mode="single" selected={formData.endDate} onSelect={(date) => handleFormChange('endDate', date)} initialFocus />
+                        <Calendar mode="single" selected={formData.endDate} onSelect={(date) => date && setFormData(prev => ({...prev, endDate: date}))} initialFocus />
                         </PopoverContent>
                     </Popover>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="status">Status</Label>
                    <Select 
-                      onValueChange={(value: "Aktif" | "Tidak Aktif" | "Terjadwal") => handleFormChange('status', value)}
+                      onValueChange={(value: "Aktif" | "Tidak Aktif" | "Terjadwal") => setFormData(prev => ({...prev, status: value}))}
                       value={formData.status}
                     >
                       <SelectTrigger><SelectValue placeholder="Pilih status" /></SelectTrigger>
@@ -253,7 +264,7 @@ export default function AdminPromoDiskonPage() {
                </div>
                 <div className="space-y-2">
                   <Label htmlFor="minPurchase">Min. Pembelian (Opsional)</Label>
-                  <Input id="minPurchase" type="number" value={formData.minPurchase || 0} onChange={(e) => handleFormChange('minPurchase', Number(e.target.value) || 0)} />
+                  <Input id="minPurchase" type="number" value={formData.minPurchase || 0} onChange={(e) => setFormData(prev => ({ ...prev, minPurchase: Number(e.target.value) || 0 }))} />
                </div>
             </div>
             <DialogFooter>
@@ -264,6 +275,7 @@ export default function AdminPromoDiskonPage() {
         </DialogContent>
       </Dialog>
       
+       {/* Delete Confirmation Dialog */}
        <AlertDialog open={!!discountToDelete} onOpenChange={(open) => !open && setDiscountToDelete(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
