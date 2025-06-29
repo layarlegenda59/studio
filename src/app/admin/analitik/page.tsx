@@ -81,8 +81,8 @@ export default function AdminAnalitikPage() {
         </div>
       </section>
 
-      <div className="grid gap-8 lg:grid-cols-5">
-        <Card className="shadow-lg lg:col-span-3">
+      <div className="grid grid-cols-1 gap-8">
+        <Card className="shadow-lg">
           <CardHeader>
             <CardTitle>4 Produk Terlaris</CardTitle>
             <CardDescription>Berdasarkan jumlah unit terjual sepanjang waktu.</CardDescription>
@@ -111,7 +111,7 @@ export default function AdminAnalitikPage() {
             </ChartContainer>
           </CardContent>
         </Card>
-        <Card className="shadow-lg lg:col-span-2">
+        <Card className="shadow-lg">
           <CardHeader>
             <CardTitle>Kata Kunci Pencarian</CardTitle>
             <CardDescription>Pencarian paling populer oleh pengunjung.</CardDescription>
