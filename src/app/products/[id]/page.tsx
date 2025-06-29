@@ -207,7 +207,7 @@ export default function ProductDetailPage() {
                       key={size}
                       variant={selectedSize === size ? "default" : "outline"}
                       onClick={() => setSelectedSize(size)}
-                      className={cn("h-8 px-2.5 text-[10px] sm:h-9 sm:px-3 sm:text-xs rounded-md border-input", selectedSize === size && "ring-2 ring-primary ring-offset-2 ring-offset-background")}
+                      className={cn("h-9 px-3 text-xs sm:h-9 sm:px-3 rounded-md border-input", selectedSize === size && "ring-2 ring-primary ring-offset-2 ring-offset-background")}
                       aria-pressed={selectedSize === size}
                     >
                       {size}
@@ -225,7 +225,7 @@ export default function ProductDetailPage() {
             <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 pt-0.5 sm:pt-1">
               <Button 
                 size="default" 
-                className="flex-1 text-xs sm:text-sm"
+                className="flex-1 text-sm"
                 onClick={handleToggleCart}
                 disabled={product.sizes && product.sizes.length > 0 && !selectedSize && !isProductInCart}
               >
@@ -235,7 +235,7 @@ export default function ProductDetailPage() {
               <Button 
                 variant="outline" 
                 size="default" 
-                className="flex-1 sm:flex-none text-xs sm:text-sm"
+                className="flex-1 sm:flex-none text-sm"
                 onClick={handleToggleWishlist}
               >
                 <Heart className={cn("mr-1.5 h-3.5 w-3.5 sm:mr-2 sm:h-4 sm:w-4", isProductWishlisted && "fill-destructive text-destructive")} />
@@ -252,4 +252,3 @@ export default function ProductDetailPage() {
     </div>
   );
 }
-

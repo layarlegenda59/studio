@@ -493,7 +493,7 @@ export default function Home() {
                        <div className="grid grid-cols-4 items-center gap-2">
                         <Sheet open={isFilterSheetOpen} onOpenChange={setIsFilterSheetOpen}>
                           <SheetTrigger asChild>
-                            <Button variant="outline" size="sm" className="rounded-full text-xs h-8 px-2 justify-center">
+                            <Button variant="outline" className="rounded-full text-xs h-9 px-4 justify-center">
                               <ListFilter className="mr-1 h-4 w-4" />
                               Filter
                             </Button>
@@ -516,7 +516,7 @@ export default function Home() {
                         
                         <Sheet open={isSortSheetOpen} onOpenChange={setIsSortSheetOpen}>
                            <SheetTrigger asChild>
-                             <Button variant="outline" size="sm" className="rounded-full text-xs h-8 px-2 justify-center">
+                             <Button variant="outline" className="rounded-full text-xs h-9 px-4 justify-center">
                                 <ArrowUpDown className="mr-1 h-4 w-4" />
                                 Urutkan
                             </Button>
@@ -548,7 +548,7 @@ export default function Home() {
                             setIsSizeSheetOpen(isOpen);
                         }}>
                            <SheetTrigger asChild>
-                             <Button variant="outline" size="sm" className="rounded-full text-xs h-8 px-2 justify-center">
+                             <Button variant="outline" className="rounded-full text-xs h-9 px-4 justify-center">
                                 <Ruler className="mr-1 h-4 w-4" />
                                 Ukuran
                             </Button>
@@ -603,8 +603,7 @@ export default function Home() {
 
                         <Button 
                             variant={isPromoActive ? "default" : "outline"}
-                            size="sm" 
-                            className="rounded-full text-xs h-8 px-2 justify-center" 
+                            className="rounded-full text-xs h-9 px-4 justify-center" 
                             onClick={handleTogglePromo}
                         >
                             <Tag className="mr-1 h-4 w-4" />
