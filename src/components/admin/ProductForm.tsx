@@ -1,4 +1,3 @@
-
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -31,7 +30,7 @@ import { mockProducts } from "@/lib/mockData";
 import Link from 'next/link';
 
 const allSizes = [
-  "S", "M", "L", "XL",
+  "S", "M", "L", "XL", "XXL", "XXXL",
   "35", "36", "37", "37.5", "38", "38.5", "39", "40", "41", "42", "43", "44", "45", "46.5", "47",
   "One Size"
 ].sort((a, b) => {
