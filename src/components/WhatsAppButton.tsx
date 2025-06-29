@@ -10,7 +10,7 @@ interface WhatsAppButtonProps {
   message?: string; // Optional pre-filled message
 }
 
-export default function WhatsAppButton({ phoneNumber, message = "Halo Admin ModeMatch, saya ingin bertanya..." }: WhatsAppButtonProps) {
+export default function WhatsAppButton({ phoneNumber, message = "Halo Admin Goodstock-X, saya ingin bertanya..." }: WhatsAppButtonProps) {
   const openWhatsApp = () => {
     const whatsappUrl = `https://wa.me/${phoneNumber.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank', 'noopener,noreferrer');

@@ -18,7 +18,7 @@ export default function RegisterPage() {
            <Link href="/" className="flex justify-center mb-4">
              <Image
                 src={textLogoUrl}
-                alt="ModeMatch Logo"
+                alt="Goodstock-X Logo"
                 width={180}
                 height={42}
                 priority

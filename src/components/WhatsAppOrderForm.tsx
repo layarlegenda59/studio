@@ -41,7 +41,7 @@ export default function WhatsAppOrderForm({ orderedItems = [], onRemoveItem }: W
     }
 
     const messageParts = [
-      "Halo Admin ModeMatch, saya ingin memesan:",
+      "Halo Admin Goodstock-X, saya ingin memesan:",
       `Nama: ${name}`,
     ];
     if (email) messageParts.push(`Email: ${email}`);

@@ -3,8 +3,8 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
-  title: 'ModeMatch',
-  description: 'Find your perfect style with ModeMatch.',
+  title: 'Goodstock-X',
+  description: 'Goodstock-X - Pusat Fashion Online di Indonesia.',
 };
 
 export default function RootLayout({
