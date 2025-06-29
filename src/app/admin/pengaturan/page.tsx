@@ -22,7 +22,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
-import { mockStoreSettings, mockAdminSettings } from "@/lib/adminMockData";
+import { mockStoreSettings, mockAdminSettings, STORE_SETTINGS_KEY, ADMIN_SETTINGS_KEY } from "@/lib/adminMockData";
+
 
 const settingsFormSchema = z.object({
   storeName: z.string().min(1, "Nama toko tidak boleh kosong."),
@@ -33,10 +34,6 @@ const settingsFormSchema = z.object({
 });
 
 type SettingsFormValues = z.infer<typeof settingsFormSchema>;
-
-// Define keys for localStorage to avoid typos
-const STORE_SETTINGS_KEY = 'goodstockx_store_settings';
-const ADMIN_SETTINGS_KEY = 'goodstockx_admin_settings';
 
 
 export default function AdminPengaturanPage() {

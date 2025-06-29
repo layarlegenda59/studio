@@ -14,10 +14,10 @@ import {
 import { Input } from '@/components/ui/input';
 import React, { useState, type FormEvent, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import type { Product } from '@/lib/types';
+import type { Product, AdminTopBanner } from '@/lib/types';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
-
+import { mockTopBanners, TOP_BANNERS_KEY } from '@/lib/adminMockData';
 
 interface SubCategoryItem {
   label: string;
@@ -171,6 +171,13 @@ interface HeaderProps {
   onToggleCartFromWishlist: (productId: string) => void;
 }
 
+const iconMap = {
+  ShieldCheck,
+  Rocket,
+  Tag,
+};
+
+
 export default function Header({ 
   wishlistItems, 
   onRemoveFromWishlist,
@@ -184,10 +191,25 @@ export default function Header({
   let hoverTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
 
   const [isWishlistPopoverOpen, setIsWishlistPopoverOpen] = useState(false);
+  const [topBanners, setTopBanners] = useState<AdminTopBanner[]>(mockTopBanners);
 
   const textLogoUrl = "https://ggbivmpazczpgtmnfwfs.supabase.co/storage/v1/object/sign/material/Tulisan%20goodstock-x.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jYjkzYjM4Zi1kOGJhLTRmYTEtYmM0ZC00MWUzOGU4YTZhNzgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYXRlcmlhbC9UdWxpc2FuIGdvb2RzdG9jay14LnBuZyIsImlhdCI6MTc1MDIyMDkwMSwiZXhwIjoxNzgxNzU2OTAxfQ.8YG6sCtxclkFeZuwzQqCFaWzjhQtOYbnJRWt-leGlCE";
   const iconLogoUrl = "https://ggbivmpazczpgtmnfwfs.supabase.co/storage/v1/object/sign/material/Logo%20goodstock-x%20(transparan)%20(1).png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jYjkzYjM4Zi1kOGJhLTRmYTEtYmM0ZC00MWUzOGU4YTZhNzgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYXRlcmlhbC9Mb2dvIGdvb2RzdG9jay14ICh0cmFuc3BhcmFuKSAoMSkucG5nIiwiaWF0IjoxNzUwMzIwODEwLCJleHAiOjE3ODE4NTY4MTB9.14Cw5nlZ5gYYOmWPUIWZU_bJwyvi1ipFzvuZF72y24A";
 
+  useEffect(() => {
+    try {
+      const savedBannersJSON = localStorage.getItem(TOP_BANNERS_KEY);
+      if (savedBannersJSON) {
+        const savedBanners = JSON.parse(savedBannersJSON);
+        if (Array.isArray(savedBanners) && savedBanners.length > 0) {
+          setTopBanners(savedBanners);
+        }
+      }
+    } catch (error) {
+      console.error("Gagal memuat teks banner dari localStorage", error);
+      // Fallback to mock data is already handled by initial state
+    }
+  }, []);
 
   const handleMouseEnter = (label: string) => {
     if (hoverTimeoutRef.current) {
@@ -219,18 +241,16 @@ export default function Header({
       {/* Top Banner Section */}
       <div className="bg-muted text-muted-foreground py-2 px-4 text-xs border-b border-border/40">
         <div className="container mx-auto flex flex-wrap items-center justify-center md:justify-between gap-x-6 gap-y-1">
-          <Link href="#" className="flex items-center gap-1.5 hover:text-primary transition-colors">
-            <ShieldCheck className="h-3.5 w-3.5" />
-            <span>Gratis Pengembalian | S&K Berlaku</span>
-          </Link>
-          <Link href="#" className="hidden md:flex items-center gap-1.5 hover:text-primary transition-colors">
-            <Rocket className="h-3.5 w-3.5" />
-            <span>Pengiriman Cepat & Gratis Ongkir</span>
-          </Link>
-          <Link href="#" className="flex items-center gap-1.5 hover:text-primary transition-colors">
-            <Tag className="h-3.5 w-3.5" />
-            <span>Dapatkan Diskon 25% | S&K Berlaku</span>
-          </Link>
+          {topBanners.map((banner) => {
+            const IconComponent = iconMap[banner.icon];
+            const desktopClasses = banner.id === 'banner2' ? 'hidden md:flex' : 'flex';
+            return (
+              <Link key={banner.id} href={banner.link} className={cn(desktopClasses, "items-center gap-1.5 hover:text-primary transition-colors")}>
+                {IconComponent && <IconComponent className="h-3.5 w-3.5" />}
+                <span>{banner.text}</span>
+              </Link>
+            )
+          })}
         </div>
       </div>
       

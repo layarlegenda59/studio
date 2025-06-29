@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -7,7 +8,7 @@ import React, { useState, useEffect } from 'react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Home, LogOut, Package, Percent, LineChart, CreditCard, MessageCircle, Settings, LayoutDashboard, Users, Palette, ShoppingBag, ChevronDown } from 'lucide-react';
+import { Home, LogOut, Package, Percent, LineChart, CreditCard, MessageCircle, Settings, LayoutDashboard, Users, Palette, ShoppingBag, ChevronDown, Type } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
   Accordion,
@@ -38,6 +39,7 @@ const mainNavItems = [
     subItems: [
       { href: '/admin/promo/banner', label: 'Banner Homepage' },
       { href: '/admin/promo/diskon', label: 'Kelola Diskon' },
+      { href: '/admin/promo/banner-text', label: 'Teks Banner Atas' },
     ]
   },
   { href: '/admin/pesanan-wa', label: 'Pesanan WhatsApp', icon: MessageCircle },

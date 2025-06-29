@@ -37,6 +37,13 @@ export interface ShippingCost {
 
 // Admin Specific Types
 
+export interface AdminTopBanner {
+  id: string;
+  text: string;
+  icon: 'ShieldCheck' | 'Rocket' | 'Tag';
+  link: string;
+}
+
 export interface AdminStoreSettings {
   name: string;
   email: string;

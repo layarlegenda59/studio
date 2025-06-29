@@ -1,6 +1,16 @@
 
-import type { AdminDashboardData, AdminOrder, AdminSalesDataPoint, AdminCategory, AdminDiscount, ProductPerformance, SearchKeyword, VisitorStats, AdminTransaction, AdminTransactionType, AdminUser, AdminStoreSettings, AdminSettings } from './types';
+import type { AdminDashboardData, AdminOrder, AdminSalesDataPoint, AdminCategory, AdminDiscount, ProductPerformance, SearchKeyword, VisitorStats, AdminTransaction, AdminTransactionType, AdminUser, AdminStoreSettings, AdminSettings, AdminTopBanner } from './types';
 import { mockProducts } from './mockData';
+
+export const TOP_BANNERS_KEY = 'goodstockx_top_banners';
+export const STORE_SETTINGS_KEY = 'goodstockx_store_settings';
+export const ADMIN_SETTINGS_KEY = 'goodstockx_admin_settings';
+
+export let mockTopBanners: AdminTopBanner[] = [
+  { id: 'banner1', text: 'Gratis Pengembalian | S&K Berlaku', icon: 'ShieldCheck', link: '#' },
+  { id: 'banner2', text: 'Pengiriman Cepat & Gratis Ongkir', icon: 'Rocket', link: '#' },
+  { id: 'banner3', text: 'Dapatkan Diskon 25% | S&K Berlaku', icon: 'Tag', link: '#' },
+];
 
 export let mockStoreSettings: AdminStoreSettings = {
   name: 'Goodstock-X',
