@@ -229,6 +229,12 @@ export default function Home() {
          // Using ID as a proxy for recency, assuming higher ID is newer
         productsToFilter.sort((a, b) => parseInt(b.id.replace('prod', '')) - parseInt(a.id.replace('prod', '')));
         break;
+      case 'alpha-asc':
+        productsToFilter.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      case 'alpha-desc':
+        productsToFilter.sort((a, b) => b.name.localeCompare(a.name));
+        break;
       case 'popular':
       default:
         productsToFilter.sort((a, b) => b.salesCount - a.salesCount);
@@ -398,6 +404,8 @@ export default function Home() {
   const sortOptions = [
     { value: 'popular', label: 'Paling Populer' },
     { value: 'newest', label: 'Terbaru' },
+    { value: 'alpha-asc', label: 'Nama (A-Z)' },
+    { value: 'alpha-desc', label: 'Nama (Z-A)' },
     { value: 'price-asc', label: 'Harga Terendah' },
     { value: 'price-desc', label: 'Harga Tertinggi' },
   ];

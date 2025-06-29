@@ -111,7 +111,7 @@ export default function Footer() {
                     </DialogContent>
                   </Dialog>
                 </li>
-                <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">Product Index</Link></li>
+                <li><Link href="/?sort=alpha-asc#products" className="text-gray-400 hover:text-white hover:underline">Product Index</Link></li>
                 <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">Konfirmasi Transfer</Link></li>
                 <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">Hubungi Kami</Link></li>
                 <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">Status Order</Link></li>
