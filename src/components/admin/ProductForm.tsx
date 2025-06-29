@@ -28,6 +28,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import type { Product } from "@/lib/types";
 import { mockProducts } from "@/lib/mockData";
+import { mockCategories } from "@/lib/adminMockData";
 import Link from 'next/link';
 
 const allSizes = [
@@ -47,7 +48,7 @@ const allSizes = [
   if (b === "One Size") return -1;
   return a.localeCompare(b); 
 });
-const allCategories = Array.from(new Set(mockProducts.map(p => p.category)));
+const allCategories = mockCategories.map(c => c.name);
 const allGenders = Array.from(new Set(mockProducts.map(p => p.gender)));
 
 const productFormSchema = z.object({

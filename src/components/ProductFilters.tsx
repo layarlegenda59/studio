@@ -10,9 +10,9 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import React, { useState, useEffect, useImperativeHandle, forwardRef, useMemo } from 'react';
-import { mockProducts } from "@/lib/mockData";
+import { mockCategories } from "@/lib/adminMockData";
 
-const allCategories = ["Sepatu", "Tas", "Pakaian"];
+const allCategories = mockCategories.map(c => c.name);
 const allSizes = [
   "S", "M", "L", "XL",
   "35", "36", "37", "37.5", "38", "38.5", "39", "40", "41", "42", "43", "44", "45", "46.5", "47",
