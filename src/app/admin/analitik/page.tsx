@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import type { TooltipProps } from 'recharts';
-import { BarChart, Bar, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
+import { BarChart, Bar, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid, LabelList } from 'recharts';
 import { ChartContainer } from "@/components/ui/chart";
 import type { ChartConfig } from "@/components/ui/chart";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -39,6 +39,42 @@ const CustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) =
     );
   }
   return null;
+};
+
+// Custom Label for inside the bar
+const renderCustomizedLabel = (props: any) => {
+    const { x, y, width, height, value } = props;
+    
+    // Don't show label if bar is too narrow for any text
+    if (width < 50) {
+        return null;
+    }
+
+    // A rough approximation of character width to decide on truncation.
+    const charWidth = 6.5; // for a 12px font
+    const maxChars = Math.floor((width - 16) / charWidth); // leave 8px padding on each side
+
+    if (maxChars < 4) { // if can't even fit a few chars, don't show
+        return null;
+    }
+
+    const label = value.length > maxChars 
+        ? value.substring(0, maxChars - 3) + '...' 
+        : value;
+
+    return (
+        <text 
+            x={x + width / 2} 
+            y={y + height / 2} 
+            fill="#fff" 
+            textAnchor="middle" 
+            dominantBaseline="middle"
+            fontSize="12px"
+            fontWeight="500"
+        >
+            {label}
+        </text>
+    );
 };
 
 
@@ -90,13 +126,14 @@ export default function AdminAnalitikPage() {
           <CardContent className="h-[250px]">
             <ChartContainer config={topProductsChartConfig}>
                 <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={mockTopProducts} layout="vertical">
+                    <BarChart data={mockTopProducts} layout="vertical" margin={{ left: 10, right: 40 }}>
                         <CartesianGrid strokeDasharray="3 3" horizontal={false} />
                         <YAxis 
                             dataKey="rankLabel"
                             type="category" 
                             tickLine={false}
                             axisLine={false}
+                            width={30}
                             tick={{ fontSize: 14, fill: 'hsl(var(--muted-foreground))' }}
                         />
                         <XAxis type="number" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} allowDecimals={false} />
@@ -104,7 +141,9 @@ export default function AdminAnalitikPage() {
                             cursor={{ fill: 'hsl(var(--muted))' }}
                             content={<CustomTooltip />}
                         />
-                        <Bar dataKey="sales" fill="var(--color-sales)" radius={[0, 4, 4, 0]} barSize={40} />
+                        <Bar dataKey="sales" fill="var(--color-sales)" radius={[0, 4, 4, 0]} barSize={60}>
+                            <LabelList dataKey="name" content={renderCustomizedLabel} />
+                        </Bar>
                     </BarChart>
                 </ResponsiveContainer>
             </ChartContainer>
