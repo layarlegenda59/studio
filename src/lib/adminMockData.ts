@@ -1,5 +1,5 @@
 
-import type { AdminDashboardData, AdminOrder, AdminSalesDataPoint, AdminCategory, AdminDiscount, ProductPerformance, SearchKeyword, VisitorStats, AdminTransaction, AdminTransactionType } from './types';
+import type { AdminDashboardData, AdminOrder, AdminSalesDataPoint, AdminCategory, AdminDiscount, ProductPerformance, SearchKeyword, VisitorStats, AdminTransaction, AdminTransactionType, AdminUser } from './types';
 import { mockProducts } from './mockData';
 
 export const mockAdminDashboardData: AdminDashboardData = {
@@ -157,3 +157,13 @@ export const mockVisitorStats: VisitorStats = {
   returning: 9330,
   conversionRate: 2.5,
 };
+
+// --- NEW USER DATA ---
+export let mockUsers: AdminUser[] = [
+  { id: 'user-1', name: 'Admin Utama', email: 'admin@example.com', role: 'Admin', joinDate: '2024-01-15' },
+  { id: 'user-2', name: 'Ahmad Dahlan', email: 'ahmad.d@example.com', role: 'Pelanggan', joinDate: '2024-07-28' },
+  { id: 'user-3', name: 'Bunga Citra', email: 'bunga.c@example.com', role: 'Pelanggan', joinDate: '2024-07-28' },
+  { id: 'user-4', name: 'Charlie Van Houten', email: 'charlie.vh@example.com', role: 'Pelanggan', joinDate: '2024-07-27' },
+  { id: 'user-5', name: 'Diana Ross', email: 'diana.r@example.com', role: 'Pelanggan', joinDate: '2024-07-27' },
+  { id: 'user-6', name: 'Eko Patrio', email: 'eko.p@example.com', role: 'Pelanggan', joinDate: '2024-07-26' },
+];

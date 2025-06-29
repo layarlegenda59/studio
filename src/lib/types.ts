@@ -37,6 +37,14 @@ export interface ShippingCost {
 
 // Admin Specific Types
 
+export interface AdminUser {
+  id: string;
+  name: string;
+  email: string;
+  role: 'Admin' | 'Pelanggan';
+  joinDate: string; // ISO string
+}
+
 export type AdminTransactionType = 'Pendapatan' | 'Pengeluaran';
 
 export interface AdminTransaction {
