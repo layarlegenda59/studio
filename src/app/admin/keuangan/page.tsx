@@ -8,6 +8,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { format } from 'date-fns';
 import { id as localeID } from 'date-fns/locale';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -165,6 +167,68 @@ export default function AdminKeuanganPage() {
     setTransactionToDelete(null);
   };
 
+  const handleExportPDF = () => {
+    const doc = new jsPDF();
+    const tableTitle = `Riwayat Transaksi (${activeTab.charAt(0).toUpperCase() + activeTab.slice(1)})`;
+    
+    // Main Title
+    doc.setFontSize(18);
+    doc.text('Laporan Keuangan - Goodstock-X', 14, 22);
+
+    // Subtitle with date
+    doc.setFontSize(11);
+    doc.setTextColor(100);
+    doc.text(`Diekspor pada: ${format(new Date(), 'dd MMMM yyyy', { locale: localeID })}`, 14, 29);
+
+    // Summary Section
+    doc.setFontSize(12);
+    autoTable(doc, {
+        startY: 40,
+        head: [['Ringkasan Keuangan', '']],
+        body: [
+            ['Total Pendapatan', formatCurrency(totalRevenue)],
+            ['Total Pengeluaran', formatCurrency(totalExpenses)],
+            ['Laba Bersih', formatCurrency(netProfit)],
+        ],
+        theme: 'grid',
+        headStyles: { fontStyle: 'bold', fillColor: [241, 245, 249] }, // bg-slate-100
+        columnStyles: {
+            1: { halign: 'right' }
+        }
+    });
+
+    const finalY = (doc as any).lastAutoTable.finalY || 60;
+
+    // Transaction Table
+    autoTable(doc, {
+      startY: finalY + 15,
+      head: [
+        [{ content: tableTitle, colSpan: 5, styles: { halign: 'left', fontStyle: 'bold', fillColor: [255, 255, 255], textColor: [0,0,0] } }],
+        ['Tanggal', 'Deskripsi', 'Kategori', 'Jumlah (Rp)']
+      ],
+      body: filteredTransactions.map(t => [
+        format(new Date(t.date), 'dd/MM/yy'),
+        t.description,
+        t.category,
+        { content: `${t.type === 'Pendapatan' ? '+' : '-'} ${t.amount.toLocaleString('id-ID')}`, styles: { halign: 'right' } }
+      ]),
+      headStyles: { fillColor: [31, 41, 55] }, // bg-gray-700
+      didParseCell: function (data) {
+        if (data.section === 'body' && data.column.index === 3) {
+             const transaction = filteredTransactions[data.row.index];
+             if (transaction.type === 'Pendapatan') {
+                 data.cell.styles.textColor = [22, 163, 74]; // green-600
+             } else {
+                 data.cell.styles.textColor = [220, 38, 38]; // red-600
+             }
+             data.cell.styles.fontStyle = 'bold';
+        }
+      }
+    });
+
+    doc.save(`Laporan_Keuangan_GoodstockX_${format(new Date(), 'yyyyMMdd')}.pdf`);
+  };
+
   return (
     <>
       <div className="space-y-8">
@@ -214,8 +278,8 @@ export default function AdminKeuanganPage() {
                     <CardDescription>Input manual untuk pengeluaran dan ekspor laporan.</CardDescription>
                   </div>
                   <div className="flex gap-2">
-                    <Button variant="outline" disabled>
-                        <FileText className="mr-2 h-4 w-4" /> Ekspor (Segera Hadir)
+                    <Button variant="outline" onClick={handleExportPDF}>
+                        <FileText className="mr-2 h-4 w-4" /> Ekspor PDF
                     </Button>
                     <Button onClick={() => handleOpenForm(null)}>
                         <PlusCircle className="mr-2 h-4 w-4" /> Tambah Pengeluaran
