@@ -32,24 +32,14 @@ const allSizes = [
 });
 
 
-const providedBrandsList = [
-  "adidas", "nike", "Air Jordan", "reebok", "New Balance", "puma", "asics", "Diadora", "Umbro", "Fila",
-  "GAP", "Uniqlo", "onitsuka tiger", "under armour", "Salomon", "On Cloud", "Li-Ning", "yonex", "mizuno",
-  "columbia", "timberland", "Dr. Martens", "Clarks", "Converse", "Vans", "Skechers", "lacoste",
-  "Stone Island", "Saucony", "K-Swiss", "Kenzo", "Levis", "balenciaga", "Fendi", "Louis Vuitton",
-  "Coach", "Bally", "Versace", "Ferragamo", "Tumi", "Gucci", "Dior", "prada", "Givenchy", "Hermes",
-  "H&M", "The North Face", "calvin klein", "Ecco", "Burberry", "Carhartt", "Christian Louboutin", "Chanel"
-];
-
-const capitalizeBrandName = (name: string): string => {
-  return name
-    .toLowerCase()
-    .split(' ')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
-};
-
-const allBrands = Array.from(new Set(providedBrandsList.map(brand => capitalizeBrandName(brand.trim())))).filter(Boolean).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
+const allBrands = [
+  "Adidas", "Air Jordan", "Asics", "Bally", "Balenciaga", "Burberry", "Calvin Klein", "Carhartt", "Chanel", 
+  "Christian Louboutin", "Clarks", "Coach", "Columbia", "Converse", "Diadora", "Dior", "Dr. Martens", "Ecco", 
+  "Fendi", "Ferragamo", "Fila", "Gap", "Givenchy", "Gucci", "H&m", "Hermes", "K-swiss", "Kenzo", "Lacoste", 
+  "Levis", "Li-ning", "Louis Vuitton", "Mizuno", "New Balance", "Nike", "On Cloud", "Onitsuka Tiger", "Prada", 
+  "Puma", "Reebok", "Salomon", "Saucony", "Skechers", "Stone Island", "The North Face", "Timberland", "Tumi", 
+  "Umbro", "Under Armour", "Uniqlo", "Vans", "Versace", "Yonex"
+].sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
 
 const defaultMaxPriceValue = 2000000;
 

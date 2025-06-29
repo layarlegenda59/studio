@@ -5,7 +5,6 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { mockProducts } from '@/lib/mockData';
 import type { Product } from '@/lib/types';
 import { Separator } from '@/components/ui/separator';
 
@@ -17,6 +16,15 @@ const capitalizeBrandName = (name: string): string => {
     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ');
 };
+
+const allBrands = [
+  "Adidas", "Air Jordan", "Asics", "Bally", "Balenciaga", "Burberry", "Calvin Klein", "Carhartt", "Chanel", 
+  "Christian Louboutin", "Clarks", "Coach", "Columbia", "Converse", "Diadora", "Dior", "Dr. Martens", "Ecco", 
+  "Fendi", "Ferragamo", "Fila", "Gap", "Givenchy", "Gucci", "H&m", "Hermes", "K-swiss", "Kenzo", "Lacoste", 
+  "Levis", "Li-ning", "Louis Vuitton", "Mizuno", "New Balance", "Nike", "On Cloud", "Onitsuka Tiger", "Prada", 
+  "Puma", "Reebok", "Salomon", "Saucony", "Skechers", "Stone Island", "The North Face", "Timberland", "Tumi", 
+  "Umbro", "Under Armour", "Uniqlo", "Vans", "Versace", "Yonex"
+].sort((a,b) => a.localeCompare(b));
 
 
 export default function BrandsIndexPage() {
@@ -39,8 +47,6 @@ export default function BrandsIndexPage() {
       return newSet;
     });
   };
-
-  const allBrands = Array.from(new Set(mockProducts.flatMap(p => p.brand ? [capitalizeBrandName(p.brand)] : []))).sort((a,b) => a.localeCompare(b));
 
   const groupedBrands = allBrands.reduce((acc, brand) => {
     const firstLetter = brand[0].toUpperCase();
