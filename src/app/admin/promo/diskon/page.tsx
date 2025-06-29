@@ -62,10 +62,6 @@ export default function AdminPromoDiskonPage() {
     const numericValue = id === 'value' || id === 'minPurchase' ? Number(value) || 0 : value;
     setFormData(prev => ({ ...prev, [id]: numericValue }));
   };
-
-  const handleSelectChange = (id: 'type' | 'status', value: string) => {
-    setFormData(prev => ({...prev, [id]: value}));
-  }
   
   const handleDateChange = (id: 'startDate' | 'endDate', date: Date | undefined) => {
     if (date) {
@@ -205,7 +201,9 @@ export default function AdminPromoDiskonPage() {
                <div className="space-y-2">
                   <Label htmlFor="type">Tipe Diskon</Label>
                    <Select 
-                      onValueChange={(value) => handleSelectChange('type', value)} 
+                      onValueChange={(value: 'percentage' | 'fixed') => {
+                        setFormData(prev => ({ ...prev, type: value }));
+                      }} 
                       value={formData.type}
                     >
                       <SelectTrigger><SelectValue placeholder="Pilih tipe diskon" /></SelectTrigger>
@@ -250,7 +248,9 @@ export default function AdminPromoDiskonPage() {
                 <div className="space-y-2">
                   <Label htmlFor="status">Status</Label>
                    <Select 
-                      onValueChange={(value) => handleSelectChange('status', value)}
+                      onValueChange={(value: "Aktif" | "Tidak Aktif" | "Terjadwal") => {
+                          setFormData(prev => ({...prev, status: value}));
+                      }}
                       value={formData.status}
                     >
                       <SelectTrigger><SelectValue placeholder="Pilih status" /></SelectTrigger>
@@ -293,4 +293,3 @@ export default function AdminPromoDiskonPage() {
     </>
   );
 }
-
