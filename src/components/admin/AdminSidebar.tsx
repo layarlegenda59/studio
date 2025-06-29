@@ -16,6 +16,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
+import { useMounted } from '@/hooks/use-mounted';
 
 const iconLogoUrl = "https://ggbivmpazczpgtmnfwfs.supabase.co/storage/v1/object/sign/material/Logo%20goodstock-x%20(transparan)%20(1).png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jYjkzYjM4Zi1kOGJhLTRmYTEtYmM0ZC00MWUzOGU4YTZhNzgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYXRlcmlhbC9Mb2dvIGdvb2RzdG9jay14ICh0cmFuc3BhcmFuKSAoMSkucG5nIiwiaWF0IjoxNzUwMzIwODEwLCJleHAiOjE3ODE4NTY4MTB9.14Cw5nlZ5gYYOmWPUIWZU_bJwyvi1ipFzvuZF72y24A";
 
@@ -59,13 +60,16 @@ interface AdminSidebarProps {
 const SidebarNavigation = ({ onLinkClick }: { onLinkClick?: () => void }) => {
     const pathname = usePathname();
     const [openSubMenus, setOpenSubMenus] = useState<string[]>([]);
+    const isMounted = useMounted();
     
     useEffect(() => {
-        const activeSubMenu = mainNavItems.find(item => item.basePath && pathname.startsWith(item.basePath));
-        if (activeSubMenu?.basePath) {
-            setOpenSubMenus(prev => [...new Set([...prev, activeSubMenu.basePath!])]);
+        if (isMounted) {
+            const activeSubMenu = mainNavItems.find(item => item.basePath && pathname.startsWith(item.basePath));
+            if (activeSubMenu?.basePath) {
+                setOpenSubMenus(prev => [...new Set([...prev, activeSubMenu.basePath!])]);
+            }
         }
-    }, [pathname]);
+    }, [pathname, isMounted]);
 
     const NavLink = ({ item }: { item: { href?: string; label: string; icon: React.ElementType } }) => {
         const isActive = item.href ? pathname === item.href : false;
@@ -95,7 +99,7 @@ const SidebarNavigation = ({ onLinkClick }: { onLinkClick?: () => void }) => {
                     {mainNavItems.map((item) => (
                         item.subItems ? (
                             <AccordionItem value={item.basePath!} key={item.label} className="border-b-0">
-                                <AccordionTrigger className={cn("hover:no-underline rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground", pathname.startsWith(item.basePath!) && "bg-accent text-accent-foreground")}>
+                                <AccordionTrigger className={cn("hover:no-underline rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground", pathname.startsWith(item.basePath!) && "bg-accent text-accent-foreground text-accent-foreground")}>
                                     <div className="flex items-center">
                                         <item.icon className="mr-2 h-4 w-4" />
                                         {item.label}
