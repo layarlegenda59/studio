@@ -1,3 +1,4 @@
+
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -71,6 +72,12 @@ interface ProductFormProps {
   product?: Product;
 }
 
+// Helper function to format number with dots
+const formatCurrency = (value: number | undefined | null): string => {
+  if (value === undefined || value === null || isNaN(value)) return "";
+  return new Intl.NumberFormat('id-ID').format(value);
+};
+
 export default function ProductForm({ product }: ProductFormProps) {
   const router = useRouter();
   const { toast } = useToast();
@@ -125,6 +132,7 @@ export default function ProductForm({ product }: ProductFormProps) {
 
     // Redirect back to the product list
     router.push('/admin/produk');
+    router.refresh();
   }
 
   return (
@@ -244,7 +252,16 @@ export default function ProductForm({ product }: ProductFormProps) {
                             <FormItem>
                             <FormLabel>Harga Asli</FormLabel>
                             <FormControl>
-                                <Input type="number" placeholder="500000" {...field} />
+                                <Input 
+                                  type="text"
+                                  placeholder="500.000" 
+                                  {...field}
+                                  value={formatCurrency(field.value)}
+                                  onChange={(e) => {
+                                      const cleanedValue = e.target.value.replace(/\D/g, '');
+                                      field.onChange(Number(cleanedValue));
+                                  }}
+                                />
                             </FormControl>
                             <FormMessage />
                             </FormItem>
@@ -257,7 +274,20 @@ export default function ProductForm({ product }: ProductFormProps) {
                             <FormItem>
                             <FormLabel>Harga Promo (Opsional)</FormLabel>
                             <FormControl>
-                                <Input type="number" placeholder="399000" {...field} />
+                                <Input 
+                                  type="text" 
+                                  placeholder="399.000" 
+                                  {...field}
+                                  value={formatCurrency(field.value)}
+                                  onChange={(e) => {
+                                      const cleanedValue = e.target.value.replace(/\D/g, '');
+                                      if (cleanedValue === '') {
+                                          field.onChange(undefined);
+                                      } else {
+                                          field.onChange(Number(cleanedValue));
+                                      }
+                                  }}
+                                />
                             </FormControl>
                             <FormMessage />
                             </FormItem>
@@ -306,7 +336,7 @@ export default function ProductForm({ product }: ProductFormProps) {
                                         checked={field.value?.includes(item)}
                                         onCheckedChange={(checked) => {
                                         return checked
-                                            ? field.onChange([...field.value, item])
+                                            ? field.onChange([...(field.value || []), item])
                                             : field.onChange(
                                                 field.value?.filter(
                                                 (value) => value !== item
