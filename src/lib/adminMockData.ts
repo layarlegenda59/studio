@@ -151,7 +151,7 @@ mockAdminDashboardData.financialOverview = calculateFinancials();
 // Mock data for Analytics Page
 export const mockTopProducts: ProductPerformance[] = [...mockProducts]
   .sort((a, b) => b.salesCount - a.salesCount)
-  .slice(0, 5)
+  .slice(0, 4)
   .map(p => ({ name: p.name, sales: p.salesCount, views: p.salesCount * (Math.floor(Math.random() * 5) + 3) }));
 
 export const mockSearchKeywords: SearchKeyword[] = [
