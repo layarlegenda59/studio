@@ -10,27 +10,6 @@ import { Separator } from '@/components/ui/separator';
 import type { Product } from '@/lib/types';
 import { Users, Target, Rocket, ShieldCheck } from 'lucide-react';
 
-const teamMembers = [
-  {
-    name: 'John Doe',
-    role: 'Founder & CEO',
-    imageUrl: 'https://placehold.co/300x300.png',
-    dataAiHint: 'portrait person'
-  },
-  {
-    name: 'Jane Smith',
-    role: 'Head of Curation',
-    imageUrl: 'https://placehold.co/300x300.png',
-    dataAiHint: 'portrait person'
-  },
-  {
-    name: 'Alex Johnson',
-    role: 'Marketing Director',
-    imageUrl: 'https://placehold.co/300x300.png',
-    dataAiHint: 'portrait person'
-  },
-];
-
 const values = [
     {
         icon: Rocket,
@@ -102,37 +81,6 @@ export default function AboutUsPage() {
                   <CardContent>
                     <p className="text-muted-foreground">{value.description}</p>
                   </CardContent>
-                </Card>
-              ))}
-            </div>
-          </section>
-
-          {/* Meet the Team Section */}
-          <section className="mt-16 md:mt-24 bg-secondary/20 py-16 rounded-xl">
-            <div className="text-center max-w-3xl mx-auto px-4">
-                <h2 className="text-3xl font-headline font-semibold text-primary">Temui Tim Kami</h2>
-                <Separator className="w-24 h-1 mx-auto my-4 bg-primary"/>
-                <p className="text-lg text-muted-foreground leading-relaxed mb-12">
-                Kami adalah sekelompok individu yang bersemangat dan berdedikasi untuk memberikan pengalaman fashion terbaik bagi Anda.
-                </p>
-            </div>
-            <div className="container mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 px-4">
-              {teamMembers.map((member, index) => (
-                <Card key={index} className="overflow-hidden text-center transition-transform duration-300 hover:scale-105 hover:shadow-2xl">
-                    <div className="aspect-square">
-                        <Image
-                            src={member.imageUrl}
-                            alt={`Foto ${member.name}`}
-                            width={300}
-                            height={300}
-                            className="object-cover w-full h-full"
-                            data-ai-hint={member.dataAiHint}
-                        />
-                    </div>
-                  <CardHeader>
-                    <CardTitle className="text-xl font-semibold">{member.name}</CardTitle>
-                    <p className="text-sm text-primary font-medium">{member.role}</p>
-                  </CardHeader>
                 </Card>
               ))}
             </div>
