@@ -4,7 +4,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Sidebar,
   SidebarHeader,
@@ -60,32 +60,24 @@ const secondaryNavItems = [
 
 export default function AdminSidebar() {
   const pathname = usePathname();
-  const [openSubMenus, setOpenSubMenus] = useState<string[]>([]);
+  const [openSubMenu, setOpenSubMenu] = useState<string | null>(null);
 
-  const isSubItemActive = (basePath: string) => {
+  const isPathActive = (basePath: string) => {
     return pathname.startsWith(basePath);
   };
 
   useEffect(() => {
     // Automatically open the parent submenu if the current path is one of its children
-    const activeSubMenu = mainNavItems.find(item => item.basePath && isSubItemActive(item.basePath));
+    const activeSubMenu = mainNavItems.find(item => item.basePath && isPathActive(item.basePath));
     if (activeSubMenu) {
-      setOpenSubMenus(currentOpen => {
-        if (currentOpen.includes(activeSubMenu.basePath!)) {
-          return currentOpen;
-        }
-        return [activeSubMenu.basePath!];
-      });
+      setOpenSubMenu(activeSubMenu.basePath);
+    } else {
+        setOpenSubMenu(null);
     }
   }, [pathname]);
 
   const toggleSubMenu = (basePath: string) => {
-    setOpenSubMenus(currentOpen => {
-      if (currentOpen.includes(basePath)) {
-        return currentOpen.filter(p => p !== basePath); // Close it
-      }
-      return [basePath]; // Open it and close others
-    });
+    setOpenSubMenu(currentOpen => (currentOpen === basePath ? null : basePath));
   };
 
   return (
@@ -104,13 +96,12 @@ export default function AdminSidebar() {
       <SidebarContent className="flex-grow p-2 space-y-1">
         <SidebarMenu>
           {mainNavItems.map((item) => {
-            const isSubMenuOpen = !!item.basePath && openSubMenus.includes(item.basePath);
-            return (
+            if (item.subItems && item.basePath) {
+              const isSubMenuOpen = openSubMenu === item.basePath;
+              return (
                 <SidebarMenuItem key={item.label}>
-                {item.subItems && item.basePath ? (
-                    <>
                     <SidebarMenuButton 
-                        isActive={isSubItemActive(item.basePath) && !isSubMenuOpen}
+                        isActive={isPathActive(item.basePath)}
                         className="justify-between"
                         onClick={() => toggleSubMenu(item.basePath!)}
                     >
@@ -139,17 +130,19 @@ export default function AdminSidebar() {
                         ))}
                         </SidebarMenuSub>
                     )}
-                    </>
-                ) : (
-                    <SidebarMenuButton asChild isActive={pathname === item.href}>
-                    <Link href={item.href!}>
-                        <item.icon className="h-4 w-4" />
-                        <span className="group-data-[collapsible=icon]:hidden">{item.label}</span>
-                    </Link>
-                    </SidebarMenuButton>
-                )}
                 </SidebarMenuItem>
-            )
+              );
+            }
+            return (
+              <SidebarMenuItem key={item.label}>
+                <SidebarMenuButton asChild isActive={pathname === item.href}>
+                  <Link href={item.href!}>
+                      <item.icon className="h-4 w-4" />
+                      <span className="group-data-[collapsible=icon]:hidden">{item.label}</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            );
           })}
         </SidebarMenu>
         
