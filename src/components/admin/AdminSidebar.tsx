@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -110,7 +111,7 @@ const SidebarNavigation = ({ onLinkClick }: { onLinkClick?: () => void }) => {
                                                 size="sm"
                                                 className={cn(
                                                     "w-full justify-start text-muted-foreground",
-                                                    pathname === subItem.href && "text-accent-foreground font-semibold"
+                                                    pathname === subItem.href && "text-primary font-semibold"
                                                 )}
                                                 onClick={onLinkClick}
                                             >
