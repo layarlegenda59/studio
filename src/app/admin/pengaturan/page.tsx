@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import Link from 'next/link';
+import React, { useEffect } from 'react';
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -33,11 +34,17 @@ const settingsFormSchema = z.object({
 
 type SettingsFormValues = z.infer<typeof settingsFormSchema>;
 
+// Define keys for localStorage to avoid typos
+const STORE_SETTINGS_KEY = 'goodstockx_store_settings';
+const ADMIN_SETTINGS_KEY = 'goodstockx_admin_settings';
+
+
 export default function AdminPengaturanPage() {
   const { toast } = useToast();
 
   const form = useForm<SettingsFormValues>({
     resolver: zodResolver(settingsFormSchema),
+    // Set initial default values from mock, which will be overridden by localStorage on mount
     defaultValues: {
       storeName: mockStoreSettings.name,
       storeEmail: mockStoreSettings.email,
@@ -47,19 +54,75 @@ export default function AdminPengaturanPage() {
     },
   });
 
+  // Load settings from localStorage on component mount
+  useEffect(() => {
+    try {
+      const savedStoreSettings = localStorage.getItem(STORE_SETTINGS_KEY);
+      const savedAdminSettings = localStorage.getItem(ADMIN_SETTINGS_KEY);
+      
+      const currentValues = { ...form.getValues() };
+
+      if (savedStoreSettings) {
+        const parsedStoreSettings = JSON.parse(savedStoreSettings);
+        currentValues.storeName = parsedStoreSettings.name || currentValues.storeName;
+        currentValues.storeEmail = parsedStoreSettings.email || currentValues.storeEmail;
+        currentValues.storePhone = parsedStoreSettings.phone || currentValues.storePhone;
+        currentValues.storeAddress = parsedStoreSettings.address || currentValues.storeAddress;
+      }
+      
+      if (savedAdminSettings) {
+         const parsedAdminSettings = JSON.parse(savedAdminSettings);
+         // Use `??` to handle the case where receiveNotifications is `false` (which is a valid value)
+         currentValues.receiveNotifications = parsedAdminSettings.receiveNotifications ?? currentValues.receiveNotifications;
+      }
+
+      // `form.reset` updates the form fields with the loaded values
+      form.reset(currentValues);
+
+    } catch (error) {
+      console.error("Failed to load settings from localStorage", error);
+      toast({
+        title: "Gagal Memuat Pengaturan",
+        description: "Tidak dapat memuat pengaturan yang tersimpan.",
+        variant: "destructive",
+      });
+    }
+  }, [form, toast]);
+
+
   function onSubmit(data: SettingsFormValues) {
-    // In a real app, you would send this data to your backend.
-    // Here, we just update the mock data.
-    mockStoreSettings.name = data.storeName;
-    mockStoreSettings.email = data.storeEmail;
-    mockStoreSettings.phone = data.storePhone;
-    mockStoreSettings.address = data.storeAddress;
-    mockAdminSettings.receiveNotifications = data.receiveNotifications;
-    
-    toast({
-      title: "Pengaturan Disimpan",
-      description: "Pengaturan umum toko telah berhasil diperbarui.",
-    });
+    try {
+        // Prepare data for localStorage by splitting it into logical groups
+        const storeSettingsToSave = {
+            name: data.storeName,
+            email: data.storeEmail,
+            phone: data.storePhone,
+            address: data.storeAddress,
+        };
+        const adminSettingsToSave = {
+            receiveNotifications: data.receiveNotifications,
+        };
+
+        // Save to localStorage
+        localStorage.setItem(STORE_SETTINGS_KEY, JSON.stringify(storeSettingsToSave));
+        localStorage.setItem(ADMIN_SETTINGS_KEY, JSON.stringify(adminSettingsToSave));
+
+        // Also update the in-memory mock data for the current session for consistency
+        Object.assign(mockStoreSettings, storeSettingsToSave);
+        Object.assign(mockAdminSettings, adminSettingsToSave);
+        
+        toast({
+          title: "Pengaturan Disimpan",
+          description: "Pengaturan umum toko telah berhasil diperbarui.",
+        });
+    } catch (error) {
+        console.error("Failed to save settings to localStorage", error);
+        toast({
+          title: "Gagal Menyimpan",
+          description: "Terjadi kesalahan saat menyimpan pengaturan.",
+          variant: "destructive",
+        });
+    }
   }
 
   return (
