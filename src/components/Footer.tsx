@@ -126,7 +126,7 @@ export default function Footer() {
               <ul className="space-y-2 text-sm">
                 <li><Link href="/about" className="text-gray-400 hover:text-white hover:underline">About Us</Link></li>
                 <li><Link href="/terms-and-conditions" className="text-gray-400 hover:text-white hover:underline">Persyaratan & Ketentuan</Link></li>
-                <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">Kebijakan Privasi</Link></li>
+                <li><Link href="/privacy-policy" className="text-gray-400 hover:text-white hover:underline">Kebijakan Privasi</Link></li>
                 <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">Influencer Program</Link></li>
                 <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">Goodstock-X THREAD</Link></li>
               </ul>
@@ -161,7 +161,7 @@ export default function Footer() {
               <div className="flex flex-col items-center md:flex-row md:space-x-4">
                 <div className="flex flex-col items-center space-y-2 md:flex-row md:space-x-4 md:space-y-0 mb-3 md:mb-0">
                   <Link href="/about" className="hover:text-white hover:underline">Tentang Goodstock-X</Link>
-                  <Link href="#" className="hover:text-white hover:underline">Kebijakan Privasi</Link>
+                  <Link href="/privacy-policy" className="hover:text-white hover:underline">Kebijakan Privasi</Link>
                   <Link href="/terms-and-conditions" className="hover:text-white hover:underline">Persyaratan dan Ketentuan</Link>
                 </div>
                 <p className="text-center md:text-right">&copy; {new Date().getFullYear()} Goodstock-X. All rights reserved.</p>
