@@ -18,6 +18,7 @@ import {
 
 export default function Footer() {
   const [isTutorialOpen, setIsTutorialOpen] = useState(false);
+  const whatsappUrl = "https://wa.me/6281278262893?text=Halo%20Admin%20Goodstock-X%2C%20saya%20ingin%20bertanya...";
 
   return (
     <>
@@ -113,7 +114,7 @@ export default function Footer() {
                 </li>
                 <li><Link href="/product-index" className="text-gray-400 hover:text-white hover:underline">Product Index</Link></li>
                 <li><Link href="/konfirmasi-transfer" className="text-gray-400 hover:text-white hover:underline">Konfirmasi Transfer</Link></li>
-                <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">Hubungi Kami</Link></li>
+                <li><a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white hover:underline">Hubungi Kami</a></li>
                 <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">Status Order</Link></li>
                 <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">Brand di Goodstock-X</Link></li>
               </ul>
@@ -156,7 +157,7 @@ export default function Footer() {
 
           <div className="border-t border-gray-700 pt-8">
             <div className="flex flex-col md:flex-row justify-between items-center text-sm text-gray-400">
-              <p className="mb-4 md:mb-0 text-center md:text-left">Anda punya pertanyaan? Kami siap membantu. <Link href="#" className="hover:text-white hover:underline">Kontak</Link> | <Link href="#" className="hover:text-white hover:underline">Bantuan</Link></p>
+              <p className="mb-4 md:mb-0 text-center md:text-left">Anda punya pertanyaan? Kami siap membantu. <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="hover:text-white hover:underline">Kontak</a> | <Link href="#" className="hover:text-white hover:underline">Bantuan</Link></p>
               <div className="flex flex-col items-center md:flex-row md:space-x-4">
                 <div className="flex flex-col items-center space-y-2 md:flex-row md:space-x-4 md:space-y-0 mb-3 md:mb-0">
                   <Link href="#" className="hover:text-white hover:underline">Tentang Goodstock-X</Link>
