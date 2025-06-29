@@ -1,14 +1,27 @@
 
+"use client";
+
+import React, { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { PlusCircle } from "lucide-react";
 import ProductTable from "@/components/admin/ProductTable";
 import { mockProducts } from "@/lib/mockData";
+import type { Product } from '@/lib/types';
 
 export default function AdminProdukPage() {
-  // In a real app, you would fetch this data from your database.
-  const products = mockProducts;
+  const [products, setProducts] = useState<Product[]>([]);
+
+  const handleDataChange = useCallback(() => {
+    // Force re-render with the latest data from the mutated mock array
+    setProducts([...mockProducts]);
+  }, []);
+
+  useEffect(() => {
+    // Load initial data and ensure it's fresh on mount
+    handleDataChange();
+  }, [handleDataChange]);
 
   return (
     <div className="space-y-8">
@@ -33,7 +46,7 @@ export default function AdminProdukPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <ProductTable products={products} />
+          <ProductTable products={products} onDataChange={handleDataChange} />
         </CardContent>
       </Card>
     </div>

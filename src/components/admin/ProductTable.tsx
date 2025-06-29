@@ -39,11 +39,11 @@ import { mockProducts } from '@/lib/mockData';
 
 interface ProductTableProps {
   products: Product[];
+  onDataChange: () => void;
 }
 
-export default function ProductTable({ products }: ProductTableProps) {
+export default function ProductTable({ products, onDataChange }: ProductTableProps) {
   const { toast } = useToast();
-  const router = useRouter();
   const [productToDelete, setProductToDelete] = useState<Product | null>(null);
 
   const handleDelete = () => {
@@ -61,7 +61,7 @@ export default function ProductTable({ products }: ProductTableProps) {
     });
 
     setProductToDelete(null); // Close dialog
-    router.refresh(); // Refresh the page to show the updated list
+    onDataChange(); // Trigger re-render in parent component
   };
   
   const formatPrice = (price?: number) => {

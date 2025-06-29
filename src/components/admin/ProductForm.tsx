@@ -82,24 +82,25 @@ export default function ProductForm({ product }: ProductFormProps) {
   });
 
   function onSubmit(data: ProductFormValues) {
-    // In a real app, you'd send this to an API. Here, we mutate the mock data.
     if (product) {
       // Editing an existing product
       const productIndex = mockProducts.findIndex(p => p.id === product.id);
       if (productIndex !== -1) {
         mockProducts[productIndex] = {
-          ...mockProducts[productIndex], // Keep old fields like salesCount, id
+          ...mockProducts[productIndex],
           ...data,
+          promoPrice: data.promoPrice || undefined,
         };
       }
     } else {
       // Adding a new product
       const newProduct: Product = {
         id: `prod${Date.now()}`,
-        salesCount: 0, // Default for new products
+        salesCount: 0,
         ...data,
+        promoPrice: data.promoPrice || undefined,
       };
-      mockProducts.unshift(newProduct); // Add to the top of the list
+      mockProducts.unshift(newProduct);
     }
     
     toast({
@@ -107,9 +108,8 @@ export default function ProductForm({ product }: ProductFormProps) {
       description: `Produk "${data.name}" telah berhasil disimpan.`,
     });
 
-    // Redirect back to the product list and refresh the data
+    // Redirect back to the product list
     router.push('/admin/produk');
-    router.refresh();
   }
 
   return (
