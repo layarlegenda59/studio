@@ -29,7 +29,7 @@ export default function OverviewCard({
         <Icon className={cn("h-5 w-5 text-muted-foreground", iconClassName)} />
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-bold text-foreground">{value}</div>
+        <div className="text-xl md:text-2xl font-bold text-foreground">{value}</div>
         {description && <p className="text-xs text-muted-foreground pt-1">{description}</p>}
         {trend && <p className={cn("text-xs pt-1", trendColor)}>{trend}</p>}
       </CardContent>

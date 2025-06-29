@@ -93,37 +93,41 @@ export default function RecentOrdersTable({ orders, onUpdateOrder, onDeleteOrder
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[150px]">Pelanggan</TableHead>
-              <TableHead>Produk</TableHead>
-              <TableHead className="hidden md:table-cell text-right">Total</TableHead>
-              <TableHead className="hidden md:table-cell text-right">Tanggal</TableHead>
-              <TableHead className="text-center">Status</TableHead>
-              <TableHead className="text-right">Aksi</TableHead>
+              <TableHead className="px-2 md:px-4">Pelanggan</TableHead>
+              <TableHead className="px-2 md:px-4">Produk</TableHead>
+              <TableHead className="hidden md:table-cell md:px-4 text-right">Total</TableHead>
+              <TableHead className="hidden md:table-cell md:px-4 text-right">Tanggal</TableHead>
+              <TableHead className="px-2 md:px-4 text-center">Status</TableHead>
+              <TableHead className="px-2 md:px-4 text-right">Aksi</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {orders.map((order) => (
               <TableRow key={order.id}>
-                <TableCell className="font-medium">
-                  {order.customerName}
-                  <a href={`https://wa.me/${order.waNumber}`} target="_blank" rel="noopener noreferrer" className="block text-xs text-muted-foreground hover:text-primary hover:underline">
-                    {order.waNumber}
-                  </a>
+                <TableCell className="p-2 md:p-4 font-medium align-top">
+                  <div className="break-words min-w-[100px]">
+                    {order.customerName}
+                    <a href={`https://wa.me/${order.waNumber}`} target="_blank" rel="noopener noreferrer" className="block text-xs text-muted-foreground hover:text-primary hover:underline break-all">
+                      {order.waNumber}
+                    </a>
+                  </div>
                 </TableCell>
-                <TableCell>
-                  {order.productName}
-                  {order.productDetails && <span className="block text-xs text-muted-foreground">{order.productDetails}</span>}
+                <TableCell className="p-2 md:p-4 align-top">
+                  <div className="break-words min-w-[120px]">
+                    {order.productName}
+                    {order.productDetails && <span className="block text-xs text-muted-foreground">{order.productDetails}</span>}
+                  </div>
                 </TableCell>
-                <TableCell className="hidden md:table-cell text-right font-mono">
+                <TableCell className="hidden md:table-cell md:p-4 text-right font-mono align-top">
                   Rp{order.totalAmount.toLocaleString('id-ID')}
                 </TableCell>
-                <TableCell className="hidden md:table-cell text-right text-xs">{format(new Date(order.orderDate), 'dd MMM yyyy', { locale: localeID })}</TableCell>
-                <TableCell className="text-center">
-                  <Badge variant={getStatusBadgeVariant(order.status)} className="text-xs">
+                <TableCell className="hidden md:table-cell md:p-4 text-right text-xs align-top">{format(new Date(order.orderDate), 'dd MMM yyyy', { locale: localeID })}</TableCell>
+                <TableCell className="p-2 md:p-4 text-center align-top">
+                  <Badge variant={getStatusBadgeVariant(order.status)} className="text-xs whitespace-nowrap">
                     {order.status}
                   </Badge>
                 </TableCell>
-                 <TableCell className="text-right">
+                 <TableCell className="p-2 md:p-4 text-right align-top">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button variant="ghost" className="h-8 w-8 p-0">
@@ -214,5 +218,3 @@ export default function RecentOrdersTable({ orders, onUpdateOrder, onDeleteOrder
     </>
   );
 }
-
-    
