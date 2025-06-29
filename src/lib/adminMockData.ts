@@ -1,5 +1,5 @@
 
-import type { AdminDashboardData, AdminOrder, AdminSalesDataPoint, AdminCategory, AdminDiscount, ProductPerformance, SearchKeyword, VisitorStats } from './types';
+import type { AdminDashboardData, AdminOrder, AdminSalesDataPoint, AdminCategory, AdminDiscount, ProductPerformance, SearchKeyword, VisitorStats, AdminTransaction, AdminTransactionType } from './types';
 import { mockProducts } from './mockData';
 
 export const mockAdminDashboardData: AdminDashboardData = {
@@ -12,9 +12,9 @@ export const mockAdminDashboardData: AdminDashboardData = {
     lowStockItems: 3,
   },
   financialOverview: {
-    totalRevenue: 75500000,
-    totalExpenses: 22000000,
-    netProfit: 53500000,
+    totalRevenue: 0, // Will be calculated below
+    totalExpenses: 0,
+    netProfit: 0,
   },
 };
 
@@ -95,6 +95,45 @@ export let mockDiscounts: AdminDiscount[] = [
     endDate: new Date('2024-08-20'),
   },
 ];
+
+
+// --- NEW FINANCIAL DATA ---
+export let mockTransactions: AdminTransaction[] = [
+  // Automatically generate revenue from shipped orders
+  ...mockRecentOrders
+    .filter(o => o.status === 'Sudah Dikirim')
+    .map((o, index) => ({
+      id: `trx-rev-${index + 1}`,
+      date: o.orderDate,
+      description: `Penjualan: ${o.productName}`,
+      type: 'Pendapatan' as AdminTransactionType,
+      category: 'Penjualan Produk',
+      amount: o.totalAmount,
+    })),
+  // Manual expense entries
+  { id: 'trx-exp-1', date: '2024-07-25', description: 'Biaya Iklan Facebook', type: 'Pengeluaran', category: 'Pemasaran', amount: 1500000 },
+  { id: 'trx-exp-2', date: '2024-07-20', description: 'Restock Kemeja Flanel', type: 'Pengeluaran', category: 'Pembelian Stok', amount: 5000000 },
+  { id: 'trx-exp-3', date: '2024-07-18', description: 'Gaji Karyawan', type: 'Pengeluaran', category: 'Operasional', amount: 10000000 },
+  { id: 'trx-exp-4', date: '2024-07-15', description: 'Sewa Gudang', type: 'Pengeluaran', category: 'Operasional', amount: 3000000 },
+  { id: 'trx-exp-5', date: '2024-07-10', description: 'Biaya Kemasan & Pengiriman', type: 'Pengeluaran', category: 'Logistik', amount: 2500000 },
+];
+
+const calculateFinancials = () => {
+    const totalRevenue = mockTransactions
+        .filter(t => t.type === 'Pendapatan')
+        .reduce((acc, curr) => acc + curr.amount, 0);
+
+    const totalExpenses = mockTransactions
+        .filter(t => t.type === 'Pengeluaran')
+        .reduce((acc, curr) => acc + curr.amount, 0);
+    
+    const netProfit = totalRevenue - totalExpenses;
+
+    return { totalRevenue, totalExpenses, netProfit };
+};
+
+mockAdminDashboardData.financialOverview = calculateFinancials();
+
 
 // Mock data for Analytics Page
 export const mockTopProducts: ProductPerformance[] = [...mockProducts]

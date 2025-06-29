@@ -1,5 +1,4 @@
 
-
 export interface Product {
   id: string;
   name: string;
@@ -37,6 +36,18 @@ export interface ShippingCost {
 }
 
 // Admin Specific Types
+
+export type AdminTransactionType = 'Pendapatan' | 'Pengeluaran';
+
+export interface AdminTransaction {
+  id: string;
+  date: string; // ISO string
+  description: string;
+  type: AdminTransactionType;
+  category: string; // e.g., "Penjualan Produk", "Biaya Operasional", "Biaya Iklan"
+  amount: number;
+  notes?: string;
+}
 
 export interface AdminCategory {
   id: string;
