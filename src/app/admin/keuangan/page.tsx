@@ -53,9 +53,13 @@ import type { AdminTransaction, AdminTransactionType } from "@/lib/types";
 import { cn } from '@/lib/utils';
 import { DollarSign, TrendingDown, TrendingUp, PlusCircle, FileText, MoreHorizontal, Edit, Trash2, CalendarIcon } from 'lucide-react';
 
-const expenseCategories = ['Pemasaran', 'Pembelian Stok', 'Operasional', 'Logistik', 'Lainnya'];
+const transactionCategories = {
+  Pendapatan: ['Penjualan Produk', 'Pendapatan Lainnya'],
+  Pengeluaran: ['Pemasaran', 'Pembelian Stok', 'Operasional', 'Logistik', 'Lainnya']
+};
 
 const transactionFormSchema = z.object({
+  type: z.enum(['Pendapatan', 'Pengeluaran'], { required_error: "Jenis transaksi harus dipilih." }),
   description: z.string().min(3, "Deskripsi minimal 3 karakter."),
   category: z.string().min(1, "Kategori harus dipilih."),
   amount: z.coerce.number().min(1, "Jumlah harus lebih dari 0."),
@@ -108,6 +112,7 @@ export default function AdminKeuanganPage() {
     setTransactionToEdit(transaction);
     if (transaction) {
       form.reset({
+        type: transaction.type,
         description: transaction.description,
         category: transaction.category,
         amount: transaction.amount,
@@ -116,6 +121,7 @@ export default function AdminKeuanganPage() {
       });
     } else {
       form.reset({
+        type: 'Pengeluaran',
         description: '',
         category: '',
         amount: 0,
@@ -144,12 +150,11 @@ export default function AdminKeuanganPage() {
     } else {
       // Add
       const newTransaction: AdminTransaction = {
-        id: `trx-exp-${Date.now()}`,
-        type: 'Pengeluaran',
+        id: `trx-manual-${Date.now()}`,
         ...newTransactionData,
       };
       mockTransactions.unshift(newTransaction);
-      toast({ title: "Sukses", description: "Pengeluaran baru berhasil ditambahkan." });
+      toast({ title: "Sukses", description: "Transaksi baru berhasil ditambahkan." });
     }
     
     setTransactions([...mockTransactions]);
@@ -169,65 +174,92 @@ export default function AdminKeuanganPage() {
 
   const handleExportPDF = () => {
     const doc = new jsPDF();
-    const tableTitle = `Riwayat Transaksi (${activeTab.charAt(0).toUpperCase() + activeTab.slice(1)})`;
-    
-    // Main Title
-    doc.setFontSize(18);
-    doc.text('Laporan Keuangan - Goodstock-X', 14, 22);
+    const logoUrl = "https://ggbivmpazczpgtmnfwfs.supabase.co/storage/v1/object/sign/material/Logo%20goodstock-x%20(transparan)%20(1).png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jYjkzYjM4Zi1kOGJhLTRmYTEtYmM0ZC00MWUzOGU4YTZhNzgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYXRlcmlhbC9Mb2dvIGdvb2RzdG9jay14ICh0cmFuc3BhcmFuKSAoMSkucG5nIiwiaWF0IjoxNzUwMzIwODEwLCJleHAiOjE3ODE4NTY4MTB9.14Cw5nlZ5gYYOmWPUIWZU_bJwyvi1ipFzvuZF72y24A";
 
-    // Subtitle with date
-    doc.setFontSize(11);
-    doc.setTextColor(100);
-    doc.text(`Diekspor pada: ${format(new Date(), 'dd MMMM yyyy', { locale: localeID })}`, 14, 29);
-
-    // Summary Section
-    doc.setFontSize(12);
-    autoTable(doc, {
-        startY: 40,
-        head: [['Ringkasan Keuangan', '']],
-        body: [
-            ['Total Pendapatan', formatCurrency(totalRevenue)],
-            ['Total Pengeluaran', formatCurrency(totalExpenses)],
-            ['Laba Bersih', formatCurrency(netProfit)],
-        ],
-        theme: 'grid',
-        headStyles: { fontStyle: 'bold', fillColor: [241, 245, 249] }, // bg-slate-100
-        columnStyles: {
-            1: { halign: 'right' }
+    const generatePdfWithContent = (logoImgData: HTMLImageElement | null) => {
+        const tableTitle = `Riwayat Transaksi (${activeTab.charAt(0).toUpperCase() + activeTab.slice(1)})`;
+        
+        // Main Title
+        doc.setFontSize(18);
+        if (logoImgData) {
+            doc.addImage(logoImgData, 'PNG', 14, 15, 12, 12); // x, y, width, height
+            doc.text('Laporan Keuangan - Goodstock-X', 30, 22);
+        } else {
+            doc.text('Laporan Keuangan - Goodstock-X', 14, 22);
         }
-    });
 
-    const finalY = (doc as any).lastAutoTable.finalY || 60;
+        // Subtitle with date
+        doc.setFontSize(11);
+        doc.setTextColor(100);
+        doc.text(`Diekspor pada: ${format(new Date(), 'dd MMMM yyyy', { locale: localeID })}`, 14, 29);
 
-    // Transaction Table
-    autoTable(doc, {
-      startY: finalY + 15,
-      head: [
-        [{ content: tableTitle, colSpan: 5, styles: { halign: 'left', fontStyle: 'bold', fillColor: [255, 255, 255], textColor: [0,0,0] } }],
-        ['Tanggal', 'Deskripsi', 'Kategori', 'Jumlah (Rp)']
-      ],
-      body: filteredTransactions.map(t => [
-        format(new Date(t.date), 'dd/MM/yy'),
-        t.description,
-        t.category,
-        { content: `${t.type === 'Pendapatan' ? '+' : '-'} ${t.amount.toLocaleString('id-ID')}`, styles: { halign: 'right' } }
-      ]),
-      headStyles: { fillColor: [31, 41, 55] }, // bg-gray-700
-      didParseCell: function (data) {
-        if (data.section === 'body' && data.column.index === 3) {
-             const transaction = filteredTransactions[data.row.index];
-             if (transaction.type === 'Pendapatan') {
-                 data.cell.styles.textColor = [22, 163, 74]; // green-600
-             } else {
-                 data.cell.styles.textColor = [220, 38, 38]; // red-600
-             }
-             data.cell.styles.fontStyle = 'bold';
-        }
-      }
-    });
+        // Summary Section
+        doc.setFontSize(12);
+        autoTable(doc, {
+            startY: 40,
+            head: [['Ringkasan Keuangan', '']],
+            body: [
+                ['Total Pendapatan', formatCurrency(totalRevenue)],
+                ['Total Pengeluaran', formatCurrency(totalExpenses)],
+                ['Laba Bersih', formatCurrency(netProfit)],
+            ],
+            theme: 'grid',
+            headStyles: { fontStyle: 'bold', fillColor: [241, 245, 249] },
+            columnStyles: {
+                1: { halign: 'right' }
+            }
+        });
 
-    doc.save(`Laporan_Keuangan_GoodstockX_${format(new Date(), 'yyyyMMdd')}.pdf`);
+        const finalY = (doc as any).lastAutoTable.finalY || 60;
+
+        // Transaction Table
+        autoTable(doc, {
+          startY: finalY + 15,
+          head: [
+            [{ content: tableTitle, colSpan: 5, styles: { halign: 'left', fontStyle: 'bold', fillColor: [255, 255, 255], textColor: [0,0,0] } }],
+            ['Tanggal', 'Deskripsi', 'Kategori', 'Jumlah (Rp)']
+          ],
+          body: filteredTransactions.map(t => [
+            format(new Date(t.date), 'dd/MM/yy'),
+            t.description,
+            t.category,
+            { content: `${t.type === 'Pendapatan' ? '+' : '-'} ${t.amount.toLocaleString('id-ID')}`, styles: { halign: 'right' } }
+          ]),
+          headStyles: { fillColor: [31, 41, 55] },
+          didParseCell: function (data) {
+            if (data.section === 'body' && data.column.index === 3) {
+                 const transaction = filteredTransactions[data.row.index];
+                 if (transaction.type === 'Pendapatan') {
+                     data.cell.styles.textColor = [22, 163, 74];
+                 } else {
+                     data.cell.styles.textColor = [220, 38, 38];
+                 }
+                 data.cell.styles.fontStyle = 'bold';
+            }
+          }
+        });
+
+        doc.save(`Laporan_Keuangan_GoodstockX_${format(new Date(), 'yyyyMMdd')}.pdf`);
+    };
+
+    try {
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        img.src = logoUrl;
+        img.onload = () => {
+            generatePdfWithContent(img);
+        };
+        img.onerror = () => {
+            console.error("Gagal memuat gambar logo untuk PDF.");
+            generatePdfWithContent(null);
+        };
+    } catch (error) {
+        console.error("Error saat memproses logo:", error);
+        generatePdfWithContent(null);
+    }
   };
+
+  const selectedTransactionType = form.watch('type');
 
   return (
     <>
@@ -275,14 +307,14 @@ export default function AdminKeuanganPage() {
               <div className="flex justify-between items-center">
                   <div>
                     <CardTitle>Riwayat Transaksi</CardTitle>
-                    <CardDescription>Input manual untuk pengeluaran dan ekspor laporan.</CardDescription>
+                    <CardDescription>Input manual untuk transaksi dan ekspor laporan.</CardDescription>
                   </div>
                   <div className="flex gap-2">
                     <Button variant="outline" onClick={handleExportPDF}>
                         <FileText className="mr-2 h-4 w-4" /> Ekspor PDF
                     </Button>
                     <Button onClick={() => handleOpenForm(null)}>
-                        <PlusCircle className="mr-2 h-4 w-4" /> Tambah Pengeluaran
+                        <PlusCircle className="mr-2 h-4 w-4" /> Tambah Transaksi
                     </Button>
                   </div>
               </div>
@@ -317,19 +349,30 @@ export default function AdminKeuanganPage() {
       <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>{transactionToEdit ? 'Edit Pengeluaran' : 'Tambah Pengeluaran Baru'}</DialogTitle>
+            <DialogTitle>{transactionToEdit ? 'Edit Transaksi' : 'Tambah Transaksi Baru'}</DialogTitle>
           </DialogHeader>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <FormField control={form.control} name="type" render={({ field }) => (
+                <FormItem><FormLabel>Jenis Transaksi</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl><SelectTrigger><SelectValue /></SelectTrigger></FormControl>
+                    <SelectContent>
+                        <SelectItem value="Pendapatan">Pendapatan</SelectItem>
+                        <SelectItem value="Pengeluaran">Pengeluaran</SelectItem>
+                    </SelectContent>
+                  </Select>
+                <FormMessage /></FormItem>
+              )}/>
               <FormField control={form.control} name="description" render={({ field }) => (
                 <FormItem><FormLabel>Deskripsi</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
               )}/>
               <FormField control={form.control} name="category" render={({ field }) => (
                 <FormItem><FormLabel>Kategori</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
-                    <FormControl><SelectTrigger><SelectValue placeholder="Pilih kategori pengeluaran" /></SelectTrigger></FormControl>
+                    <FormControl><SelectTrigger><SelectValue placeholder="Pilih kategori" /></SelectTrigger></FormControl>
                     <SelectContent>
-                      {expenseCategories.map(cat => <SelectItem key={cat} value={cat}>{cat}</SelectItem>)}
+                      {transactionCategories[selectedTransactionType || 'Pengeluaran'].map(cat => <SelectItem key={cat} value={cat}>{cat}</SelectItem>)}
                     </SelectContent>
                   </Select>
                 <FormMessage /></FormItem>
@@ -419,7 +462,7 @@ function TransactionTable({ transactions, onEdit, onDelete }: TransactionTablePr
                 {t.type === 'Pendapatan' ? '+' : '-'} {formatCurrency(t.amount)}
               </TableCell>
               <TableCell className="text-right">
-                {t.type === 'Pengeluaran' && (
+                { !t.id.startsWith('trx-rev-') && (
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button variant="ghost" size="icon" className="h-8 w-8"><MoreHorizontal className="h-4 w-4" /></Button>
