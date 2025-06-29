@@ -1,6 +1,17 @@
 
-import type { AdminDashboardData, AdminOrder, AdminSalesDataPoint, AdminCategory, AdminDiscount, ProductPerformance, SearchKeyword, VisitorStats, AdminTransaction, AdminTransactionType, AdminUser } from './types';
+import type { AdminDashboardData, AdminOrder, AdminSalesDataPoint, AdminCategory, AdminDiscount, ProductPerformance, SearchKeyword, VisitorStats, AdminTransaction, AdminTransactionType, AdminUser, AdminStoreSettings, AdminSettings } from './types';
 import { mockProducts } from './mockData';
+
+export let mockStoreSettings: AdminStoreSettings = {
+  name: 'Goodstock-X',
+  email: 'customer@goodstockx.com',
+  phone: '+6281278262893',
+  address: 'Jl. Jend. Sudirman No. 1, Jakarta Pusat, DKI Jakarta, 10220',
+};
+
+export let mockAdminSettings: AdminSettings = {
+  receiveNotifications: true,
+};
 
 export const mockAdminDashboardData: AdminDashboardData = {
   summaryStats: {
@@ -16,6 +27,8 @@ export const mockAdminDashboardData: AdminDashboardData = {
     totalExpenses: 0,
     netProfit: 0,
   },
+  storeSettings: mockStoreSettings,
+  adminSettings: mockAdminSettings,
 };
 
 export let mockRecentOrders: AdminOrder[] = [

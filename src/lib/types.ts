@@ -37,6 +37,17 @@ export interface ShippingCost {
 
 // Admin Specific Types
 
+export interface AdminStoreSettings {
+  name: string;
+  email: string;
+  phone: string;
+  address: string;
+}
+
+export interface AdminSettings {
+  receiveNotifications: boolean;
+}
+
 export interface AdminUser {
   id: string;
   name: string;
@@ -110,8 +121,8 @@ export interface AdminFinancialOverview {
 export interface AdminDashboardData {
   summaryStats: AdminSummaryStats;
   financialOverview: AdminFinancialOverview;
-  // recentOrders: AdminOrder[]; // Will be handled by a separate mock/fetch
-  // salesData: AdminSalesDataPoint[]; // Will be handled by a separate mock/fetch
+  storeSettings: AdminStoreSettings;
+  adminSettings: AdminSettings;
 }
 
 // Admin Analytics Types
