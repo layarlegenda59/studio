@@ -1,9 +1,7 @@
-
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
+import { ThemeToggle } from "@/components/admin/ThemeToggle";
 
 
 export default function AdminTampilanPage() {
@@ -17,12 +15,10 @@ export default function AdminTampilanPage() {
       <Card className="shadow-lg">
         <CardHeader>
           <CardTitle>Mode Tampilan</CardTitle>
+          <CardDescription>Pilih antara mode terang atau gelap untuk dasbor.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="flex items-center space-x-2">
-            <Switch id="dark-mode-toggle" disabled />
-            <Label htmlFor="dark-mode-toggle">Mode Gelap (Segera Hadir)</Label>
-          </div>
+          <ThemeToggle />
            <p className="text-center text-muted-foreground py-8">
             Opsi kustomisasi tampilan lainnya akan ada di sini. (Dalam Pengembangan)
           </p>
