@@ -1,5 +1,5 @@
 
-import type { AdminDashboardData, AdminOrder, AdminSalesDataPoint, AdminCategory } from './types';
+import type { AdminDashboardData, AdminOrder, AdminSalesDataPoint, AdminCategory, AdminDiscount } from './types';
 import { mockProducts } from './mockData';
 
 export const mockAdminDashboardData: AdminDashboardData = {
@@ -51,3 +51,47 @@ export let mockCategories: AdminCategory[] = categoryNames.map((name, index) => 
   name: name,
   productCount: getProductCount(name),
 }));
+
+export let mockDiscounts: AdminDiscount[] = [
+  {
+    id: 'disc-1',
+    code: 'LEBARAN25',
+    description: 'Diskon spesial Idul Fitri',
+    type: 'percentage',
+    value: 25,
+    status: 'Aktif',
+    startDate: new Date('2024-07-01'),
+    endDate: new Date('2024-08-01'),
+    minPurchase: 200000,
+  },
+  {
+    id: 'disc-2',
+    code: 'ONGKIRGRATIS',
+    description: 'Potongan ongkir Rp 15.000',
+    type: 'fixed',
+    value: 15000,
+    status: 'Aktif',
+    startDate: new Date('2024-07-15'),
+    endDate: new Date('2024-07-31'),
+  },
+  {
+    id: 'disc-3',
+    code: 'NEWUSER10',
+    description: 'Diskon 10% untuk pengguna baru',
+    type: 'percentage',
+    value: 10,
+    status: 'Tidak Aktif',
+    startDate: new Date('2024-06-01'),
+    endDate: new Date('2024-06-30'),
+  },
+   {
+    id: 'disc-4',
+    code: 'AGUSTUSAN',
+    description: 'Promo Kemerdekaan',
+    type: 'percentage',
+    value: 17,
+    status: 'Terjadwal',
+    startDate: new Date('2024-08-10'),
+    endDate: new Date('2024-08-20'),
+  },
+];

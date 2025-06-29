@@ -44,6 +44,18 @@ export interface AdminCategory {
   productCount: number;
 }
 
+export interface AdminDiscount {
+  id: string;
+  code: string;
+  description: string;
+  type: 'percentage' | 'fixed';
+  value: number;
+  status: 'Aktif' | 'Tidak Aktif' | 'Terjadwal';
+  startDate: Date;
+  endDate: Date;
+  minPurchase?: number;
+}
+
 // Admin Dashboard Specific Types
 export interface AdminOrder {
   id: string;
