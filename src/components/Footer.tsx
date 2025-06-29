@@ -129,7 +129,7 @@ export default function Footer() {
                 <li><Link href="/terms-and-conditions" className="text-gray-400 hover:text-white hover:underline">Persyaratan & Ketentuan</Link></li>
                 <li><Link href="/privacy-policy" className="text-gray-400 hover:text-white hover:underline">Kebijakan Privasi</Link></li>
                 <li><a href={influencerWhatsappUrl} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white hover:underline">Influencer Program</a></li>
-                <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">Goodstock-X THREAD</Link></li>
+                <li><Link href="/thread" className="text-gray-400 hover:text-white hover:underline">Goodstock-X THREAD</Link></li>
               </ul>
             </div>
 
