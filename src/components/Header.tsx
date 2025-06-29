@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { Search, User, Menu, Heart, X, ShoppingCart } from 'lucide-react';
+import { Search, User, Menu, Heart, X, ShoppingCart, ShieldCheck, Rocket, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import {
@@ -216,6 +216,24 @@ export default function Header({
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 shadow-sm">
+      {/* Top Banner Section */}
+      <div className="bg-muted text-muted-foreground py-2 px-4 text-xs border-b border-border/40">
+        <div className="container mx-auto flex flex-wrap items-center justify-center md:justify-between gap-x-6 gap-y-1">
+          <Link href="#" className="flex items-center gap-1.5 hover:text-primary transition-colors">
+            <ShieldCheck className="h-3.5 w-3.5" />
+            <span>Gratis Pengembalian | S&K Berlaku</span>
+          </Link>
+          <Link href="#" className="hidden md:flex items-center gap-1.5 hover:text-primary transition-colors">
+            <Rocket className="h-3.5 w-3.5" />
+            <span>Pengiriman Cepat & Gratis Ongkir</span>
+          </Link>
+          <Link href="#" className="flex items-center gap-1.5 hover:text-primary transition-colors">
+            <Download className="h-3.5 w-3.5" />
+            <span>Download App & Dapatkan Diskon 25%</span>
+          </Link>
+        </div>
+      </div>
+      
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <Link href="/" className="flex items-center gap-2">
           <Image
@@ -500,4 +518,3 @@ export default function Header({
     </header>
   );
 }
-
