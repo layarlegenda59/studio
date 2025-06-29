@@ -178,25 +178,25 @@ export default function AdminKeuanganPage() {
 
     const generatePdfWithContent = (logoImgData: HTMLImageElement | null) => {
         const tableTitle = `Riwayat Transaksi (${activeTab.charAt(0).toUpperCase() + activeTab.slice(1)})`;
-        
-        // Main Title
-        doc.setFontSize(18);
-        if (logoImgData) {
-            doc.addImage(logoImgData, 'PNG', 14, 15, 12, 12); // x, y, width, height
-            doc.text('Laporan Keuangan - Goodstock-X', 30, 22);
-        } else {
-            doc.text('Laporan Keuangan - Goodstock-X', 14, 22);
-        }
+        const hasLogo = !!logoImgData;
+        const titleX = hasLogo ? 30 : 14;
+        const titleY = 22;
 
-        // Subtitle with date
+        // Header section
+        if (hasLogo) {
+            doc.addImage(logoImgData!, 'PNG', 14, 16, 12, 12);
+        }
+        doc.setFontSize(hasLogo ? 16 : 18);
+        doc.text('Laporan Keuangan - Goodstock-X', titleX, titleY);
+
         doc.setFontSize(11);
-        doc.setTextColor(100);
-        doc.text(`Diekspor pada: ${format(new Date(), 'dd MMMM yyyy', { locale: localeID })}`, 14, 29);
+        doc.setTextColor(100); // Muted text color
+        doc.text(`Diekspor pada: ${format(new Date(), 'dd MMMM yyyy', { locale: localeID })}`, titleX, titleY + 7);
 
         // Summary Section
         doc.setFontSize(12);
         autoTable(doc, {
-            startY: 40,
+            startY: titleY + 20, // Start below header
             head: [['Ringkasan Keuangan', '']],
             body: [
                 ['Total Pendapatan', formatCurrency(totalRevenue)],
@@ -204,7 +204,7 @@ export default function AdminKeuanganPage() {
                 ['Laba Bersih', formatCurrency(netProfit)],
             ],
             theme: 'grid',
-            headStyles: { fontStyle: 'bold', fillColor: [241, 245, 249] },
+            headStyles: { fontStyle: 'bold', fillColor: [226, 232, 240], textColor: [45, 55, 72] }, // slate-200 bg, slate-700 text
             columnStyles: {
                 1: { halign: 'right' }
             }
