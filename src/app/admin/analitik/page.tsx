@@ -90,7 +90,7 @@ export default function AdminAnalitikPage() {
           <CardContent className="h-[350px] w-full p-0">
             <ChartContainer config={topProductsChartConfig}>
                 <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={mockTopProducts} layout="vertical" margin={{ left: 20, right: 30, top: 5, bottom: 5 }} barCategoryGap="50%">
+                    <BarChart data={mockTopProducts} layout="vertical" margin={{ left: 20, right: 30, top: 5, bottom: 5 }}>
                         <CartesianGrid strokeDasharray="3 3" horizontal={false} />
                         <YAxis 
                             dataKey="rankLabel"
@@ -104,7 +104,7 @@ export default function AdminAnalitikPage() {
                             cursor={{ fill: 'hsl(var(--muted))' }}
                             content={<CustomTooltip />}
                         />
-                        <Bar dataKey="sales" fill="var(--color-sales)" radius={[0, 4, 4, 0]} />
+                        <Bar dataKey="sales" fill="var(--color-sales)" radius={[0, 4, 4, 0]} barSize={40} />
                     </BarChart>
                 </ResponsiveContainer>
             </ChartContainer>
