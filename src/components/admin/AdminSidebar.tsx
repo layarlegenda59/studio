@@ -4,6 +4,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
+import React, { useState, useEffect } from 'react';
 import {
   Sidebar,
   SidebarHeader,
@@ -17,8 +18,7 @@ import {
   SidebarMenuSubItem,
   SidebarMenuSubButton,
 } from '@/components/ui/sidebar';
-import { Button } from '@/components/ui/button';
-import { Home, LogOut, Package, Percent, LineChart, CreditCard, MessageCircle, Settings, LayoutDashboard, Users, Palette, ShoppingBag } from 'lucide-react';
+import { Home, LogOut, Package, Percent, LineChart, CreditCard, MessageCircle, Settings, LayoutDashboard, Users, Palette, ShoppingBag, ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const iconLogoUrl = "https://ggbivmpazczpgtmnfwfs.supabase.co/storage/v1/object/sign/material/Logo%20goodstock-x%20(transparan)%20(1).png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jYjkzYjM4Zi1kOGJhLTRmYTEtYmM0ZC00MWUzOGU4YTZhNzgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYXRlcmlhbC9Mb2dvIGdvb2RzdG9jay14ICh0cmFuc3BhcmFuKSAoMSkucG5nIiwiaWF0IjoxNzUwMzIwODEwLCJleHAiOjE3ODE4NTY4MTB9.14Cw5nlZ5gYYOmWPUIWZU_bJwyvi1ipFzvuZF72y24A";
@@ -60,10 +60,29 @@ const secondaryNavItems = [
 
 export default function AdminSidebar() {
   const pathname = usePathname();
+  const [openSubMenus, setOpenSubMenus] = useState<string[]>([]);
 
   const isSubItemActive = (basePath: string) => {
     return pathname.startsWith(basePath);
-  }
+  };
+  
+  useEffect(() => {
+    const activeSubMenu = mainNavItems.find(item => item.basePath && isSubItemActive(item.basePath));
+    if (activeSubMenu?.basePath && !openSubMenus.includes(activeSubMenu.basePath)) {
+        setOpenSubMenus(prev => [...prev, activeSubMenu.basePath!]);
+    }
+    // We don't need to track when submenus close on navigation, so we keep this simple.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname]);
+
+
+  const toggleSubMenu = (basePath: string) => {
+    setOpenSubMenus(prev => 
+      prev.includes(basePath) 
+        ? prev.filter(p => p !== basePath) 
+        : [...prev, basePath]
+    );
+  };
 
   return (
     <Sidebar collapsible="icon" className="border-r hidden md:flex" variant="sidebar">
@@ -80,44 +99,55 @@ export default function AdminSidebar() {
 
       <SidebarContent className="flex-grow p-2 space-y-1">
         <SidebarMenu>
-          {mainNavItems.map((item) => (
-            <SidebarMenuItem key={item.label}>
-              {item.subItems ? (
-                <>
-                  <SidebarMenuButton 
-                    isActive={item.basePath ? isSubItemActive(item.basePath) : false}
-                    className="justify-between"
-                  >
-                    <div className="flex items-center gap-2">
-                      <item.icon className="h-4 w-4" />
-                      <span className="group-data-[collapsible=icon]:hidden">{item.label}</span>
-                    </div>
-                  </SidebarMenuButton>
-                  <SidebarMenuSub>
-                    {item.subItems.map((subItem) => (
-                      <SidebarMenuSubItem key={subItem.href}>
-                        <SidebarMenuSubButton
-                          asChild
-                          isActive={pathname === subItem.href}
-                        >
-                          <Link href={subItem.href}>
-                            {subItem.label}
-                          </Link>
-                        </SidebarMenuSubButton>
-                      </SidebarMenuSubItem>
-                    ))}
-                  </SidebarMenuSub>
-                </>
-              ) : (
-                <SidebarMenuButton asChild isActive={pathname === item.href}>
-                  <Link href={item.href}>
-                    <item.icon className="h-4 w-4" />
-                    <span className="group-data-[collapsible=icon]:hidden">{item.label}</span>
-                  </Link>
-                </SidebarMenuButton>
-              )}
-            </SidebarMenuItem>
-          ))}
+          {mainNavItems.map((item) => {
+            const isSubMenuOpen = !!item.basePath && openSubMenus.includes(item.basePath);
+            return (
+                <SidebarMenuItem key={item.label}>
+                {item.subItems && item.basePath ? (
+                    <>
+                    <SidebarMenuButton 
+                        isActive={isSubItemActive(item.basePath)}
+                        className="justify-between"
+                        onClick={() => toggleSubMenu(item.basePath!)}
+                        data-state={isSubMenuOpen ? 'open' : 'closed'}
+                    >
+                        <div className="flex items-center gap-2">
+                        <item.icon className="h-4 w-4" />
+                        <span className="group-data-[collapsible=icon]:hidden">{item.label}</span>
+                        </div>
+                        <ChevronDown className={cn(
+                            "h-4 w-4 shrink-0 transition-transform duration-200 group-data-[collapsible=icon]:hidden",
+                            isSubMenuOpen && "rotate-180"
+                        )} />
+                    </SidebarMenuButton>
+                    {isSubMenuOpen && (
+                        <SidebarMenuSub>
+                        {item.subItems.map((subItem) => (
+                            <SidebarMenuSubItem key={subItem.href}>
+                            <SidebarMenuSubButton
+                                asChild
+                                isActive={pathname === subItem.href}
+                            >
+                                <Link href={subItem.href}>
+                                {subItem.label}
+                                </Link>
+                            </SidebarMenuSubButton>
+                            </SidebarMenuSubItem>
+                        ))}
+                        </SidebarMenuSub>
+                    )}
+                    </>
+                ) : (
+                    <SidebarMenuButton asChild isActive={pathname === item.href}>
+                    <Link href={item.href!}>
+                        <item.icon className="h-4 w-4" />
+                        <span className="group-data-[collapsible=icon]:hidden">{item.label}</span>
+                    </Link>
+                    </SidebarMenuButton>
+                )}
+                </SidebarMenuItem>
+            )
+          })}
         </SidebarMenu>
         
         <hr className="my-4 border-border/50 group-data-[collapsible=icon]:hidden" />
