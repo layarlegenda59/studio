@@ -13,7 +13,7 @@ import type { Product } from '@/lib/types';
 import { X } from 'lucide-react';
 
 // Replace with your admin's WhatsApp number
-const ADMIN_WHATSAPP_NUMBER = "+6281234567890"; 
+const ADMIN_WHATSAPP_NUMBER = "+6281278262893"; 
 
 interface WhatsAppOrderFormProps {
   orderedItems?: Product[];
@@ -152,4 +152,3 @@ export default function WhatsAppOrderForm({ orderedItems = [], onRemoveItem }: W
     </Card>
   );
 }
-

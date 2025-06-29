@@ -247,7 +247,7 @@ export default function ProductDetailPage() {
         </div>
         
       </main>
-      <WhatsAppButton phoneNumber="+6281234567890" />
+      <WhatsAppButton phoneNumber="+6281278262893" />
       <Footer />
     </div>
   );
