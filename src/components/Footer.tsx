@@ -124,7 +124,7 @@ export default function Footer() {
             <div>
               <h5 className="text-xl font-headline font-semibold mb-4">Tentang Kami</h5>
               <ul className="space-y-2 text-sm">
-                <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">About Us</Link></li>
+                <li><Link href="/about" className="text-gray-400 hover:text-white hover:underline">About Us</Link></li>
                 <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">Persyaratan & Ketentuan</Link></li>
                 <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">Kebijakan Privasi</Link></li>
                 <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">Influencer Program</Link></li>
@@ -160,7 +160,7 @@ export default function Footer() {
               <p className="mb-4 md:mb-0 text-center md:text-left">Anda punya pertanyaan? Kami siap membantu. <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="hover:text-white hover:underline">Kontak</a> | <Link href="#" className="hover:text-white hover:underline">Bantuan</Link></p>
               <div className="flex flex-col items-center md:flex-row md:space-x-4">
                 <div className="flex flex-col items-center space-y-2 md:flex-row md:space-x-4 md:space-y-0 mb-3 md:mb-0">
-                  <Link href="#" className="hover:text-white hover:underline">Tentang Goodstock-X</Link>
+                  <Link href="/about" className="hover:text-white hover:underline">Tentang Goodstock-X</Link>
                   <Link href="#" className="hover:text-white hover:underline">Kebijakan Privasi</Link>
                   <Link href="#" className="hover:text-white hover:underline">Persyaratan dan Ketentuan</Link>
                 </div>
