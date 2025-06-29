@@ -4,7 +4,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Sidebar,
   SidebarHeader,
@@ -65,23 +65,27 @@ export default function AdminSidebar() {
   const isSubItemActive = (basePath: string) => {
     return pathname.startsWith(basePath);
   };
-  
+
   useEffect(() => {
+    // Automatically open the parent submenu if the current path is one of its children
     const activeSubMenu = mainNavItems.find(item => item.basePath && isSubItemActive(item.basePath));
-    if (activeSubMenu?.basePath && !openSubMenus.includes(activeSubMenu.basePath)) {
-        setOpenSubMenus(prev => [...prev, activeSubMenu.basePath!]);
+    if (activeSubMenu) {
+      setOpenSubMenus(currentOpen => {
+        if (currentOpen.includes(activeSubMenu.basePath!)) {
+          return currentOpen;
+        }
+        return [activeSubMenu.basePath!];
+      });
     }
-    // We don't need to track when submenus close on navigation, so we keep this simple.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
-
   const toggleSubMenu = (basePath: string) => {
-    setOpenSubMenus(prev => 
-      prev.includes(basePath) 
-        ? prev.filter(p => p !== basePath) 
-        : [...prev, basePath]
-    );
+    setOpenSubMenus(currentOpen => {
+      if (currentOpen.includes(basePath)) {
+        return currentOpen.filter(p => p !== basePath); // Close it
+      }
+      return [basePath]; // Open it and close others
+    });
   };
 
   return (
@@ -106,10 +110,9 @@ export default function AdminSidebar() {
                 {item.subItems && item.basePath ? (
                     <>
                     <SidebarMenuButton 
-                        isActive={isSubItemActive(item.basePath)}
+                        isActive={isSubItemActive(item.basePath) && !isSubMenuOpen}
                         className="justify-between"
                         onClick={() => toggleSubMenu(item.basePath!)}
-                        data-state={isSubMenuOpen ? 'open' : 'closed'}
                     >
                         <div className="flex items-center gap-2">
                         <item.icon className="h-4 w-4" />
