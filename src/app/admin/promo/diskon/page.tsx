@@ -39,28 +39,33 @@ export default function AdminPromoDiskonPage() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [discountToEdit, setDiscountToEdit] = useState<AdminDiscount | null>(null);
   const [discountToDelete, setDiscountToDelete] = useState<AdminDiscount | null>(null);
-  const [formData, setFormData] = useState<Partial<AdminDiscount>>(initialDiscountState);
+  const [formData, setFormData] = useState<Partial<AdminDiscount>>({ ...initialDiscountState });
 
   useEffect(() => {
-    setDiscounts(mockDiscounts);
+    setDiscounts([...mockDiscounts]);
   }, []);
 
   const handleOpenForm = (discount: AdminDiscount | null) => {
     setDiscountToEdit(discount);
-    setFormData(discount ? { ...discount } : initialDiscountState);
+    setFormData(discount ? { ...discount } : { ...initialDiscountState });
     setIsFormOpen(true);
   };
 
   const handleCloseForm = () => {
     setIsFormOpen(false);
     setDiscountToEdit(null);
-    setFormData(initialDiscountState);
+    setFormData({ ...initialDiscountState });
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
-    setFormData(prev => ({ ...prev, [id]: id === 'value' || id === 'minPurchase' ? Number(value) : value }));
+    const numericValue = id === 'value' || id === 'minPurchase' ? Number(value) || 0 : value;
+    setFormData(prev => ({ ...prev, [id]: numericValue }));
   };
+
+  const handleSelectChange = (id: 'type' | 'status', value: string) => {
+    setFormData(prev => ({...prev, [id]: value}));
+  }
   
   const handleDateChange = (id: 'startDate' | 'endDate', date: Date | undefined) => {
     if (date) {
@@ -155,7 +160,7 @@ export default function AdminPromoDiskonPage() {
                         <Badge variant={getStatusBadgeVariant(discount.status)}>{discount.status}</Badge>
                     </TableCell>
                     <TableCell className="text-center text-xs">
-                        {format(discount.startDate, 'dd MMM yyyy', { locale: localeID })} - {format(discount.endDate, 'dd MMM yyyy', { locale: localeID })}
+                        {discount.startDate ? format(discount.startDate, 'dd MMM yyyy', { locale: localeID }) : ''} - {discount.endDate ? format(discount.endDate, 'dd MMM yyyy', { locale: localeID }) : ''}
                     </TableCell>
                     <TableCell className="text-right">
                        <Button variant="ghost" size="icon" onClick={() => handleOpenForm(discount)}>
@@ -200,7 +205,7 @@ export default function AdminPromoDiskonPage() {
                <div className="space-y-2">
                   <Label htmlFor="type">Tipe Diskon</Label>
                    <Select 
-                      onValueChange={(value) => setFormData(prev => ({ ...prev, type: value as AdminDiscount['type'] }))} 
+                      onValueChange={(value) => handleSelectChange('type', value)} 
                       value={formData.type}
                     >
                       <SelectTrigger><SelectValue placeholder="Pilih tipe diskon" /></SelectTrigger>
@@ -245,7 +250,7 @@ export default function AdminPromoDiskonPage() {
                 <div className="space-y-2">
                   <Label htmlFor="status">Status</Label>
                    <Select 
-                      onValueChange={(value) => setFormData(prev => ({ ...prev, status: value as AdminDiscount['status'] }))} 
+                      onValueChange={(value) => handleSelectChange('status', value)}
                       value={formData.status}
                     >
                       <SelectTrigger><SelectValue placeholder="Pilih status" /></SelectTrigger>
@@ -288,3 +293,4 @@ export default function AdminPromoDiskonPage() {
     </>
   );
 }
+
