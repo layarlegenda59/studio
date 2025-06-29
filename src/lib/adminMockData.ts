@@ -1,5 +1,6 @@
 
-import type { AdminDashboardData, AdminOrder, AdminSalesDataPoint } from './types';
+import type { AdminDashboardData, AdminOrder, AdminSalesDataPoint, AdminCategory } from './types';
+import { mockProducts } from './mockData';
 
 export const mockAdminDashboardData: AdminDashboardData = {
   summaryStats: {
@@ -35,3 +36,18 @@ export const mockSalesData: AdminSalesDataPoint[] = [
   { name: 'Minggu 6', sales: 3500000 },
   { name: 'Minggu 7', sales: 7000000 },
 ];
+
+// Create a set of unique category names from products
+const categoryNames = Array.from(new Set(mockProducts.map(p => p.category)));
+
+// Function to calculate product count for a category
+const getProductCount = (categoryName: string) => {
+  return mockProducts.filter(p => p.category === categoryName).length;
+};
+
+// Generate mock categories. Use 'let' to make it mutable.
+export let mockCategories: AdminCategory[] = categoryNames.map((name, index) => ({
+  id: `cat-${index + 1}`,
+  name: name,
+  productCount: getProductCount(name),
+}));

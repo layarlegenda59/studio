@@ -1,9 +1,10 @@
 
+
 export interface Product {
   id: string;
   name: string;
   brand: string; 
-  category: 'Sepatu' | 'Tas' | 'Pakaian';
+  category: string;
   type?: string; // Misalnya: 'Sneakers', 'Kemeja', 'Ransel'
   imageUrl: string;
   originalPrice: number;
@@ -33,6 +34,14 @@ export interface ShippingCost {
   service: string;
   cost: number;
   estimatedDelivery: string;
+}
+
+// Admin Specific Types
+
+export interface AdminCategory {
+  id: string;
+  name: string;
+  productCount: number;
 }
 
 // Admin Dashboard Specific Types
