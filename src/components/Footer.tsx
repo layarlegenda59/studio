@@ -116,7 +116,7 @@ export default function Footer() {
                 <li><Link href="/konfirmasi-transfer" className="text-gray-400 hover:text-white hover:underline">Konfirmasi Transfer</Link></li>
                 <li><a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white hover:underline">Hubungi Kami</a></li>
                 <li><Link href="/status-order" className="text-gray-400 hover:text-white hover:underline">Status Order</Link></li>
-                <li><Link href="#" className="text-gray-400 hover:text-white hover:underline">Brand di Goodstock-X</Link></li>
+                <li><Link href="/brands" className="text-gray-400 hover:text-white hover:underline">Brand di Goodstock-X</Link></li>
               </ul>
             </div>
 
