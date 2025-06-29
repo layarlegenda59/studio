@@ -87,7 +87,7 @@ export default function AdminAnalitikPage() {
             <CardTitle>4 Produk Terlaris</CardTitle>
             <CardDescription>Berdasarkan jumlah unit terjual sepanjang waktu.</CardDescription>
           </CardHeader>
-          <CardContent className="h-[350px] w-full p-0">
+          <CardContent className="h-[250px] w-full p-0">
             <ChartContainer config={topProductsChartConfig}>
                 <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={mockTopProducts} layout="vertical" margin={{ left: 20, right: 30, top: 5, bottom: 5 }}>
