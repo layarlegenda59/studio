@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { Search, User, Menu, Heart, X, ShoppingCart, ShieldCheck, Rocket, Download } from 'lucide-react';
+import { Search, User, Menu, Heart, X, ShoppingCart, ShieldCheck, Rocket, Tag } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import {
@@ -228,8 +228,8 @@ export default function Header({
             <span>Pengiriman Cepat & Gratis Ongkir</span>
           </Link>
           <Link href="#" className="flex items-center gap-1.5 hover:text-primary transition-colors">
-            <Download className="h-3.5 w-3.5" />
-            <span>Download App & Dapatkan Diskon 25%</span>
+            <Tag className="h-3.5 w-3.5" />
+            <span>Dapatkan Diskon 25% I S&K Berlaku</span>
           </Link>
         </div>
       </div>
