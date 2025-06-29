@@ -128,6 +128,7 @@ export interface AdminDashboardData {
 // Admin Analytics Types
 export interface ProductPerformance {
   name: string;
+  rankLabel?: string;
   sales: number;
   views: number;
 }

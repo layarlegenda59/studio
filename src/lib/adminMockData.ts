@@ -152,7 +152,12 @@ mockAdminDashboardData.financialOverview = calculateFinancials();
 export const mockTopProducts: ProductPerformance[] = [...mockProducts]
   .sort((a, b) => b.salesCount - a.salesCount)
   .slice(0, 4)
-  .map(p => ({ name: p.name, sales: p.salesCount, views: p.salesCount * (Math.floor(Math.random() * 5) + 3) }));
+  .map((p, index) => ({ 
+    name: p.name,
+    rankLabel: `#${index + 1}`,
+    sales: p.salesCount, 
+    views: p.salesCount * (Math.floor(Math.random() * 5) + 3) 
+  }));
 
 export const mockSearchKeywords: SearchKeyword[] = [
   { keyword: 'sneakers pria', count: 542 },
