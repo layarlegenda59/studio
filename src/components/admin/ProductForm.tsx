@@ -112,7 +112,7 @@ export default function ProductForm({ product }: ProductFormProps) {
         mockProducts[productIndex] = {
           ...mockProducts[productIndex],
           ...data,
-          promoPrice: data.promoPrice || undefined,
+          promoPrice: data.promoPrice,
         };
       }
     } else {
@@ -121,7 +121,7 @@ export default function ProductForm({ product }: ProductFormProps) {
         id: `prod${Date.now()}`,
         salesCount: 0,
         ...data,
-        promoPrice: data.promoPrice || undefined,
+        promoPrice: data.promoPrice,
       };
       mockProducts.unshift(newProduct);
     }
@@ -131,8 +131,9 @@ export default function ProductForm({ product }: ProductFormProps) {
       description: `Produk "${data.name}" telah berhasil disimpan.`,
     });
 
-    // Redirect back to the product list
+    // Redirect back to the product list and refresh data
     router.push('/admin/produk');
+    router.refresh();
   }
 
   return (
@@ -380,11 +381,11 @@ export default function ProductForm({ product }: ProductFormProps) {
                 />
             </div>
         </div>
-        <div className="flex justify-end gap-2">
+        <div className="flex justify-end gap-2 pt-4 border-t">
             <Button type="button" variant="outline" asChild>
                 <Link href="/admin/produk">Batal</Link>
             </Button>
-            <Button type="submit">Simpan Perubahan</Button>
+            <Button type="submit">{product ? 'Simpan Perubahan' : 'Tambah Produk'}</Button>
         </div>
       </form>
     </Form>
