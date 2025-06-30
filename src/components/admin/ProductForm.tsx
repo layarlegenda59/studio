@@ -58,14 +58,23 @@ const productFormSchema = z.object({
   gender: z.string({ required_error: "Pilih gender." }),
   description: z.string().optional(),
   imageUrl: z.string().url({ message: "URL gambar tidak valid." }),
-  originalPrice: z.coerce.number().min(0, { message: "Harga harus positif." }),
+  originalPrice: z.coerce.number().min(1, { message: "Harga harus diisi." }),
   promoPrice: z.coerce.number().optional(),
   stock: z.coerce.number().min(0, { message: "Stok tidak boleh negatif." }),
   sizes: z.array(z.string()).refine((value) => value.some((item) => item), {
     message: "Anda harus memilih setidaknya satu ukuran.",
   }),
   isPromo: z.boolean().default(false),
+}).refine(data => {
+    if (data.promoPrice !== undefined && data.promoPrice > 0 && data.promoPrice >= data.originalPrice) {
+        return false;
+    }
+    return true;
+}, {
+    message: "Harga promo harus lebih rendah dari harga asli.",
+    path: ["promoPrice"],
 });
+
 
 type ProductFormValues = z.infer<typeof productFormSchema>;
 
@@ -105,14 +114,18 @@ export default function ProductForm({ product }: ProductFormProps) {
   });
 
   function onSubmit(data: ProductFormValues) {
+     const finalData = {
+        ...data,
+        promoPrice: data.promoPrice === 0 ? undefined : data.promoPrice,
+    };
+
     if (product) {
       // Editing an existing product
       const productIndex = mockProducts.findIndex(p => p.id === product.id);
       if (productIndex !== -1) {
         mockProducts[productIndex] = {
           ...mockProducts[productIndex],
-          ...data,
-          promoPrice: data.promoPrice,
+          ...finalData,
         };
       }
     } else {
@@ -120,8 +133,7 @@ export default function ProductForm({ product }: ProductFormProps) {
       const newProduct: Product = {
         id: `prod${Date.now()}`,
         salesCount: 0,
-        ...data,
-        promoPrice: data.promoPrice,
+        ...finalData,
       };
       mockProducts.unshift(newProduct);
     }
@@ -257,7 +269,7 @@ export default function ProductForm({ product }: ProductFormProps) {
                                   type="text"
                                   placeholder="500.000" 
                                   {...field}
-                                  value={formatCurrency(field.value)}
+                                  value={field.value === 0 ? '' : formatCurrency(field.value)}
                                   onChange={(e) => {
                                       const cleanedValue = e.target.value.replace(/\D/g, '');
                                       field.onChange(Number(cleanedValue));
@@ -279,14 +291,10 @@ export default function ProductForm({ product }: ProductFormProps) {
                                   type="text" 
                                   placeholder="399.000" 
                                   {...field}
-                                  value={formatCurrency(field.value)}
+                                  value={!field.value ? '' : formatCurrency(field.value)}
                                   onChange={(e) => {
                                       const cleanedValue = e.target.value.replace(/\D/g, '');
-                                      if (cleanedValue === '') {
-                                          field.onChange(undefined);
-                                      } else {
-                                          field.onChange(Number(cleanedValue));
-                                      }
+                                      field.onChange(Number(cleanedValue));
                                   }}
                                 />
                             </FormControl>
