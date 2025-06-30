@@ -133,7 +133,6 @@ export default function ProductForm({ product }: ProductFormProps) {
 
     // Redirect back to the product list
     router.push('/admin/produk');
-    router.refresh();
   }
 
   return (
