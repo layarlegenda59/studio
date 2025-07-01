@@ -4,32 +4,29 @@
 import ProductForm from '@/components/admin/ProductForm';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { mockProducts } from '@/lib/mockData';
-import { notFound } from 'next/navigation';
+import { notFound, useParams } from 'next/navigation';
 import type { Product } from '@/lib/types';
 import React, { useState, useEffect } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 
-interface EditProductPageProps {
-  params: {
-    id: string;
-  };
-}
+export default function EditProductPage() {
+  const params = useParams();
+  const id = params.id as string;
 
-export default function EditProductPage({ params }: EditProductPageProps) {
-  const { id } = params;
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // mockProducts is now hydrated from localStorage by the time this page loads,
-    // so we can safely find the product.
-    const foundProduct = mockProducts.find(p => p.id === id);
-    if (foundProduct) {
-      setProduct(foundProduct);
-    } else {
-      notFound();
+    // Only process when the `id` is available from `useParams`.
+    if (id) {
+      const foundProduct = mockProducts.find(p => p.id === id);
+      if (foundProduct) {
+        setProduct(foundProduct);
+      } else {
+        notFound();
+      }
+      setLoading(false);
     }
-    setLoading(false);
   }, [id]);
 
   if (loading) {
