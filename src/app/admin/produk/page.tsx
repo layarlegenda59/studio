@@ -7,21 +7,43 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { PlusCircle } from "lucide-react";
 import ProductTable from "@/components/admin/ProductTable";
-import { mockProducts } from "@/lib/mockData";
 import type { Product } from '@/lib/types';
+import { db } from '@/lib/firebase';
+import { collection, getDocs, orderBy, query } from 'firebase/firestore';
+import { useToast } from '@/hooks/use-toast';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function AdminProdukPage() {
   const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
 
-  const handleDataChange = useCallback(() => {
-    // Force re-render with the latest data from the mutated mock array
-    setProducts([...mockProducts]);
-  }, []);
+  const fetchProducts = useCallback(async () => {
+    setLoading(true);
+    try {
+      const productsCollection = collection(db, "products");
+      const q = query(productsCollection, orderBy("name", "asc"));
+      const productsSnapshot = await getDocs(q);
+      const productsList = productsSnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      })) as Product[];
+      setProducts(productsList);
+    } catch (error) {
+      console.error("Error fetching products: ", error);
+      toast({
+        title: "Gagal Memuat Produk",
+        description: "Terjadi kesalahan saat mengambil data dari database.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  }, [toast]);
 
   useEffect(() => {
-    // Load initial data and ensure it's fresh on mount
-    handleDataChange();
-  }, [handleDataChange]);
+    fetchProducts();
+  }, [fetchProducts]);
 
   return (
     <div className="space-y-8">
@@ -46,7 +68,16 @@ export default function AdminProdukPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <ProductTable products={products} onDataChange={handleDataChange} />
+          {loading ? (
+            <div className="space-y-2">
+              <Skeleton className="h-16 w-full" />
+              <Skeleton className="h-16 w-full" />
+              <Skeleton className="h-16 w-full" />
+              <Skeleton className="h-16 w-full" />
+            </div>
+          ) : (
+            <ProductTable products={products} onDataChange={fetchProducts} />
+          )}
         </CardContent>
       </Card>
     </div>

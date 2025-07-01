@@ -26,11 +26,12 @@ import {
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
-import type { Product } from "@/lib/types";
-import { mockProducts, saveProducts } from "@/lib/mockData";
-import { mockCategories } from "@/lib/adminMockData";
+import type { Product, AdminCategory } from "@/lib/types";
 import Link from 'next/link';
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { db } from "@/lib/firebase";
+import { collection, addDoc, doc, updateDoc, getDocs, query, orderBy } from "firebase/firestore";
+import { Loader2 } from "lucide-react";
 
 const allSizes = [
   "S", "M", "L", "XL", "XXL", "XXXL",
@@ -39,24 +40,22 @@ const allSizes = [
 ].sort((a, b) => {
   const numA = parseFloat(a);
   const numB = parseFloat(b);
-  const isANumber = !isNaN(numA);
-  const isBNumber = !isNaN(numB);
-
-  if (isANumber && isBNumber) return numA - numB;
-  if (isANumber) return -1; 
-  if (isBNumber) return 1;
-  if (a === "One Size") return 1; 
+  if (!isNaN(numA) && !isNaN(numB)) return numA - numB;
+  if (!isNaN(numA)) return -1;
+  if (!isNaN(numB)) return 1;
+  if (a === "One Size") return 1;
   if (b === "One Size") return -1;
-  return a.localeCompare(b); 
+  return a.localeCompare(b);
 });
-const allCategories = mockCategories.map(c => c.name);
-const allGenders = Array.from(new Set(mockProducts.map(p => p.gender)));
+
+const allGenders = ['Pria', 'Wanita', 'Unisex', 'Anak'];
 
 const productFormSchema = z.object({
   name: z.string().min(3, { message: "Nama produk harus minimal 3 karakter." }),
   brand: z.string().min(2, { message: "Merek harus diisi." }),
   category: z.string({ required_error: "Pilih kategori." }),
   gender: z.string({ required_error: "Pilih gender." }),
+  type: z.string().optional(),
   description: z.string().optional(),
   imageUrl: z.string().url({ message: "URL gambar tidak valid." }),
   originalPrice: z.coerce.number().min(1, { message: "Harga harus diisi." }),
@@ -76,14 +75,12 @@ const productFormSchema = z.object({
     path: ["promoPrice"],
 });
 
-
 type ProductFormValues = z.infer<typeof productFormSchema>;
 
 interface ProductFormProps {
   product?: Product;
 }
 
-// Helper function to format number with dots
 const formatCurrency = (value: string | number | undefined | null): string => {
   if (value === undefined || value === null) return "";
   const numStr = String(value).replace(/\D/g, '');
@@ -94,6 +91,18 @@ const formatCurrency = (value: string | number | undefined | null): string => {
 export default function ProductForm({ product }: ProductFormProps) {
   const router = useRouter();
   const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [categories, setCategories] = useState<string[]>([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+        const categoriesCollection = collection(db, "categories");
+        const q = query(categoriesCollection, orderBy("name"));
+        const snapshot = await getDocs(q);
+        setCategories(snapshot.docs.map(doc => doc.data().name));
+    };
+    fetchCategories();
+  }, []);
 
   const defaultValues: Partial<ProductFormValues> = product ? {
       ...product,
@@ -116,41 +125,41 @@ export default function ProductForm({ product }: ProductFormProps) {
     mode: "onChange",
   });
 
-  function onSubmit(data: ProductFormValues) {
-     const finalData = {
-        ...data,
-        promoPrice: (data.promoPrice === 0 || data.promoPrice === undefined) ? undefined : data.promoPrice,
-    };
-
-    if (product) {
-      // Editing an existing product
-      const productIndex = mockProducts.findIndex(p => p.id === product.id);
-      if (productIndex !== -1) {
-        mockProducts[productIndex] = {
-          ...mockProducts[productIndex],
-          ...finalData,
-        };
-      }
-    } else {
-      // Adding a new product
-      const newProduct: Product = {
-        id: `prod${Date.now()}`,
-        salesCount: 0,
-        ...finalData,
+  async function onSubmit(data: ProductFormValues) {
+    setIsSubmitting(true);
+    try {
+      const finalData = {
+          ...data,
+          promoPrice: (data.promoPrice === 0 || data.promoPrice === undefined) ? null : data.promoPrice,
       };
-      mockProducts.unshift(newProduct);
+
+      if (product) {
+        // Editing an existing product
+        const productRef = doc(db, "products", product.id);
+        await updateDoc(productRef, finalData);
+      } else {
+        // Adding a new product
+        const productData = { ...finalData, salesCount: 0 };
+        await addDoc(collection(db, "products"), productData);
+      }
+      
+      toast({
+        title: `Produk ${product ? 'Diperbarui' : 'Ditambahkan'}`,
+        description: `Produk "${data.name}" telah berhasil disimpan.`,
+      });
+
+      router.push('/admin/produk');
+      router.refresh();
+    } catch (error) {
+      console.error("Error saving product:", error);
+      toast({
+          title: "Gagal Menyimpan",
+          description: "Terjadi kesalahan saat menyimpan produk ke database.",
+          variant: "destructive"
+      });
+    } finally {
+        setIsSubmitting(false);
     }
-    
-    saveProducts();
-
-    toast({
-      title: `Produk ${product ? 'Diperbarui' : 'Ditambahkan'}`,
-      description: `Produk "${data.name}" telah berhasil disimpan.`,
-    });
-
-    // Redirect back to the product list and refresh data
-    router.push('/admin/produk');
-    router.refresh();
   }
 
   const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>, fieldName: 'originalPrice' | 'promoPrice') => {
@@ -173,7 +182,7 @@ export default function ProductForm({ product }: ProductFormProps) {
                         <FormItem>
                         <FormLabel>Nama Produk</FormLabel>
                         <FormControl>
-                            <Input placeholder="cth: Sneakers Pria Keren" {...field} />
+                            <Input placeholder="cth: Sneakers Pria Keren" {...field} disabled={isSubmitting} />
                         </FormControl>
                         <FormMessage />
                         </FormItem>
@@ -186,7 +195,7 @@ export default function ProductForm({ product }: ProductFormProps) {
                         <FormItem>
                         <FormLabel>Merek</FormLabel>
                         <FormControl>
-                            <Input placeholder="cth: Nike" {...field} />
+                            <Input placeholder="cth: Nike" {...field} disabled={isSubmitting} />
                         </FormControl>
                         <FormMessage />
                         </FormItem>
@@ -199,7 +208,7 @@ export default function ProductForm({ product }: ProductFormProps) {
                         <FormItem>
                         <FormLabel>URL Gambar</FormLabel>
                         <FormControl>
-                            <Input placeholder="https://example.com/image.png" {...field} />
+                            <Input placeholder="https://example.com/image.png" {...field} disabled={isSubmitting} />
                         </FormControl>
                         <FormMessage />
                         </FormItem>
@@ -213,9 +222,10 @@ export default function ProductForm({ product }: ProductFormProps) {
                         <FormLabel>Deskripsi</FormLabel>
                         <FormControl>
                             <Textarea
-                            placeholder="Jelaskan detail produk di sini..."
-                            className="resize-none"
-                            {...field}
+                              placeholder="Jelaskan detail produk di sini..."
+                              className="resize-none"
+                              {...field}
+                              disabled={isSubmitting}
                             />
                         </FormControl>
                         <FormMessage />
@@ -231,14 +241,14 @@ export default function ProductForm({ product }: ProductFormProps) {
                         render={({ field }) => (
                             <FormItem>
                             <FormLabel>Kategori</FormLabel>
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isSubmitting}>
                                 <FormControl>
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Pilih kategori" />
-                                </SelectTrigger>
+                                  <SelectTrigger>
+                                      <SelectValue placeholder="Pilih kategori" />
+                                  </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
-                                {allCategories.map(cat => (
+                                {categories.map(cat => (
                                     <SelectItem key={cat} value={cat}>{cat}</SelectItem>
                                 ))}
                                 </SelectContent>
@@ -253,7 +263,7 @@ export default function ProductForm({ product }: ProductFormProps) {
                         render={({ field }) => (
                             <FormItem>
                             <FormLabel>Gender</FormLabel>
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isSubmitting}>
                                 <FormControl>
                                 <SelectTrigger>
                                     <SelectValue placeholder="Pilih gender" />
@@ -283,6 +293,7 @@ export default function ProductForm({ product }: ProductFormProps) {
                                   placeholder="500.000"
                                   value={formatCurrency(field.value)}
                                   onChange={(e) => handlePriceChange(e, 'originalPrice')}
+                                  disabled={isSubmitting}
                                 />
                             </FormControl>
                             <FormMessage />
@@ -301,6 +312,7 @@ export default function ProductForm({ product }: ProductFormProps) {
                                   placeholder="399.000"
                                   value={formatCurrency(field.value)}
                                   onChange={(e) => handlePriceChange(e, 'promoPrice')}
+                                  disabled={isSubmitting}
                                 />
                             </FormControl>
                             <FormMessage />
@@ -315,7 +327,7 @@ export default function ProductForm({ product }: ProductFormProps) {
                         <FormItem>
                         <FormLabel>Jumlah Stok</FormLabel>
                         <FormControl>
-                            <Input type="number" placeholder="100" {...field} />
+                            <Input type="number" placeholder="100" {...field} disabled={isSubmitting} />
                         </FormControl>
                         <FormMessage />
                         </FormItem>
@@ -357,6 +369,7 @@ export default function ProductForm({ product }: ProductFormProps) {
                                                 )
                                             );
                                         }}
+                                        disabled={isSubmitting}
                                     />
                                     </FormControl>
                                     <FormLabel className="font-normal">
@@ -385,8 +398,9 @@ export default function ProductForm({ product }: ProductFormProps) {
                         </div>
                         <FormControl>
                             <Checkbox
-                            checked={field.value}
-                            onCheckedChange={field.onChange}
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
+                              disabled={isSubmitting}
                             />
                         </FormControl>
                         </FormItem>
@@ -398,7 +412,10 @@ export default function ProductForm({ product }: ProductFormProps) {
             <Button type="button" variant="outline" asChild>
                 <Link href="/admin/produk">Batal</Link>
             </Button>
-            <Button type="submit">{product ? 'Simpan Perubahan' : 'Tambah Produk'}</Button>
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {product ? 'Simpan Perubahan' : 'Tambah Produk'}
+            </Button>
         </div>
       </form>
     </Form>

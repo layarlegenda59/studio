@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import type { Promotion } from '@/lib/types';
 import React, { useEffect, useState } from 'react';
 import { cn } from "@/lib/utils";
+import { Skeleton } from './ui/skeleton';
 
 interface PromoCarouselProps {
   promotions: Promotion[];
@@ -28,45 +29,35 @@ export default function PromoCarousel({ promotions }: PromoCarouselProps) {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
-    if (!api) {
-      return;
-    }
+    if (!api) return;
     setCount(api.scrollSnapList().length);
     setCurrent(api.selectedScrollSnap());
-
-    api.on("select", () => {
-      setCurrent(api.selectedScrollSnap());
-    });
+    api.on("select", () => setCurrent(api.selectedScrollSnap()));
   }, [api]);
   
   if (!promotions || promotions.length === 0) {
-    return null;
+    return (
+      <div className="w-full py-8 bg-secondary/30">
+        <div className="w-full max-w-6xl mx-auto px-4">
+           <Skeleton className="aspect-video sm:aspect-[16/7] md:aspect-[16/6] w-full rounded-lg" />
+        </div>
+      </div>
+    )
   }
 
   return (
     <div className="w-full py-8 bg-secondary/30">
       <Carousel
         setApi={setApi}
-        opts={{
-          align: "start",
-          loop: true,
-        }}
-        plugins={[
-          Autoplay({
-            delay: 5000,
-            stopOnInteraction: true,
-          }),
-        ]}
+        opts={{ align: "start", loop: true }}
+        plugins={[Autoplay({ delay: 5000, stopOnInteraction: true })]}
         className="w-full max-w-6xl mx-auto"
       >
         <CarouselContent>
           {promotions.map((promo, index) => (
             <CarouselItem key={promo.id}>
               <Card className="overflow-hidden shadow-lg border-none bg-transparent">
-                <CardContent className={cn(
-                  "relative flex items-center justify-center p-0",
-                  "aspect-video sm:aspect-[16/7] md:aspect-[16/6]" // Responsive aspect ratio
-                )}>
+                <CardContent className={cn("relative flex items-center justify-center p-0", "aspect-video sm:aspect-[16/7] md:aspect-[16/6]")}>
                   {promo.imageUrl && (
                     <Image
                       src={promo.imageUrl}
@@ -107,10 +98,7 @@ export default function PromoCarousel({ promotions }: PromoCarouselProps) {
               key={index}
               onClick={() => api?.scrollTo(index)}
               aria-label={`Go to slide ${index + 1}`}
-              className={cn(
-                "h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full transition-all",
-                current === index ? "w-4 sm:w-6 bg-primary" : "bg-primary/30"
-              )}
+              className={cn("h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full transition-all", current === index ? "w-4 sm:w-6 bg-primary" : "bg-primary/30")}
             />
           ))}
         </div>

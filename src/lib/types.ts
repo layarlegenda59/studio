@@ -1,10 +1,12 @@
 
+import type { Timestamp } from 'firebase/firestore';
+
 export interface Product {
   id: string;
   name: string;
   brand: string; 
   category: string;
-  type?: string; // Misalnya: 'Sneakers', 'Kemeja', 'Ransel'
+  type?: string;
   imageUrl: string;
   originalPrice: number;
   promoPrice?: number;
@@ -13,7 +15,7 @@ export interface Product {
   gender: 'Pria' | 'Wanita' | 'Unisex';
   isPromo: boolean;
   description?: string; 
-  stock?: number; // Added for admin
+  stock?: number;
 }
 
 export interface Promotion {
@@ -60,17 +62,17 @@ export interface AdminUser {
   name: string;
   email: string;
   role: 'Admin' | 'Pelanggan';
-  joinDate: string; // ISO string
+  joinDate: string | Date | Timestamp;
 }
 
 export type AdminTransactionType = 'Pendapatan' | 'Pengeluaran';
 
 export interface AdminTransaction {
   id: string;
-  date: string; // ISO string
+  date: string | Date | Timestamp;
   description: string;
   type: AdminTransactionType;
-  category: string; // e.g., "Penjualan Produk", "Biaya Operasional", "Biaya Iklan"
+  category: string;
   amount: number;
   notes?: string;
 }
@@ -78,7 +80,7 @@ export interface AdminTransaction {
 export interface AdminCategory {
   id: string;
   name: string;
-  productCount: number;
+  productCount: number; // This will now be calculated on the fly or stored differently
 }
 
 export interface AdminDiscount {
@@ -88,25 +90,24 @@ export interface AdminDiscount {
   type: 'percentage' | 'fixed';
   value: number;
   status: 'Aktif' | 'Tidak Aktif' | 'Terjadwal';
-  startDate: Date;
-  endDate: Date;
+  startDate: Date | Timestamp;
+  endDate: Date | Timestamp;
   minPurchase?: number;
 }
 
-// Admin Dashboard Specific Types
 export interface AdminOrder {
   id: string;
   customerName: string;
   productName: string;
-  productDetails?: string; // e.g. size, color
-  orderDate: string; // ISO string or Date object
+  productDetails?: string;
+  orderDate: string | Date | Timestamp;
   status: 'Belum Dikirim' | 'Sudah Dikirim' | 'Batal';
   totalAmount: number;
   waNumber?: string;
 }
 
 export interface AdminSalesDataPoint {
-  name: string; // e.g., 'Sen', 'Sel', 'Week 1', 'Jan'
+  name: string;
   sales: number;
 }
 
@@ -115,8 +116,8 @@ export interface AdminSummaryStats {
   ordersShipped: number;
   ordersPending: number;
   ordersCancelled: number;
-  activeCustomers?: number; // Optional
-  lowStockItems?: number; // Optional
+  activeCustomers?: number;
+  lowStockItems?: number;
 }
 
 export interface AdminFinancialOverview {
@@ -132,7 +133,6 @@ export interface AdminDashboardData {
   adminSettings: AdminSettings;
 }
 
-// Admin Analytics Types
 export interface ProductPerformance {
   name: string;
   rankLabel?: string;

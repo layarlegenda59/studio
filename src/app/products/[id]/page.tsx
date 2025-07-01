@@ -11,11 +11,13 @@ import WhatsAppButton from '@/components/WhatsAppButton';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { mockProducts, initializeProducts } from '@/lib/mockData';
 import type { Product } from '@/lib/types';
 import { Heart, ShoppingCart, ChevronLeft } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 import { cn } from '@/lib/utils';
+import { db } from '@/lib/firebase';
+import { doc, getDoc } from 'firebase/firestore';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function ProductDetailPage() {
   const router = useRouter();
@@ -23,46 +25,42 @@ export default function ProductDetailPage() {
   const { toast } = useToast();
   const [product, setProduct] = useState<Product | null>(null);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  // Local state for wishlist and cart interactions on this page
   const [isProductWishlisted, setIsProductWishlisted] = useState(false);
   const [isProductInCart, setIsProductInCart] = useState(false);
   
-  // For Header props - these are minimal and don't reflect global state
   const [headerWishlistItems, setHeaderWishlistItems] = useState<Product[]>([]);
   const [headerCartItems, setHeaderCartItems] = useState<Set<string>>(new Set());
 
-
   useEffect(() => {
-    initializeProducts();
     if (params.id) {
-      const foundProduct = mockProducts.find(p => p.id === params.id);
-      if (foundProduct) {
-        setProduct(foundProduct);
-        // Note: Wishlist/cart status would ideally come from a global store or props
-        // For now, it's just local to this page's interaction buttons
-      } else {
-        toast({ title: "Error", description: "Produk tidak ditemukan.", variant: "destructive" });
-        router.push('/');
-      }
+      const fetchProduct = async () => {
+        setLoading(true);
+        try {
+          const productRef = doc(db, 'products', params.id as string);
+          const productSnap = await getDoc(productRef);
+          if (productSnap.exists()) {
+            setProduct({ id: productSnap.id, ...productSnap.data() } as Product);
+          } else {
+            toast({ title: "Error", description: "Produk tidak ditemukan.", variant: "destructive" });
+            router.push('/');
+          }
+        } catch (error) {
+          console.error("Error fetching product details:", error);
+          toast({ title: "Error", description: "Gagal memuat detail produk.", variant: "destructive" });
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchProduct();
     }
   }, [params.id, router, toast]);
 
   const handleToggleWishlist = () => {
     if (!product) return;
-    setIsProductWishlisted(prev => {
-      const newState = !prev;
-      if (newState) {
-        toast({ title: "Wishlist", description: `${product.name} ditambahkan ke wishlist.` });
-      } else {
-        toast({ title: "Wishlist", description: `${product.name} dihapus dari wishlist.` });
-      }
-      // Update header dummy state if needed (simplified)
-      setHeaderWishlistItems(currentHeaderItems => 
-        newState ? [...currentHeaderItems, product] : currentHeaderItems.filter(p => p.id !== product.id)
-      );
-      return newState;
-    });
+    setIsProductWishlisted(prev => !prev);
+    // Logic to add/remove from global wishlist state would go here
   };
 
   const handleToggleCart = () => {
@@ -75,63 +73,44 @@ export default function ProductDetailPage() {
       });
       return;
     }
-    setIsProductInCart(prev => {
-      const newState = !prev;
-      if (newState) {
-        toast({ title: "Keranjang", description: `${product.name} ${selectedSize ? `(Ukuran: ${selectedSize})` : ''} ditambahkan ke keranjang.` });
-      } else {
-        toast({ title: "Keranjang", description: `${product.name} dihapus dari keranjang.` });
-      }
-       // Update header dummy state if needed (simplified)
-      setHeaderCartItems(currentHeaderCart => {
-        const newSet = new Set(currentHeaderCart);
-        if (newState) newSet.add(product.id);
-        else newSet.delete(product.id);
-        return newSet;
-      });
-      return newState;
-    });
+    setIsProductInCart(prev => !prev);
+    // Logic to add/remove from global cart state would go here
   };
   
   // Dummy handlers for Header props
-  const handleRemoveFromHeaderWishlist = (productId: string) => {
-    setHeaderWishlistItems(prev => prev.filter(p => p.id !== productId));
-    const removedProduct = mockProducts.find(p => p.id === productId);
-    if (removedProduct) toast({ title: "Wishlist Header", description: `${removedProduct.name} dihapus.` });
-  };
+  const handleRemoveFromHeaderWishlist = (productId: string) => {};
+  const handleToggleCartFromHeaderWishlist = (productId: string) => {};
 
-  const handleToggleCartFromHeaderWishlist = (productId: string) => {
-    setHeaderCartItems(prev => {
-      const newSet = new Set(prev);
-      const targetProduct = mockProducts.find(p => p.id === productId);
-      if (newSet.has(productId)) {
-        newSet.delete(productId);
-        if (targetProduct) toast({ title: "Keranjang Header", description: `${targetProduct.name} dihapus.` });
-      } else {
-        newSet.add(productId);
-        if (targetProduct) toast({ title: "Keranjang Header", description: `${targetProduct.name} ditambahkan.` });
-      }
-      return newSet;
-    });
-  };
-
-
-  if (!product) {
+  if (loading) {
     return (
       <div className="flex flex-col min-h-screen bg-background">
         <Header 
             wishlistItems={headerWishlistItems}
             onRemoveFromWishlist={handleRemoveFromHeaderWishlist}
             itemsAddedToCartFromWishlist={headerCartItems}
-            onToggleCartFromWishlist={handleToggleCartFromHeaderWishlist}
+            onToggleCartFromHeaderWishlist={handleToggleCartFromHeaderWishlist}
         />
-        <main className="flex-grow container mx-auto px-4 py-8 flex items-center justify-center">
-          <p>Memuat detail produk...</p>
+        <main className="flex-grow container mx-auto px-4 py-6">
+          <Skeleton className="h-9 w-24 mb-4" />
+          <div className="grid md:grid-cols-2 gap-8">
+            <Skeleton className="aspect-square w-full rounded-lg" />
+            <div className="space-y-4">
+              <Skeleton className="h-5 w-1/4" />
+              <Skeleton className="h-8 w-3/4" />
+              <Skeleton className="h-5 w-1/3" />
+              <Separator />
+              <Skeleton className="h-8 w-1/2" />
+              <Skeleton className="h-20 w-full" />
+              <Skeleton className="h-10 w-full" />
+            </div>
+          </div>
         </main>
         <Footer />
       </div>
     );
   }
+
+  if (!product) return null;
 
   const formatPrice = (price: number) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(price);
   const discountPercentage = product.promoPrice ? Math.round(((product.originalPrice - product.promoPrice) / product.originalPrice) * 100) : 0;
@@ -142,7 +121,7 @@ export default function ProductDetailPage() {
         wishlistItems={headerWishlistItems} 
         onRemoveFromWishlist={handleRemoveFromHeaderWishlist} 
         itemsAddedToCartFromWishlist={headerCartItems} 
-        onToggleCartFromWishlist={handleToggleCartFromHeaderWishlist} 
+        onToggleCartFromHeaderWishlist={handleToggleCartFromHeaderWishlist} 
       />
       <main className="flex-grow container mx-auto px-4 py-4 sm:py-6">
         <Button 
@@ -153,7 +132,6 @@ export default function ProductDetailPage() {
           <ChevronLeft className="mr-1 h-3 w-3 sm:mr-2 sm:h-4 sm:w-4 transition-transform group-hover:-translate-x-1" /> Kembali
         </Button>
         <div className="grid md:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
-          {/* Product Image Section */}
           <div className="aspect-square w-full overflow-hidden rounded-lg shadow-lg bg-secondary/10 flex items-center justify-center">
             <Image
               src={product.imageUrl}
@@ -166,7 +144,6 @@ export default function ProductDetailPage() {
             />
           </div>
 
-          {/* Product Details Section */}
           <div className="flex flex-col space-y-3 sm:space-y-4">
             <div>
               <p className="text-xs sm:text-sm text-muted-foreground mb-0.5 sm:mb-1">{product.brand}</p>

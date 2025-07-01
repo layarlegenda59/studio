@@ -4,7 +4,6 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import {
   Table,
   TableBody,
@@ -35,7 +34,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useToast } from '@/hooks/use-toast';
-import { mockProducts, saveProducts } from '@/lib/mockData';
+import { doc, deleteDoc } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
 
 interface ProductTableProps {
   products: Product[];
@@ -46,28 +46,30 @@ export default function ProductTable({ products, onDataChange }: ProductTablePro
   const { toast } = useToast();
   const [productToDelete, setProductToDelete] = useState<Product | null>(null);
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (!productToDelete) return;
 
-    // Mutate the mock data source
-    const indexToDelete = mockProducts.findIndex(p => p.id === productToDelete.id);
-    if (indexToDelete > -1) {
-        mockProducts.splice(indexToDelete, 1);
+    try {
+      await deleteDoc(doc(db, "products", productToDelete.id));
+      toast({
+        title: "Produk Dihapus",
+        description: `Produk "${productToDelete.name}" telah berhasil dihapus.`,
+      });
+      onDataChange();
+    } catch (error) {
+      console.error("Error deleting product: ", error);
+      toast({
+        title: "Gagal Menghapus",
+        description: "Terjadi kesalahan saat menghapus produk dari database.",
+        variant: "destructive",
+      });
+    } finally {
+      setProductToDelete(null);
     }
-    
-    saveProducts();
-
-    toast({
-      title: "Produk Dihapus",
-      description: `Produk "${productToDelete.name}" telah berhasil dihapus.`,
-    });
-
-    setProductToDelete(null); // Close dialog
-    onDataChange(); // Trigger re-render in parent component
   };
   
   const formatPrice = (price?: number) => {
-    if (price === undefined) return '-';
+    if (price === undefined || price === null) return '-';
     return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(price);
   };
 
@@ -169,7 +171,7 @@ export default function ProductTable({ products, onDataChange }: ProductTablePro
             <AlertDialogDescription>
               Tindakan ini tidak dapat dibatalkan. Ini akan menghapus produk
               <span className="font-semibold"> {productToDelete?.name} </span>
-              secara permanen dari server.
+              secara permanen dari database.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

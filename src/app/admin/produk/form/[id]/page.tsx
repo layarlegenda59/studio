@@ -3,36 +3,52 @@
 
 import ProductForm from '@/components/admin/ProductForm';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { mockProducts } from '@/lib/mockData';
 import { notFound, useParams } from 'next/navigation';
 import type { Product } from '@/lib/types';
 import React, { useState, useEffect } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
+import { useToast } from '@/hooks/use-toast';
 
 export default function EditProductPage() {
   const params = useParams();
   const id = params.id as string;
+  const { toast } = useToast();
 
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Only process when the `id` is available from `useParams`.
     if (id) {
-      const foundProduct = mockProducts.find(p => p.id === id);
-      if (foundProduct) {
-        setProduct(foundProduct);
-      } else {
-        // This might happen if the user navigates to a non-existent product ID
-        // or if the data from localStorage hasn't loaded yet.
-        // A robust solution would wait for data to be confirmed loaded.
-        console.warn(`Product with id "${id}" not found in mockProducts.`);
-        // To avoid flashing a not found, we can wait a bit, but for now, we'll assume it's a real 404.
-        notFound();
-      }
-      setLoading(false);
+      const fetchProduct = async () => {
+        try {
+          const productDocRef = doc(db, 'products', id);
+          const productSnap = await getDoc(productDocRef);
+
+          if (productSnap.exists()) {
+            setProduct({ id: productSnap.id, ...productSnap.data() } as Product);
+          } else {
+            toast({
+              title: "Produk Tidak Ditemukan",
+              variant: "destructive",
+            });
+            notFound();
+          }
+        } catch (error) {
+          console.error("Error fetching product:", error);
+          toast({
+            title: "Gagal Memuat Produk",
+            description: "Terjadi kesalahan saat mengambil data dari database.",
+            variant: "destructive",
+          });
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchProduct();
     }
-  }, [id]);
+  }, [id, toast]);
 
   if (loading) {
     return (
@@ -51,15 +67,14 @@ export default function EditProductPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div className="space-y-4">
                             <Skeleton className="h-10 w-full" />
-                            <Skeleton className="h-10 w-full" />
-                            <Skeleton className="h-10 w-full" />
                             <Skeleton className="h-20 w-full" />
+                            <Skeleton className="h-10 w-full" />
+                            <Skeleton className="h-10 w-full" />
                         </div>
                          <div className="space-y-4">
                             <Skeleton className="h-10 w-full" />
                             <Skeleton className="h-10 w-full" />
                             <Skeleton className="h-10 w-full" />
-                            <Skeleton className="h-20 w-full" />
                         </div>
                     </div>
                 </div>
@@ -70,8 +85,8 @@ export default function EditProductPage() {
   }
 
   if (!product) {
-    // This case will likely lead to notFound(), but as a fallback.
-    return <div>Produk tidak ditemukan. Mungkin Anda perlu memuat ulang.</div>;
+    // This case will be handled by notFound(), but as a fallback.
+    return <div>Produk tidak ditemukan.</div>;
   }
 
   return (
