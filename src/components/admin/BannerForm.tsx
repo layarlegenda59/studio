@@ -1,3 +1,4 @@
+
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -18,7 +19,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import type { Promotion } from "@/lib/types";
-import { mockPromotions } from "@/lib/mockData";
+import { mockPromotions, savePromotions } from "@/lib/mockData";
 import Link from 'next/link';
 
 const bannerFormSchema = z.object({
@@ -71,6 +72,8 @@ export default function BannerForm({ promotion }: BannerFormProps) {
       mockPromotions.unshift(newPromotion);
     }
     
+    savePromotions();
+
     toast({
       title: `Banner ${promotion ? 'Diperbarui' : 'Ditambahkan'}`,
       description: `Banner "${data.title}" telah berhasil disimpan.`,

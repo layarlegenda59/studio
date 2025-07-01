@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -17,7 +18,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useToast } from '@/hooks/use-toast';
-import { mockPromotions } from '@/lib/mockData';
+import { mockPromotions, savePromotions } from '@/lib/mockData';
 import type { Promotion } from '@/lib/types';
 
 export default function AdminPromoBannerPage() {
@@ -34,14 +35,13 @@ export default function AdminPromoBannerPage() {
   const handleDelete = () => {
     if (!bannerToDelete) return;
 
-    // Find the index and remove from the original mock data array
     const indexToDelete = mockPromotions.findIndex(p => p.id === bannerToDelete.id);
     if (indexToDelete > -1) {
       mockPromotions.splice(indexToDelete, 1);
     }
 
-    // Update the local state to trigger a re-render, ensuring UI consistency
-    setPromotions(currentPromotions => currentPromotions.filter(p => p.id !== bannerToDelete.id));
+    savePromotions();
+    setPromotions([...mockPromotions]);
     
     toast({
       title: "Banner Dihapus",

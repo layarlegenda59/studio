@@ -30,6 +30,7 @@ import type { Product } from "@/lib/types";
 import { mockProducts, saveProducts } from "@/lib/mockData";
 import { mockCategories } from "@/lib/adminMockData";
 import Link from 'next/link';
+import React from "react";
 
 const allSizes = [
   "S", "M", "L", "XL", "XXL", "XXXL",
@@ -113,10 +114,13 @@ export default function ProductForm({ product }: ProductFormProps) {
     mode: "onChange",
   });
 
+  const [formattedOriginalPrice, setFormattedOriginalPrice] = React.useState(formatCurrency(defaultValues.originalPrice));
+  const [formattedPromoPrice, setFormattedPromoPrice] = React.useState(formatCurrency(defaultValues.promoPrice));
+
   function onSubmit(data: ProductFormValues) {
      const finalData = {
         ...data,
-        promoPrice: data.promoPrice === 0 ? undefined : data.promoPrice,
+        promoPrice: (data.promoPrice === 0 || data.promoPrice === undefined) ? undefined : data.promoPrice,
     };
 
     if (product) {
@@ -149,6 +153,20 @@ export default function ProductForm({ product }: ProductFormProps) {
     router.push('/admin/produk');
     router.refresh();
   }
+
+  const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>, fieldName: 'originalPrice' | 'promoPrice') => {
+      const value = e.target.value;
+      const cleanedValue = value.replace(/\D/g, '');
+      const numValue = cleanedValue === '' ? 0 : Number(cleanedValue);
+      
+      if (fieldName === 'originalPrice') {
+        setFormattedOriginalPrice(formatCurrency(numValue));
+        form.setValue('originalPrice', numValue, { shouldValidate: true });
+      } else {
+        setFormattedPromoPrice(formatCurrency(numValue));
+        form.setValue('promoPrice', numValue, { shouldValidate: true });
+      }
+  };
 
   return (
     <Form {...form}>
@@ -260,22 +278,18 @@ export default function ProductForm({ product }: ProductFormProps) {
                     />
                  </div>
                 <div className="grid grid-cols-2 gap-4">
-                    <FormField
+                     <FormField
                         control={form.control}
                         name="originalPrice"
-                        render={({ field }) => (
+                        render={() => (
                             <FormItem>
                             <FormLabel>Harga Asli</FormLabel>
                             <FormControl>
                                 <Input 
                                   type="text"
-                                  placeholder="500.000" 
-                                  {...field}
-                                  value={field.value === 0 ? '' : formatCurrency(field.value)}
-                                  onChange={(e) => {
-                                      const cleanedValue = e.target.value.replace(/\D/g, '');
-                                      field.onChange(Number(cleanedValue));
-                                  }}
+                                  placeholder="500.000"
+                                  value={formattedOriginalPrice}
+                                  onChange={(e) => handlePriceChange(e, 'originalPrice')}
                                 />
                             </FormControl>
                             <FormMessage />
@@ -285,19 +299,15 @@ export default function ProductForm({ product }: ProductFormProps) {
                      <FormField
                         control={form.control}
                         name="promoPrice"
-                        render={({ field }) => (
+                        render={() => (
                             <FormItem>
                             <FormLabel>Harga Promo (Opsional)</FormLabel>
                             <FormControl>
                                 <Input 
-                                  type="text" 
-                                  placeholder="399.000" 
-                                  {...field}
-                                  value={field.value === 0 ? '' : formatCurrency(field.value)}
-                                  onChange={(e) => {
-                                      const cleanedValue = e.target.value.replace(/\D/g, '');
-                                      field.onChange(Number(cleanedValue));
-                                  }}
+                                  type="text"
+                                  placeholder="399.000"
+                                  value={formattedPromoPrice}
+                                  onChange={(e) => handlePriceChange(e, 'promoPrice')}
                                 />
                             </FormControl>
                             <FormMessage />

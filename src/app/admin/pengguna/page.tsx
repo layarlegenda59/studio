@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -56,7 +56,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
-import { mockUsers } from '@/lib/adminMockData';
+import { mockUsers, saveUsers } from '@/lib/adminMockData';
 import type { AdminUser } from '@/lib/types';
 
 const userFormSchema = z.object({
@@ -78,6 +78,11 @@ export default function AdminPenggunaPage() {
   const form = useForm<UserFormValues>({
     resolver: zodResolver(userFormSchema),
   });
+
+  // Re-sync state with the (potentially updated) mock data from localStorage
+  useEffect(() => {
+    setUsers([...mockUsers]);
+  }, []);
 
   const handleOpenForm = (user: AdminUser | null) => {
     setUserToEdit(user);
@@ -102,12 +107,8 @@ export default function AdminPenggunaPage() {
   const onSubmit = (data: UserFormValues) => {
     if (userToEdit) {
       // Edit
-      const updatedUser: AdminUser = {
-        ...userToEdit,
-        ...data,
-      };
       const index = mockUsers.findIndex(u => u.id === userToEdit.id);
-      if (index !== -1) mockUsers[index] = updatedUser;
+      if (index !== -1) mockUsers[index] = { ...userToEdit, ...data };
       toast({ title: "Sukses", description: "Data pengguna berhasil diperbarui." });
     } else {
       // Add
@@ -115,15 +116,12 @@ export default function AdminPenggunaPage() {
         form.setError("password", { message: "Password minimal 6 karakter untuk pengguna baru." });
         return;
       }
-      const newUser: AdminUser = {
-        id: `user-${Date.now()}`,
-        joinDate: new Date().toISOString(),
-        ...data,
-      };
+      const newUser: AdminUser = { id: `user-${Date.now()}`, joinDate: new Date().toISOString(), ...data };
       mockUsers.unshift(newUser);
       toast({ title: "Sukses", description: "Pengguna baru berhasil ditambahkan." });
     }
     
+    saveUsers();
     setUsers([...mockUsers]);
     setIsFormOpen(false);
   };
@@ -134,6 +132,7 @@ export default function AdminPenggunaPage() {
     if (index > -1) {
       mockUsers.splice(index, 1);
     }
+    saveUsers();
     setUsers([...mockUsers]);
     toast({ title: "Sukses", description: "Pengguna telah dihapus." });
     setUserToDelete(null);

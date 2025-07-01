@@ -1,12 +1,12 @@
 
 "use client";
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import RecentOrdersTable from "@/components/admin/RecentOrdersTable";
-import { mockRecentOrders } from "@/lib/adminMockData";
+import { mockRecentOrders, saveRecentOrders } from "@/lib/adminMockData";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Search, PlusCircle } from "lucide-react";
@@ -64,6 +64,11 @@ export default function AdminPesananWAPage() {
     },
   });
 
+  // Re-sync state with the (potentially updated) mock data from localStorage
+  useEffect(() => {
+    setOrders([...mockRecentOrders]);
+  }, []);
+
   const filteredOrders = useMemo(() => {
     let filtered = orders;
 
@@ -100,14 +105,10 @@ export default function AdminPesananWAPage() {
   };
 
   const handleAddOrder = (data: OrderFormValues) => {
-    const newOrder: AdminOrder = {
-      id: `ORD${Date.now()}`,
-      orderDate: new Date().toISOString(),
-      ...data
-    };
+    const newOrder: AdminOrder = { id: `ORD${Date.now()}`, orderDate: new Date().toISOString(), ...data };
     
-    // Mutate mock data
     mockRecentOrders.unshift(newOrder);
+    saveRecentOrders();
     setOrders([...mockRecentOrders]);
     
     toast({ title: "Sukses", description: "Pesanan baru berhasil ditambahkan." });
@@ -120,6 +121,7 @@ export default function AdminPesananWAPage() {
     if(orderIndex !== -1) {
       mockRecentOrders[orderIndex] = updatedOrder;
     }
+    saveRecentOrders();
     setOrders([...mockRecentOrders]);
     toast({ title: "Sukses", description: `Status pesanan untuk ${updatedOrder.customerName} telah diperbarui.` });
   };
@@ -129,6 +131,7 @@ export default function AdminPesananWAPage() {
      if(orderIndex !== -1) {
        mockRecentOrders.splice(orderIndex, 1);
      }
+    saveRecentOrders();
     setOrders([...mockRecentOrders]);
     toast({ title: "Sukses", description: "Pesanan telah dihapus." });
   };

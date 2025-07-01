@@ -7,7 +7,17 @@ import { Menu } from 'lucide-react';
 import React, { useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { initializeProducts } from '@/lib/mockData';
+import { initializeProducts, initializePromotions } from '@/lib/mockData';
+import { 
+  initializeCategories,
+  initializeDiscounts,
+  initializeRecentOrders,
+  initializeTransactions,
+  initializeUsers,
+  initializeStoreSettings,
+  initializeAdminSettings,
+  initializeTopBanners
+} from '@/lib/adminMockData';
 import { useMounted } from '@/hooks/use-mounted';
 
 const iconLogoUrl = "https://ggbivmpazczpgtmnfwfs.supabase.co/storage/v1/object/sign/material/Logo%20goodstock-x%20(transparan)%20(1).png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jYjkzYjM4Zi1kOGJhLTRmYTEtYmM0ZC00MWUzOGU4YTZhNzgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYXRlcmlhbC9Mb2dvIGdvb2RzdG9jay14ICh0cmFuc3BhcmFuKSAoMSkucG5nIiwiaWF0IjoxNzUwMzIwODEwLCJleHAiOjE3ODE4NTY4MTB9.14Cw5nlZ5gYYOmWPUIWZU_bJwyvi1ipFzvuZF72y24A";
@@ -22,7 +32,21 @@ export default function AdminLayout({
 
   useEffect(() => {
     if (isMounted) {
+      // Initialize all mutable mock data arrays from localStorage
       initializeProducts();
+      initializePromotions();
+      initializeCategories();
+      initializeDiscounts();
+      initializeRecentOrders();
+      initializeTransactions();
+      initializeUsers();
+      
+      // Initialize settings objects (these functions are defined in their respective components)
+      // For simplicity, we assume they are also handled via localStorage within their components
+      // or we can centralize them like this. The setting pages already handle this, so these calls ensure consistency.
+      initializeStoreSettings();
+      initializeAdminSettings();
+      initializeTopBanners();
     }
   }, [isMounted]);
 

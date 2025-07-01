@@ -2,6 +2,8 @@
 import type { Product, Promotion, ShippingCost, ShippingVendor } from './types';
 
 export const PRODUCTS_KEY = 'goodstockx_products';
+export const PROMOTIONS_KEY = 'goodstockx_promotions';
+
 
 // The mutable array that the app will use. It starts with the default data.
 export let mockProducts: Product[] = [
@@ -238,50 +240,7 @@ export let mockProducts: Product[] = [
   }
 ];
 
-/**
- * Initializes the product data from localStorage on the client-side.
- * If localStorage has data, it overwrites the in-memory mockProducts.
- * If not, it saves the default mockProducts to localStorage.
- * Should be called in a useEffect hook in a layout or top-level component.
- */
-export function initializeProducts() {
-    if (typeof window === 'undefined') return;
-    try {
-        const savedProductsJSON = localStorage.getItem(PRODUCTS_KEY);
-        if (savedProductsJSON) {
-            // Use the saved data
-            const savedProducts = JSON.parse(savedProductsJSON);
-            // Basic validation to prevent empty/malformed data issues
-            if (Array.isArray(savedProducts) && savedProducts.length > 0) {
-                 mockProducts = savedProducts;
-            } else {
-                 // If data is malformed, reset with default and save
-                 localStorage.setItem(PRODUCTS_KEY, JSON.stringify(mockProducts));
-            }
-        } else {
-            // First time load: save the default data to localStorage
-            localStorage.setItem(PRODUCTS_KEY, JSON.stringify(mockProducts));
-        }
-    } catch (error) {
-        console.error("Failed to initialize products from localStorage.", error);
-        // Fallback to default in-memory mockProducts
-    }
-}
-
-/**
- * Saves the current state of the products array to localStorage.
- */
-export function saveProducts() {
-    if (typeof window === 'undefined') return;
-    try {
-        localStorage.setItem(PRODUCTS_KEY, JSON.stringify(mockProducts));
-    } catch (error) {
-        console.error("Failed to save products to localStorage.", error);
-    }
-}
-
-
-export const mockPromotions: Promotion[] = [
+export let mockPromotions: Promotion[] = [
   {
     id: 'promo1',
     imageUrl: 'https://ggbivmpazczpgtmnfwfs.supabase.co/storage/v1/object/sign/material/erik-mclean-nfoRa6NHTbU-unsplash.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jYjkzYjM4Zi1kOGJhLTRmYTEtYmM0ZC00MWUzOGU4YTZhNzgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYXRlcmlhbC9lcmlrLW1jbGVhbi1uZm9SYTZOSFRiVS11bnNwbGFzaC5qcGciLCJpYXQiOjE3NTAzMTA4MTYsImV4cCI6MTc4MTg0NjgxNn0.W6d7AjWEOL7BD5PBAEA47uReC5GFBHGFbZMNx3dIG94',
@@ -299,6 +258,76 @@ export const mockPromotions: Promotion[] = [
     ctaLink: '#products',
   },
 ];
+
+
+/**
+ * Initializes products from localStorage or saves the default if not present.
+ */
+export function initializeProducts() {
+    if (typeof window === 'undefined') return;
+    try {
+        const savedJSON = localStorage.getItem(PRODUCTS_KEY);
+        if (savedJSON) {
+            const savedData = JSON.parse(savedJSON);
+            if (Array.isArray(savedData)) {
+                mockProducts.length = 0;
+                mockProducts.push(...savedData);
+                return;
+            }
+        }
+        // If nothing is saved or data is malformed, save the default
+        localStorage.setItem(PRODUCTS_KEY, JSON.stringify(mockProducts));
+    } catch (error) {
+        console.error("Failed to initialize products from localStorage.", error);
+    }
+}
+
+/**
+ * Saves the current products array to localStorage.
+ */
+export function saveProducts() {
+    if (typeof window === 'undefined') return;
+    try {
+        localStorage.setItem(PRODUCTS_KEY, JSON.stringify(mockProducts));
+    } catch (error) {
+        console.error("Failed to save products to localStorage.", error);
+    }
+}
+
+
+/**
+ * Initializes promotions from localStorage or saves the default if not present.
+ */
+export function initializePromotions() {
+    if (typeof window === 'undefined') return;
+    try {
+        const savedJSON = localStorage.getItem(PROMOTIONS_KEY);
+        if (savedJSON) {
+            const savedData = JSON.parse(savedJSON);
+            if (Array.isArray(savedData)) {
+                mockPromotions.length = 0;
+                mockPromotions.push(...savedData);
+                return;
+            }
+        }
+        localStorage.setItem(PROMOTIONS_KEY, JSON.stringify(mockPromotions));
+    } catch (error) {
+        console.error("Failed to initialize promotions from localStorage.", error);
+    }
+}
+
+/**
+ * Saves the current promotions array to localStorage.
+ */
+export function savePromotions() {
+    if (typeof window === 'undefined') return;
+    try {
+        localStorage.setItem(PROMOTIONS_KEY, JSON.stringify(mockPromotions));
+    } catch (error) {
+        console.error("Failed to save promotions to localStorage.", error);
+    }
+}
+
 
 export const mockShippingVendors: ShippingVendor[] = ['JNE', 'JNT', 'SiCepat', 'Lion Parcel'];
 

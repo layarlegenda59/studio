@@ -41,8 +41,8 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { mockCategories } from '@/lib/adminMockData';
-import { mockProducts } from '@/lib/mockData';
+import { mockCategories, saveCategories } from '@/lib/adminMockData';
+import { mockProducts, saveProducts } from '@/lib/mockData';
 import type { AdminCategory } from '@/lib/types';
 
 export default function AdminKategoriProdukPage() {
@@ -93,14 +93,15 @@ export default function AdminKategoriProdukPage() {
       // Edit existing category
       const categoryIndex = mockCategories.findIndex(c => c.id === categoryToEdit.id);
       if (categoryIndex !== -1) {
-        // Update products with the old category name to the new one
         const oldName = mockCategories[categoryIndex].name;
+        // Update products with the old category name to the new one
         mockProducts.forEach(p => {
             if (p.category === oldName) {
                 p.category = categoryName;
             }
         });
         mockCategories[categoryIndex].name = categoryName;
+        saveProducts(); // Save products because their category might have changed
         toast({ title: "Sukses", description: "Kategori berhasil diperbarui." });
       }
     } else {
@@ -114,6 +115,7 @@ export default function AdminKategoriProdukPage() {
       toast({ title: "Sukses", description: "Kategori baru berhasil ditambahkan." });
     }
     
+    saveCategories();
     updateCategories();
     handleCloseForm();
   };
@@ -134,6 +136,7 @@ export default function AdminKategoriProdukPage() {
     const indexToDelete = mockCategories.findIndex(c => c.id === categoryToDelete.id);
     if (indexToDelete > -1) {
       mockCategories.splice(indexToDelete, 1);
+      saveCategories();
       toast({ title: "Sukses", description: `Kategori "${categoryToDelete.name}" telah dihapus.` });
       updateCategories();
     }

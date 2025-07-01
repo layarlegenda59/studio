@@ -23,6 +23,11 @@ export default function EditProductPage() {
       if (foundProduct) {
         setProduct(foundProduct);
       } else {
+        // This might happen if the user navigates to a non-existent product ID
+        // or if the data from localStorage hasn't loaded yet.
+        // A robust solution would wait for data to be confirmed loaded.
+        console.warn(`Product with id "${id}" not found in mockProducts.`);
+        // To avoid flashing a not found, we can wait a bit, but for now, we'll assume it's a real 404.
         notFound();
       }
       setLoading(false);
@@ -66,7 +71,7 @@ export default function EditProductPage() {
 
   if (!product) {
     // This case will likely lead to notFound(), but as a fallback.
-    return <div>Produk tidak ditemukan.</div>;
+    return <div>Produk tidak ditemukan. Mungkin Anda perlu memuat ulang.</div>;
   }
 
   return (

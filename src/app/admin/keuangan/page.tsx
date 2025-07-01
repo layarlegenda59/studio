@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import Link from "next/link";
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -49,7 +49,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar";
 
 import { useToast } from '@/hooks/use-toast';
-import { mockTransactions } from "@/lib/adminMockData";
+import { mockTransactions, saveTransactions } from "@/lib/adminMockData";
 import type { AdminTransaction, AdminTransactionType } from "@/lib/types";
 import { cn } from '@/lib/utils';
 import { DollarSign, TrendingDown, TrendingUp, PlusCircle, FileText, MoreHorizontal, Edit, Trash2, CalendarIcon, ChevronDown } from 'lucide-react';
@@ -88,6 +88,11 @@ export default function AdminKeuanganPage() {
   const form = useForm<TransactionFormValues>({
     resolver: zodResolver(transactionFormSchema),
   });
+
+  // Re-sync state with the (potentially updated) mock data from localStorage
+  useEffect(() => {
+    setTransactions([...mockTransactions]);
+  }, []);
 
   const { totalRevenue, totalExpenses, netProfit } = useMemo(() => {
     const revenue = transactions
@@ -140,24 +145,16 @@ export default function AdminKeuanganPage() {
     };
 
     if (transactionToEdit) {
-      // Edit
-      const updatedTransaction: AdminTransaction = {
-        ...transactionToEdit,
-        ...newTransactionData,
-      };
       const index = mockTransactions.findIndex(t => t.id === transactionToEdit.id);
-      if (index !== -1) mockTransactions[index] = updatedTransaction;
+      if (index !== -1) mockTransactions[index] = { ...transactionToEdit, ...newTransactionData };
       toast({ title: "Sukses", description: "Transaksi berhasil diperbarui." });
     } else {
-      // Add
-      const newTransaction: AdminTransaction = {
-        id: `trx-manual-${Date.now()}`,
-        ...newTransactionData,
-      };
+      const newTransaction: AdminTransaction = { id: `trx-manual-${Date.now()}`, ...newTransactionData };
       mockTransactions.unshift(newTransaction);
       toast({ title: "Sukses", description: "Transaksi baru berhasil ditambahkan." });
     }
     
+    saveTransactions();
     setTransactions([...mockTransactions]);
     setIsFormOpen(false);
   };
@@ -168,6 +165,7 @@ export default function AdminKeuanganPage() {
     if (index > -1) {
       mockTransactions.splice(index, 1);
     }
+    saveTransactions();
     setTransactions([...mockTransactions]);
     toast({ title: "Sukses", description: "Transaksi telah dihapus." });
     setTransactionToDelete(null);

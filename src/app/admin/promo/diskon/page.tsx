@@ -43,7 +43,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
-import { mockDiscounts } from '@/lib/adminMockData';
+import { mockDiscounts, saveDiscounts } from '@/lib/adminMockData';
 import type { AdminDiscount } from '@/lib/types';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -95,7 +95,13 @@ export default function AdminPromoDiskonPage() {
   });
 
   useEffect(() => {
-    setDiscounts([...mockDiscounts]);
+    // Convert date strings from localStorage back to Date objects
+    const formattedDiscounts = mockDiscounts.map(d => ({
+        ...d,
+        startDate: new Date(d.startDate),
+        endDate: new Date(d.endDate)
+    }));
+    setDiscounts(formattedDiscounts);
   }, []);
 
   const handleOpenForm = (discount: AdminDiscount | null) => {
@@ -103,6 +109,8 @@ export default function AdminPromoDiskonPage() {
     if (discount) {
       form.reset({
         ...discount,
+        startDate: new Date(discount.startDate),
+        endDate: new Date(discount.endDate),
         minPurchase: discount.minPurchase || undefined,
       });
     } else {
@@ -131,6 +139,7 @@ export default function AdminPromoDiskonPage() {
       mockDiscounts.unshift(newDiscount);
     }
 
+    saveDiscounts();
     setDiscounts([...mockDiscounts]);
     toast({ title: "Sukses", description: `Diskon "${data.code}" berhasil disimpan.` });
     handleCloseForm();
@@ -142,6 +151,7 @@ export default function AdminPromoDiskonPage() {
     if (indexToDelete > -1) {
       mockDiscounts.splice(indexToDelete, 1);
     }
+    saveDiscounts();
     setDiscounts([...mockDiscounts]);
     toast({ title: "Sukses", description: `Diskon "${discountToDelete.code}" telah dihapus.` });
     setDiscountToDelete(null);
