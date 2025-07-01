@@ -84,9 +84,11 @@ interface ProductFormProps {
 }
 
 // Helper function to format number with dots
-const formatCurrency = (value: number | undefined | null): string => {
-  if (value === undefined || value === null || isNaN(value)) return "";
-  return new Intl.NumberFormat('id-ID').format(value);
+const formatCurrency = (value: string | number | undefined | null): string => {
+  if (value === undefined || value === null) return "";
+  const numStr = String(value).replace(/\D/g, '');
+  if (numStr === '') return '';
+  return new Intl.NumberFormat('id-ID').format(Number(numStr));
 };
 
 export default function ProductForm({ product }: ProductFormProps) {
@@ -113,9 +115,6 @@ export default function ProductForm({ product }: ProductFormProps) {
     defaultValues,
     mode: "onChange",
   });
-
-  const [formattedOriginalPrice, setFormattedOriginalPrice] = React.useState(formatCurrency(defaultValues.originalPrice));
-  const [formattedPromoPrice, setFormattedPromoPrice] = React.useState(formatCurrency(defaultValues.promoPrice));
 
   function onSubmit(data: ProductFormValues) {
      const finalData = {
@@ -157,15 +156,9 @@ export default function ProductForm({ product }: ProductFormProps) {
   const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>, fieldName: 'originalPrice' | 'promoPrice') => {
       const value = e.target.value;
       const cleanedValue = value.replace(/\D/g, '');
-      const numValue = cleanedValue === '' ? 0 : Number(cleanedValue);
+      const numValue = cleanedValue === '' ? undefined : Number(cleanedValue);
       
-      if (fieldName === 'originalPrice') {
-        setFormattedOriginalPrice(formatCurrency(numValue));
-        form.setValue('originalPrice', numValue, { shouldValidate: true });
-      } else {
-        setFormattedPromoPrice(formatCurrency(numValue));
-        form.setValue('promoPrice', numValue, { shouldValidate: true });
-      }
+      form.setValue(fieldName, numValue, { shouldValidate: true });
   };
 
   return (
@@ -281,14 +274,14 @@ export default function ProductForm({ product }: ProductFormProps) {
                      <FormField
                         control={form.control}
                         name="originalPrice"
-                        render={() => (
+                        render={({ field }) => (
                             <FormItem>
                             <FormLabel>Harga Asli</FormLabel>
                             <FormControl>
                                 <Input 
                                   type="text"
                                   placeholder="500.000"
-                                  value={formattedOriginalPrice}
+                                  value={formatCurrency(field.value)}
                                   onChange={(e) => handlePriceChange(e, 'originalPrice')}
                                 />
                             </FormControl>
@@ -299,14 +292,14 @@ export default function ProductForm({ product }: ProductFormProps) {
                      <FormField
                         control={form.control}
                         name="promoPrice"
-                        render={() => (
+                        render={({ field }) => (
                             <FormItem>
                             <FormLabel>Harga Promo (Opsional)</FormLabel>
                             <FormControl>
                                 <Input 
                                   type="text"
                                   placeholder="399.000"
-                                  value={formattedPromoPrice}
+                                  value={formatCurrency(field.value)}
                                   onChange={(e) => handlePriceChange(e, 'promoPrice')}
                                 />
                             </FormControl>
