@@ -1,9 +1,13 @@
 
-// src/app/admin/produk/form/[id]/page.tsx
+"use client";
+
 import ProductForm from '@/components/admin/ProductForm';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { mockProducts } from '@/lib/mockData';
 import { notFound } from 'next/navigation';
+import type { Product } from '@/lib/types';
+import React, { useState, useEffect } from 'react';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface EditProductPageProps {
   params: {
@@ -13,10 +17,59 @@ interface EditProductPageProps {
 
 export default function EditProductPage({ params }: EditProductPageProps) {
   const { id } = params;
-  const product = mockProducts.find(p => p.id === id);
+  const [product, setProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // mockProducts is now hydrated from localStorage by the time this page loads,
+    // so we can safely find the product.
+    const foundProduct = mockProducts.find(p => p.id === id);
+    if (foundProduct) {
+      setProduct(foundProduct);
+    } else {
+      notFound();
+    }
+    setLoading(false);
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="space-y-8">
+        <div>
+            <Skeleton className="h-9 w-1/3" />
+            <Skeleton className="h-4 w-2/3 mt-2" />
+        </div>
+        <Card className="shadow-lg">
+            <CardHeader>
+                <Skeleton className="h-6 w-1/4" />
+                <Skeleton className="h-4 w-1/2" />
+            </CardHeader>
+            <CardContent>
+                <div className="space-y-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div className="space-y-4">
+                            <Skeleton className="h-10 w-full" />
+                            <Skeleton className="h-10 w-full" />
+                            <Skeleton className="h-10 w-full" />
+                            <Skeleton className="h-20 w-full" />
+                        </div>
+                         <div className="space-y-4">
+                            <Skeleton className="h-10 w-full" />
+                            <Skeleton className="h-10 w-full" />
+                            <Skeleton className="h-10 w-full" />
+                            <Skeleton className="h-20 w-full" />
+                        </div>
+                    </div>
+                </div>
+            </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   if (!product) {
-    notFound();
+    // This case will likely lead to notFound(), but as a fallback.
+    return <div>Produk tidak ditemukan.</div>;
   }
 
   return (

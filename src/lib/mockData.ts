@@ -1,26 +1,10 @@
 
 import type { Product, Promotion, ShippingCost, ShippingVendor } from './types';
 
-export const mockPromotions: Promotion[] = [
-  {
-    id: 'promo1',
-    imageUrl: 'https://ggbivmpazczpgtmnfwfs.supabase.co/storage/v1/object/sign/material/erik-mclean-nfoRa6NHTbU-unsplash.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jYjkzYjM4Zi1kOGJhLTRmYTEtYmM0ZC00MWUzOGU4YTZhNzgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYXRlcmlhbC9lcmlrLW1jbGVhbi1uZm9SYTZOSFRiVS11bnNwbGFzaC5qcGciLCJpYXQiOjE3NTAzMTA4MTYsImV4cCI6MTc4MTg0NjgxNn0.W6d7AjWEOL7BD5PBAEA47uReC5GFBHGFbZMNx3dIG94',
-    title: 'BUY 2 GET 1 FREE!',
-    description: 'Plus Diskon 50% untuk item tertentu. Jangan lewatkan!',
-    ctaText: 'Belanja Sekarang',
-    ctaLink: '#products',
-  },
-  {
-    id: 'promo2',
-    imageUrl: 'https://ggbivmpazczpgtmnfwfs.supabase.co/storage/v1/object/sign/material/artiom-vallat-CHKaD8uRaDU-unsplash.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jYjkzYjM4Zi1kOGJhLTRmYTEtYmM0ZC00MWUzOGU4YTZhNzgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYXRlcmlhbC9hcnRpb20tdmFsbGF0LUNIS2FEOHVSYURVLXVuc3BsYXNoLmpwZyIsImlhdCI6MTc1MDMxMTM1MCwiZXhwIjoxNzgxODQ3MzUwfQ.lgG15IkKteJzYsO_lE8n8QQ6sB1dBtTWqynqccSOIs0',
-    title: 'Sale Koleksi Terbaru!',
-    description: 'Jelajahi gaya terbaru musim ini dengan harga spesial.',
-    ctaText: 'Lihat Koleksi',
-    ctaLink: '#products',
-  },
-];
+export const PRODUCTS_KEY = 'goodstockx_products';
 
-export const mockProducts: Product[] = [
+// The mutable array that the app will use. It starts with the default data.
+export let mockProducts: Product[] = [
   {
     id: 'prod1',
     name: 'Sneakers Klasik Pria',
@@ -181,7 +165,7 @@ export const mockProducts: Product[] = [
     brand: 'CozyComfort',
     category: 'Pakaian',
     type: 'Hoodies',
-    imageUrl: 'https://images.unsplash.com/photo-1674695670808-0480f62cc7d7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHx3b21lbiUyMGhvb2RpZSUyMG92ZXJzaXplZHxlbnwwfHx8fDE3NTAzNTQwODV8MA&ixlib-rb-4.1.0&q=80&w=1080',
+    imageUrl: 'https://images.unsplash.com/photo-1674695670808-0480f62cc7d7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHx3b21lbiUyMGhvb2RpZSUyMG92ZXJzaXplZHxlbnwwfHx8fDE3NTAzNTQwODV8MA&ixlib=rb-4.1.0&q=80&w=1080',
     originalPrice: 450000,
     sizes: ['M', 'L', 'XL'],
     salesCount: 90,
@@ -252,6 +236,68 @@ export const mockProducts: Product[] = [
     description: "Kacamata hitam model aviator yang ikonik. Lensa polarisasi untuk perlindungan UV maksimal.",
     stock: 40,
   }
+];
+
+/**
+ * Initializes the product data from localStorage on the client-side.
+ * If localStorage has data, it overwrites the in-memory mockProducts.
+ * If not, it saves the default mockProducts to localStorage.
+ * Should be called in a useEffect hook in a layout or top-level component.
+ */
+export function initializeProducts() {
+    if (typeof window === 'undefined') return;
+    try {
+        const savedProductsJSON = localStorage.getItem(PRODUCTS_KEY);
+        if (savedProductsJSON) {
+            // Use the saved data
+            const savedProducts = JSON.parse(savedProductsJSON);
+            // Basic validation to prevent empty/malformed data issues
+            if (Array.isArray(savedProducts) && savedProducts.length > 0) {
+                 mockProducts = savedProducts;
+            } else {
+                 // If data is malformed, reset with default and save
+                 localStorage.setItem(PRODUCTS_KEY, JSON.stringify(mockProducts));
+            }
+        } else {
+            // First time load: save the default data to localStorage
+            localStorage.setItem(PRODUCTS_KEY, JSON.stringify(mockProducts));
+        }
+    } catch (error) {
+        console.error("Failed to initialize products from localStorage.", error);
+        // Fallback to default in-memory mockProducts
+    }
+}
+
+/**
+ * Saves the current state of the products array to localStorage.
+ */
+export function saveProducts() {
+    if (typeof window === 'undefined') return;
+    try {
+        localStorage.setItem(PRODUCTS_KEY, JSON.stringify(mockProducts));
+    } catch (error) {
+        console.error("Failed to save products to localStorage.", error);
+    }
+}
+
+
+export const mockPromotions: Promotion[] = [
+  {
+    id: 'promo1',
+    imageUrl: 'https://ggbivmpazczpgtmnfwfs.supabase.co/storage/v1/object/sign/material/erik-mclean-nfoRa6NHTbU-unsplash.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jYjkzYjM4Zi1kOGJhLTRmYTEtYmM0ZC00MWUzOGU4YTZhNzgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYXRlcmlhbC9lcmlrLW1jbGVhbi1uZm9SYTZOSFRiVS11bnNwbGFzaC5qcGciLCJpYXQiOjE3NTAzMTA4MTYsImV4cCI6MTc4MTg0NjgxNn0.W6d7AjWEOL7BD5PBAEA47uReC5GFBHGFbZMNx3dIG94',
+    title: 'BUY 2 GET 1 FREE!',
+    description: 'Plus Diskon 50% untuk item tertentu. Jangan lewatkan!',
+    ctaText: 'Belanja Sekarang',
+    ctaLink: '#products',
+  },
+  {
+    id: 'promo2',
+    imageUrl: 'https://ggbivmpazczpgtmnfwfs.supabase.co/storage/v1/object/sign/material/artiom-vallat-CHKaD8uRaDU-unsplash.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jYjkzYjM4Zi1kOGJhLTRmYTEtYmM0ZC00MWUzOGU4YTZhNzgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYXRlcmlhbC9hcnRpb20tdmFsbGF0LUNIS2FEOHVSYURVLXVuc3BsYXNoLmpwZyIsImlhdCI6MTc1MDMxMTM1MCwiZXhwIjoxNzgxODQ3MzUwfQ.lgG15IkKteJzYsO_lE8n8QQ6sB1dBtTWqynqccSOIs0',
+    title: 'Sale Koleksi Terbaru!',
+    description: 'Jelajahi gaya terbaru musim ini dengan harga spesial.',
+    ctaText: 'Lihat Koleksi',
+    ctaLink: '#products',
+  },
 ];
 
 export const mockShippingVendors: ShippingVendor[] = ['JNE', 'JNT', 'SiCepat', 'Lion Parcel'];

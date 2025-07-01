@@ -35,7 +35,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useToast } from '@/hooks/use-toast';
-import { mockProducts } from '@/lib/mockData';
+import { mockProducts, saveProducts } from '@/lib/mockData';
 
 interface ProductTableProps {
   products: Product[];
@@ -55,6 +55,8 @@ export default function ProductTable({ products, onDataChange }: ProductTablePro
         mockProducts.splice(indexToDelete, 1);
     }
     
+    saveProducts();
+
     toast({
       title: "Produk Dihapus",
       description: `Produk "${productToDelete.name}" telah berhasil dihapus.`,

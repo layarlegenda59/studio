@@ -27,7 +27,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import type { Product } from "@/lib/types";
-import { mockProducts } from "@/lib/mockData";
+import { mockProducts, saveProducts } from "@/lib/mockData";
 import { mockCategories } from "@/lib/adminMockData";
 import Link from 'next/link';
 
@@ -138,6 +138,8 @@ export default function ProductForm({ product }: ProductFormProps) {
       mockProducts.unshift(newProduct);
     }
     
+    saveProducts();
+
     toast({
       title: `Produk ${product ? 'Diperbarui' : 'Ditambahkan'}`,
       description: `Produk "${data.name}" telah berhasil disimpan.`,
@@ -291,7 +293,7 @@ export default function ProductForm({ product }: ProductFormProps) {
                                   type="text" 
                                   placeholder="399.000" 
                                   {...field}
-                                  value={!field.value ? '' : formatCurrency(field.value)}
+                                  value={field.value === 0 ? '' : formatCurrency(field.value)}
                                   onChange={(e) => {
                                       const cleanedValue = e.target.value.replace(/\D/g, '');
                                       field.onChange(Number(cleanedValue));
