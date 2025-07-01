@@ -26,6 +26,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { db } from '@/lib/firebase';
 import { collection, getDocs, query, where, orderBy, startAt, endAt } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useMounted } from '@/hooks/use-mounted';
 
 interface FilterState {
   categories: string[];
@@ -68,6 +69,7 @@ export default function Home() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { toast } = useToast();
+  const isMounted = useMounted();
   
   const [products, setProducts] = useState<Product[]>([]);
   const [promotions, setPromotions] = useState<Promotion[]>([]);
@@ -169,8 +171,10 @@ export default function Home() {
   }, [searchParams, toast]);
 
   useEffect(() => {
-    fetchAndFilterProducts();
-  }, [fetchAndFilterProducts]);
+    if (isMounted) {
+      fetchAndFilterProducts();
+    }
+  }, [fetchAndFilterProducts, isMounted]);
 
   useEffect(() => {
     const fetchPromotions = async () => {
@@ -181,8 +185,10 @@ export default function Home() {
             console.error("Error fetching promotions: ", error);
         }
     };
-    fetchPromotions();
-  }, []);
+    if (isMounted) {
+      fetchPromotions();
+    }
+  }, [isMounted]);
 
   const handleFilterChange = useCallback((newFiltersFromComponent: ProductFilterStateFromComponent | FilterState) => {
     const updatedFilters: FilterState = { ...newFiltersFromComponent };
@@ -272,6 +278,34 @@ export default function Home() {
   const isPromoActive = searchParams.get('promo') === 'true';
   const activeGender = searchParams.get('gender');
   const activeType = searchParams.get('type');
+
+  if (!isMounted) {
+    return (
+       <div className="flex flex-col min-h-screen bg-background">
+         <Header 
+            wishlistItems={[]}
+            onRemoveFromWishlist={() => {}}
+            itemsAddedToCartFromWishlist={new Set()}
+            onToggleCartFromWishlist={() => {}}
+          />
+         <main className="flex-grow">
+          <div className="container mx-auto px-4 py-8">
+            <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-4 gap-y-6">
+              {Array.from({ length: 8 }).map((_, index) => (
+                <div key={index} className="space-y-2">
+                  <Skeleton className="aspect-[2/3] w-full" />
+                  <Skeleton className="h-4 w-3/4" />
+                  <Skeleton className="h-4 w-1/2" />
+                  <Skeleton className="h-9 w-full" />
+                </div>
+              ))}
+            </div>
+          </div>
+         </main>
+         <Footer />
+       </div>
+    )
+  }
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
