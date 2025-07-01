@@ -1,16 +1,17 @@
 
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { mockProducts } from '@/lib/mockData';
+import { mockProducts, initializeProducts } from '@/lib/mockData';
 import type { Product } from '@/lib/types';
 import { Separator } from '@/components/ui/separator';
 
 export default function ProductIndexPage() {
   // Dummy state for Header props, similar to product detail page
+  const [products, setProducts] = useState<Product[]>([]);
   const [headerWishlistItems, setHeaderWishlistItems] = useState<Product[]>([]);
   const [headerCartItems, setHeaderCartItems] = useState<Set<string>>(new Set());
 
@@ -30,7 +31,13 @@ export default function ProductIndexPage() {
     });
   };
 
-  const sortedProducts = [...mockProducts].sort((a, b) => a.name.localeCompare(b.name));
+  useEffect(() => {
+    initializeProducts();
+    // Create a new array to trigger state update
+    setProducts([...mockProducts]);
+  }, []);
+
+  const sortedProducts = [...products].sort((a, b) => a.name.localeCompare(b.name));
 
   const groupedProducts = sortedProducts.reduce((acc, product) => {
     const firstLetter = product.name[0].toUpperCase();
@@ -49,7 +56,7 @@ export default function ProductIndexPage() {
         wishlistItems={headerWishlistItems}
         onRemoveFromWishlist={handleRemoveFromHeaderWishlist}
         itemsAddedToCartFromWishlist={headerCartItems}
-        onToggleCartFromWishlist={handleToggleCartFromHeaderWishlist}
+        onToggleCartFromHeaderWishlist={handleToggleCartFromHeaderWishlist}
       />
       <main className="flex-grow container mx-auto px-4 py-8">
         <h1 className="text-3xl md:text-4xl font-headline font-bold mb-2">Indeks Produk</h1>

@@ -11,7 +11,7 @@ import WhatsAppButton from '@/components/WhatsAppButton';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { mockProducts } from '@/lib/mockData';
+import { mockProducts, initializeProducts } from '@/lib/mockData';
 import type { Product } from '@/lib/types';
 import { Heart, ShoppingCart, ChevronLeft } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
@@ -34,6 +34,7 @@ export default function ProductDetailPage() {
 
 
   useEffect(() => {
+    initializeProducts();
     if (params.id) {
       const foundProduct = mockProducts.find(p => p.id === params.id);
       if (foundProduct) {

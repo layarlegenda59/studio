@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState, useEffect, useRef, useCallback, type FormEvent } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Header from '@/components/Header';
 import PromoCarousel from '@/components/PromoCarousel';
@@ -11,7 +11,7 @@ import ShippingCalculator from '@/components/ShippingCalculator';
 import WhatsAppOrderForm from '@/components/WhatsAppOrderForm';
 import Footer from '@/components/Footer';
 import ProductFilters, { type FilterState as ProductFilterStateFromComponent } from '@/components/ProductFilters';
-import { mockProducts, mockPromotions } from '@/lib/mockData';
+import { mockProducts, mockPromotions, initializeProducts, initializePromotions } from '@/lib/mockData';
 import type { Product } from '@/lib/types';
 import { useToast } from "@/hooks/use-toast";
 import { Button } from '@/components/ui/button';
@@ -71,6 +71,7 @@ export default function Home() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { toast } = useToast();
+  const [isDataInitialized, setIsDataInitialized] = useState(false);
   
   const initialFiltersRef = useRef<FilterState>({ ...initialFilters });
 
@@ -110,6 +111,12 @@ export default function Home() {
   const [showFilterSidebar, setShowFilterSidebar] = useState(false);
   
   const productFiltersRef = useRef<{ setFiltersFromParent: (newFilters: FilterState) => void }>(null);
+
+  useEffect(() => {
+    initializeProducts();
+    initializePromotions();
+    setIsDataInitialized(true);
+  }, []);
 
   useEffect(() => {
     const params = new URLSearchParams(searchParams.toString());
@@ -152,6 +159,8 @@ export default function Home() {
 
 
   useEffect(() => {
+    if (!isDataInitialized) return;
+
     let productsToFilter = [...mockProducts];
     const params = new URLSearchParams(searchParams.toString());
 
@@ -242,7 +251,7 @@ export default function Home() {
     }
 
     setFilteredProducts(productsToFilter);
-  }, [filters, searchParams]);
+  }, [filters, searchParams, isDataInitialized]);
 
   const handleFilterChange = useCallback((newFiltersFromComponent: ProductFilterStateFromComponent | FilterState) => {
     const updatedFilters: FilterState = {
