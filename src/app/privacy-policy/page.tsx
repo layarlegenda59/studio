@@ -31,7 +31,7 @@ export default function PrivacyPolicyPage() {
         wishlistItems={headerWishlistItems}
         onRemoveFromWishlist={handleRemoveFromHeaderWishlist}
         itemsAddedToCartFromWishlist={headerCartItems}
-        onToggleCartFromWishlist={handleToggleCartFromHeaderWishlist}
+        onToggleCartFromHeaderWishlist={handleToggleCartFromHeaderWishlist}
       />
       <main className="flex-grow container mx-auto px-4 py-12 md:py-20 bg-background rounded-lg my-10 shadow-xl">
         <div className="max-w-4xl mx-auto">
@@ -78,7 +78,7 @@ export default function PrivacyPolicyPage() {
           </Section>
 
            <Section title="8. Hubungi Kami">
-            <p>Jika Anda memiliki pertanyaan tentang Kebijakan Privasi ini, silakan hubungi kami melalui email di <a href="mailto:customer@goodstockx.com" className="text-primary hover:underline">customer@goodstockx.com</a>.</p>
+            <p>Jika Anda memiliki pertanyaan tentang Kebijakan Privasi ini, silakan hubungi kami melalui email di <a href="mailto:admin@goodstock-x.com" className="text-primary hover:underline">admin@goodstock-x.com</a>.</p>
           </Section>
 
         </div>

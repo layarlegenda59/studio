@@ -153,7 +153,7 @@ export default function AdminPengaturanPage() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Email Kontak</FormLabel>
-                  <FormControl><Input placeholder="customer@goodstockx.com" {...field} /></FormControl>
+                  <FormControl><Input placeholder="admin@goodstock-x.com" {...field} /></FormControl>
                   <FormMessage />
                 </FormItem>
               )}

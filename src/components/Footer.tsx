@@ -57,7 +57,7 @@ export default function Footer() {
               <p className="text-sm text-gray-400 mb-3">Bersama Goodstock-X, <span className="font-semibold text-white">You Own Now.</span></p>
               
               <p className="text-sm text-gray-300 mt-4 mb-1">Layanan Pengaduan Konsumen</p>
-              <p className="text-sm text-gray-400">E-mail: <a href="mailto:customer@goodstockx.com" className="hover:text-white hover:underline">customer@goodstockx.com</a></p>
+              <p className="text-sm text-gray-400">E-mail: <a href="mailto:admin@goodstock-x.com" className="hover:text-white hover:underline">admin@goodstock-x.com</a></p>
               <p className="text-sm text-gray-400">WhatsApp: <a href="https://wa.me/6281278262893" target="_blank" rel="noopener noreferrer" className="hover:text-white hover:underline">+62 812 7826 2893</a></p>
               
               <h6 className="text-lg font-headline font-semibold mt-6 mb-3">Temukan Kami</h6>

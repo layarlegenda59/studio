@@ -14,7 +14,7 @@ export let mockTopBanners: AdminTopBanner[] = [
 
 export let mockStoreSettings: AdminStoreSettings = {
   name: 'Goodstock-X',
-  email: 'customer@goodstockx.com',
+  email: 'admin@goodstock-x.com',
   phone: '+6281278262893',
   address: 'Jl. Jend. Sudirman No. 1, Jakarta Pusat, DKI Jakarta, 10220',
 };
