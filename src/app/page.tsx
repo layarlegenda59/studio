@@ -101,7 +101,7 @@ export default function Home() {
     return newFiltersState;
   });
 
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>(mockProducts);
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [wishlistItems, setWishlistItems] = useState<Product[]>([]);
   const [itemsAddedToCartFromWishlist, setItemsAddedToCartFromWishlist] = useState<Set<string>>(new Set());
   const [isFilterSheetOpen, setIsFilterSheetOpen] = useState(false);
